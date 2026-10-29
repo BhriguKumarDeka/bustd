@@ -1,0 +1,1089 @@
+{
+  "products": [
+    {
+      "id": "prod_reynolds_pen_10",
+      "name": "Reynolds 045 Fine Carbure Fine Point Ball Pen (Pack of 10)",
+      "sku": "REY-045-BLU-10",
+      "brand": "Reynolds",
+      "category": "Writing Instruments / Ball Pens",
+      "mrp": 50,
+      "currency": "INR",
+      "netQuantity": "10 N",
+      "netQuantityNumeric": 10,
+      "netQuantityUnit": "N",
+      "manufacturer": "Reynolds Pens India Private Limited, Plot No. 12, Industrial Area, Sector 5, Chennai - 600001, Tamil Nadu, India.",
+      "packerOrImporter": "Packer: Reynolds Pens India Pvt. Ltd., Chennai - 600001",
+      "countryOfOrigin": "India",
+      "consumerCare": "Contact: Consumer Service Manager, Phone: 1800-209-1234, Email: customercare@reynoldspens.in, Address: Same as manufacturer",
+      "monthYearOfManufacture": "10/2026",
+      "brandGuidelines": {
+        "logoMinHeightMm": 14,
+        "clearSpaceMm": 10,
+        "primaryHex": "#0F2B5C"
+      },
+      "createdAt": "2026-10-25T10:00:00.000Z",
+      "updatedAt": "2026-10-25T10:00:00.000Z"
+    },
+    {
+      "id": "prod_apsara_pencil_10",
+      "name": "Apsara Platinum Extra Dark Pencil Multipack (10 Pencils + Sharpener + Eraser)",
+      "sku": "APS-PLT-10PK",
+      "brand": "Apsara",
+      "category": "Writing Instruments / Pencils",
+      "mrp": 80,
+      "currency": "INR",
+      "netQuantity": "10 N + 1 N + 1 N",
+      "netQuantityNumeric": 10,
+      "netQuantityUnit": "N",
+      "manufacturer": "Hindustan Pencils Pvt. Ltd., 510 Himalaya House, 79 Palton Road, Mumbai - 400001, Maharashtra, India.",
+      "packerOrImporter": "Hindustan Pencils Pvt. Ltd.",
+      "countryOfOrigin": "India",
+      "consumerCare": "Consumer Care Executive, Telephone: 022-22614505, Email: feedback@hindustanpencils.com",
+      "monthYearOfManufacture": "09/2026",
+      "brandGuidelines": {
+        "logoMinHeightMm": 12,
+        "clearSpaceMm": 8,
+        "primaryHex": "#991B1B"
+      },
+      "createdAt": "2026-10-26T11:00:00.000Z",
+      "updatedAt": "2026-10-26T11:00:00.000Z"
+    },
+    {
+      "id": "prod_camlin_exam_kit",
+      "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+      "sku": "CAM-EXM-KIT",
+      "brand": "Camlin Kokuyo",
+      "category": "Stationery Multipack Kits",
+      "mrp": 120,
+      "currency": "INR",
+      "netQuantity": "1 Kit (4 Items)",
+      "netQuantityNumeric": 4,
+      "netQuantityUnit": "Kit",
+      "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+      "packerOrImporter": "Kokuyo Camlin Ltd.",
+      "countryOfOrigin": "India",
+      "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+      "monthYearOfManufacture": "08/2026",
+      "brandGuidelines": {
+        "logoMinHeightMm": 16,
+        "clearSpaceMm": 12,
+        "primaryHex": "#1E3A8A"
+      },
+      "createdAt": "2026-10-27T09:30:00.000Z",
+      "updatedAt": "2026-10-27T09:30:00.000Z"
+    }
+  ],
+  "inspections": [
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "finalized",
+      "assets": [
+        {
+          "assetId": "asset_iegjcg",
+          "panel": "front",
+          "originalFilename": "reynolds_045_pdp_front.svg",
+          "storedPath": "/uploads/pen_pdp_front.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 4210,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 94,
+            "glare": 8,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        },
+        {
+          "assetId": "asset_88zu0o",
+          "panel": "back",
+          "originalFilename": "reynolds_045_info_back.svg",
+          "storedPath": "/uploads/pen_info_back.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 7850,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 89,
+            "glare": 14,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        }
+      ],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_1uh540t",
+      "_id": "ins_1uh540t",
+      "inspectionNumber": "INS-2026-1002",
+      "finalDecision": "returned_for_revision",
+      "finalDecisionNotes": "Pre-production packaging dieline returned to agency for price and net count correction.",
+      "findings": [
+        {
+          "findingId": "fnd_lm_mrp_pass",
+          "ruleId": "LM-MRP-001",
+          "ruleVersion": "1.2.0",
+          "pillar": "legal_metrology",
+          "title": "Statutory MRP Phrasing Validated",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Mandatory \"Inclusive of all taxes\" syntax with currency symbol",
+          "detectedValue": "MRP Rs. 60.00 (INCL. OF ALL TAXES)",
+          "explanation": "Statutory retail price declaration adheres to Legal Metrology Rule 6(1)(e) formatting criteria.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 24,
+            "w": 78,
+            "h": 9
+          },
+          "ocrConfidence": 0.96,
+          "reviewDisposition": "dismissed",
+          "dismissReason": "Acceptable promo sticker variant per legal notice",
+          "reviewerNotes": "",
+          "reviewedAt": "2026-10-29T19:34:57.869Z",
+          "reviewedBy": "Senior Packaging QA Inspector"
+        },
+        {
+          "findingId": "fnd_mst_mrp_mismatch",
+          "ruleId": "MST-MRP-201",
+          "ruleVersion": "2.0.0",
+          "pillar": "product_master",
+          "title": "MRP Mismatch: Expected ₹120.00, Detected ₹60.00",
+          "status": "potential_issue",
+          "severity": "critical",
+          "expectedValue": "₹120.00 (SKU Master: CAM-EXM-KIT)",
+          "detectedValue": "MRP Rs. 60.00 (INCL. OF ALL TAXES)",
+          "explanation": "Printed packaging artwork displays ₹60.00, which conflicts with the authoritative ERP SKU master price of ₹120.00. This would cause an immediate commercial mismatch or pre-press defect.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 24,
+            "w": 78,
+            "h": 9
+          },
+          "ocrConfidence": 0.96,
+          "reviewDisposition": "confirmed",
+          "dismissReason": "",
+          "reviewerNotes": "Verified mismatch with engineering master",
+          "reviewedAt": "2026-10-29T19:34:57.865Z",
+          "reviewedBy": "Senior Packaging QA Inspector"
+        },
+        {
+          "findingId": "fnd_lm_qty_pass",
+          "ruleId": "LM-QTY-002",
+          "ruleVersion": "1.1.0",
+          "pillar": "legal_metrology",
+          "title": "Net Quantity Metric Standard Verified",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Mandatory standard count or SI unit per Legal Metrology Schedule",
+          "detectedValue": "NET QUANTITY: 12 N (PENS)",
+          "explanation": "Net quantity unit adheres to permissible statutory packaging conventions.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 38,
+            "w": 76,
+            "h": 9
+          },
+          "ocrConfidence": 0.94,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_mst_qty_mismatch",
+          "ruleId": "MST-QTY-202",
+          "ruleVersion": "1.0.0",
+          "pillar": "product_master",
+          "title": "Net Quantity Mismatch: Expected 1 Kit (4 Items), Detected NET QUANTITY: 12 N (PENS)",
+          "status": "potential_issue",
+          "severity": "critical",
+          "expectedValue": "1 Kit (4 Items) (SKU Master: CAM-EXM-KIT)",
+          "detectedValue": "NET QUANTITY: 12 N (PENS)",
+          "explanation": "Artwork specifies NET QUANTITY: 12 N (PENS) (12 units), but master record declares 1 Kit (4 Items) (4 units). Packaging would misrepresent actual pack contents.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 38,
+            "w": 76,
+            "h": 9
+          },
+          "ocrConfidence": 0.94,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_lm_mfr_pass",
+          "ruleId": "LM-MFR-003",
+          "ruleVersion": "1.2.0",
+          "pillar": "legal_metrology",
+          "title": "Complete Manufacturer Address with PIN Code Verified",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Registered corporate address including 6-digit postal PIN code",
+          "detectedValue": "MFD. BY: REYNOLDS PENS INDIA PVT. LTD., PLOT NO. 12, INDUSTRIAL AREA, SECTOR 5, CHENNAI - 600001, TAMIL NADU, INDIA.",
+          "explanation": "Mandatory manufacturer coordinates comply with Rule 6(1)(a) and include verified postal code.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 52,
+            "w": 82,
+            "h": 14
+          },
+          "ocrConfidence": 0.92,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_lm_care_low_confidence",
+          "ruleId": "LM-CARE-004",
+          "ruleVersion": "1.3.0",
+          "pillar": "legal_metrology",
+          "title": "Consumer-Care Information: Review Required (Text Degraded or Low OCR Confidence)",
+          "status": "review_required",
+          "severity": "warning",
+          "expectedValue": "Legible Consumer Care Phone and Email Address (OCR Confidence ≥ 0.80)",
+          "detectedValue": "FOR CONSUMER COMPLAINTS / FEEDBACK: CONTACT CUSTOMER CARE MGR PH: 1800-209-???? (UNREADABLE SMUDGE) EMAIL: [ILLEGIBLE]",
+          "explanation": "OCR confidence for consumer-care region is 42% (< threshold 80%). The text appears smudged, blurry, or low contrast. In accordance with BUSTD safety rules, degraded evidence routes to human review rather than assuming absence.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 81,
+            "w": 80,
+            "h": 13
+          },
+          "ocrConfidence": 0.42,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_lm_coo_pass",
+          "ruleId": "LM-COO-005",
+          "ruleVersion": "1.0.0",
+          "pillar": "legal_metrology",
+          "title": "Country of Origin Declaration Verified",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Country of Origin: India",
+          "detectedValue": "COUNTRY OF ORIGIN: INDIA",
+          "explanation": "Mandatory country of origin is conspicuously declared.",
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 70,
+            "w": 55,
+            "h": 8
+          },
+          "ocrConfidence": 0.95,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_br_logo_pass",
+          "ruleId": "BR-LOGO-101",
+          "ruleVersion": "1.0.0",
+          "pillar": "brand_identity",
+          "title": "Brand Logo Clear Space & Dimension Verified",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Clear space margin ≥ 8mm with zero graphic encroachment",
+          "detectedValue": "Isolated bounding box compliant with brand specifications",
+          "explanation": "Primary trademark logo complies with minimum isolation bounding perimeter.",
+          "evidenceAssetId": "asset_iegjcg",
+          "evidenceBox": {
+            "x": 28,
+            "y": 15,
+            "w": 44,
+            "h": 22
+          },
+          "ocrConfidence": 0.99,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_br_contrast_pass",
+          "ruleId": "BR-CONT-102",
+          "ruleVersion": "1.0.0",
+          "pillar": "visual_legibility",
+          "title": "Principal Display Panel Text Contrast & Legibility",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "WCAG / Statutory legibility contrast ratio ≥ 4.5:1",
+          "detectedValue": "Luminance contrast ratio 7.2:1 (Otsu thresholding)",
+          "explanation": "Foreground declaration typography provides sufficient visual contrast against package background substrate.",
+          "evidenceAssetId": "asset_iegjcg",
+          "evidenceBox": {
+            "x": 5,
+            "y": 5,
+            "w": 90,
+            "h": 90
+          },
+          "ocrConfidence": 0.95,
+          "reviewDisposition": "pending"
+        }
+      ],
+      "extractedFields": {
+        "brand_logo": {
+          "rawText": "Camlin Kokuyo",
+          "confidence": 0.99,
+          "isDegraded": false,
+          "evidenceAssetId": "asset_iegjcg",
+          "evidenceBox": {
+            "x": 28,
+            "y": 15,
+            "w": 44,
+            "h": 22
+          },
+          "status": "detected"
+        },
+        "net_quantity": {
+          "rawText": "NET QUANTITY: 12 N (PENS)",
+          "numericValue": 12,
+          "unit": "N",
+          "confidence": 0.94,
+          "isDegraded": false,
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 38,
+            "w": 76,
+            "h": 9
+          },
+          "status": "detected"
+        },
+        "mrp": {
+          "rawText": "MRP Rs. 60.00 (INCL. OF ALL TAXES)",
+          "numericValue": 60,
+          "confidence": 0.96,
+          "isDegraded": false,
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 24,
+            "w": 78,
+            "h": 9
+          },
+          "status": "detected"
+        },
+        "manufacturer": {
+          "rawText": "MFD. BY: REYNOLDS PENS INDIA PVT. LTD., PLOT NO. 12, INDUSTRIAL AREA, SECTOR 5, CHENNAI - 600001, TAMIL NADU, INDIA.",
+          "confidence": 0.92,
+          "isDegraded": false,
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 52,
+            "w": 82,
+            "h": 14
+          },
+          "status": "detected"
+        },
+        "country_of_origin": {
+          "rawText": "COUNTRY OF ORIGIN: INDIA",
+          "confidence": 0.95,
+          "isDegraded": false,
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 70,
+            "w": 55,
+            "h": 8
+          },
+          "status": "detected"
+        },
+        "consumer_care": {
+          "rawText": "Ph: 1800-209-1234, Email: customercare@reynoldspens.in",
+          "confidence": 0.42,
+          "isDegraded": true,
+          "evidenceAssetId": "asset_88zu0o",
+          "evidenceBox": {
+            "x": 10,
+            "y": 81,
+            "w": 80,
+            "h": 13
+          },
+          "status": "corrected",
+          "reviewerCorrection": {
+            "originalText": "FOR CONSUMER COMPLAINTS / FEEDBACK: CONTACT CUSTOMER CARE MGR PH: 1800-209-???? (UNREADABLE SMUDGE) EMAIL: [ILLEGIBLE]",
+            "correctedValue": "Ph: 1800-209-1234, Email: customercare@reynoldspens.in",
+            "correctedBy": "Senior Packaging QA Inspector",
+            "correctedAt": "2026-10-29T19:34:57.872Z"
+          }
+        }
+      },
+      "summary": {
+        "totalChecks": 9,
+        "potentialIssues": 2,
+        "passedChecks": 6,
+        "reviewRequired": 1,
+        "dispositionSummary": {
+          "confirmed": 1,
+          "dismissed": 1,
+          "deferred": 0,
+          "pending": 7
+        }
+      },
+      "createdAt": "2026-10-29T19:34:57.148Z",
+      "updatedAt": "2026-10-29T19:34:57.875Z",
+      "finalDecisionAt": "2026-10-29T19:34:57.875Z"
+    },
+    {
+      "id": "ins_demo_reynolds_045",
+      "inspectionNumber": "INS-2026-1001",
+      "productId": "prod_reynolds_pen_10",
+      "productSnapshot": {
+        "id": "prod_reynolds_pen_10",
+        "name": "Reynolds 045 Fine Carbure Fine Point Ball Pen (Pack of 10)",
+        "sku": "REY-045-BLU-10",
+        "brand": "Reynolds",
+        "category": "Writing Instruments / Ball Pens",
+        "mrp": 50,
+        "currency": "INR",
+        "netQuantity": "10 N",
+        "netQuantityNumeric": 10,
+        "netQuantityUnit": "N",
+        "manufacturer": "Reynolds Pens India Private Limited, Plot No. 12, Industrial Area, Sector 5, Chennai - 600001, Tamil Nadu, India.",
+        "packerOrImporter": "Packer: Reynolds Pens India Pvt. Ltd., Chennai - 600001",
+        "countryOfOrigin": "India",
+        "consumerCare": "Contact: Consumer Service Manager, Phone: 1800-209-1234, Email: customercare@reynoldspens.in, Address: Same as manufacturer",
+        "monthYearOfManufacture": "10/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 14,
+          "clearSpaceMm": 10,
+          "primaryHex": "#0F2B5C"
+        },
+        "createdAt": "2026-10-25T10:00:00.000Z",
+        "updatedAt": "2026-10-25T10:00:00.000Z"
+      },
+      "status": "reviewed",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "Pre-production screening completed. 2 critical master mismatches identified for engineering correction.",
+      "finalDecisionAt": "",
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer / Lead Metrologist",
+        "email": "qa.lead@bustd.internal"
+      },
+      "assets": [
+        {
+          "assetId": "asset_pen_front",
+          "panel": "front",
+          "originalFilename": "reynolds_045_pdp_front.svg",
+          "storedPath": "/uploads/pen_pdp_front.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 4210,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 94,
+            "glare": 8,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        },
+        {
+          "assetId": "asset_pen_back",
+          "panel": "back",
+          "originalFilename": "reynolds_045_info_back.svg",
+          "storedPath": "/uploads/pen_info_back.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 7850,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 89,
+            "glare": 14,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        }
+      ],
+      "extractedFields": {
+        "mrp": {
+          "rawText": "MRP Rs. 60.00 (INCL. OF ALL TAXES)",
+          "numericValue": 60,
+          "confidence": 0.96,
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 35,
+            "w": 86,
+            "h": 7
+          },
+          "status": "detected"
+        },
+        "net_quantity": {
+          "rawText": "NET QUANTITY: 12 N (PENS)",
+          "numericValue": 12,
+          "confidence": 0.94,
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 43,
+            "w": 86,
+            "h": 7
+          },
+          "status": "detected"
+        },
+        "manufacturer": {
+          "rawText": "Reynolds Pens India Private Limited, Plot No. 12, Industrial Area, Sector 5, Chennai - 600001, Tamil Nadu, India.",
+          "confidence": 0.92,
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 51,
+            "w": 86,
+            "h": 9
+          },
+          "status": "detected"
+        },
+        "country_of_origin": {
+          "rawText": "Country of Origin: India",
+          "confidence": 0.95,
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 58,
+            "w": 86,
+            "h": 4
+          },
+          "status": "detected"
+        },
+        "consumer_care": {
+          "rawText": "Ph: 1800-209-???? Email: customercare@reynoldspens.?? [ILLEGIBLE RESOLUTION]",
+          "confidence": 0.42,
+          "isDegraded": true,
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 67,
+            "w": 86,
+            "h": 9
+          },
+          "status": "uncertain"
+        },
+        "brand_logo": {
+          "rawText": "Reynolds",
+          "confidence": 0.99,
+          "evidenceAssetId": "asset_pen_front",
+          "evidenceBox": {
+            "x": 10,
+            "y": 10,
+            "w": 80,
+            "h": 14
+          },
+          "status": "detected"
+        }
+      },
+      "findings": [
+        {
+          "findingId": "fnd_mst_mrp_mismatch",
+          "ruleId": "MST-MRP-201",
+          "ruleVersion": "2.0.0",
+          "pillar": "product_master",
+          "title": "MRP Mismatch: Expected ₹50.00, Detected ₹60.00",
+          "status": "potential_issue",
+          "severity": "critical",
+          "expectedValue": "₹50.00 (Source: SKU Master REY-045-BLU-10)",
+          "detectedValue": "MRP Rs. 60.00 (INCL. OF ALL TAXES) [OCR Conf: 96%]",
+          "explanation": "Statutory MRP declaration is present, but numerical value (₹60.00) conflicts with approved SKU Product Master price (₹50.00). Reviewer action required before pre-press sign-off.",
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 35,
+            "w": 86,
+            "h": 7
+          },
+          "ocrConfidence": 0.96,
+          "reviewDisposition": "confirmed",
+          "reviewerNotes": "Confirmed price inflation on back card. Packaging team must revert dieline price to ₹50.",
+          "reviewedAt": "2026-10-29T14:30:00.000Z",
+          "reviewedBy": "Senior Packaging QA Inspector"
+        },
+        {
+          "findingId": "fnd_mst_qty_mismatch",
+          "ruleId": "MST-QTY-202",
+          "ruleVersion": "1.0.0",
+          "pillar": "product_master",
+          "title": "Net Quantity Mismatch: Expected 10 pens, Detected 12 pens",
+          "status": "potential_issue",
+          "severity": "critical",
+          "expectedValue": "10 N (Source: SKU Master REY-045-BLU-10)",
+          "detectedValue": "NET QUANTITY: 12 N (PENS) [OCR Conf: 94%]",
+          "explanation": "Packaging artwork states 12 N (pens), but product master specifies a 10-pen retail pack. This discrepancy violates statutory declaration accuracy rules.",
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 43,
+            "w": 86,
+            "h": 7
+          },
+          "ocrConfidence": 0.94,
+          "reviewDisposition": "confirmed",
+          "reviewerNotes": "Count error verified against physical blister layout.",
+          "reviewedAt": "2026-10-29T14:32:00.000Z",
+          "reviewedBy": "Senior Packaging QA Inspector"
+        },
+        {
+          "findingId": "fnd_lm_care_low_confidence",
+          "ruleId": "LM-CARE-004",
+          "ruleVersion": "1.3.0",
+          "pillar": "legal_metrology",
+          "title": "Consumer-Care Information: Review Required (Text Degraded or Low OCR Confidence)",
+          "status": "review_required",
+          "severity": "warning",
+          "expectedValue": "Legible Helpline Phone and Email Address (OCR Confidence ≥ 0.80)",
+          "detectedValue": "Ph: 1800-209-???? Email: customercare@reynoldspens.?? [OCR Conf: 42%]",
+          "explanation": "OCR confidence for the consumer care block is 42% (< threshold 80%). The text appears smudged or printed in low-contrast raster resolution. Human review required to ensure consumer redressal compliance.",
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 67,
+            "w": 86,
+            "h": 9
+          },
+          "ocrConfidence": 0.42,
+          "reviewDisposition": "pending",
+          "reviewerNotes": "",
+          "reviewedAt": "",
+          "reviewedBy": ""
+        },
+        {
+          "findingId": "fnd_lm_mfr_pass",
+          "ruleId": "LM-MFR-003",
+          "ruleVersion": "1.2.0",
+          "pillar": "legal_metrology",
+          "title": "Complete Manufacturer Address with PIN Code Verified",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Registered corporate address including 6-digit postal PIN code",
+          "detectedValue": "Plot No. 12, Industrial Area, Sector 5, Chennai - 600001, Tamil Nadu",
+          "explanation": "Mandatory manufacturer coordinates comply with Rule 6(1)(a) and include verified postal code 600001.",
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 51,
+            "w": 86,
+            "h": 9
+          },
+          "ocrConfidence": 0.92,
+          "reviewDisposition": "pending"
+        },
+        {
+          "findingId": "fnd_lm_coo_pass",
+          "ruleId": "LM-COO-005",
+          "ruleVersion": "1.0.0",
+          "pillar": "legal_metrology",
+          "title": "Country of Origin Declaration Verified",
+          "status": "no_issue",
+          "severity": "info",
+          "expectedValue": "Country of Origin: India",
+          "detectedValue": "COUNTRY OF ORIGIN: INDIA",
+          "explanation": "Mandatory country of origin is conspicuously declared.",
+          "evidenceAssetId": "asset_pen_back",
+          "evidenceBox": {
+            "x": 7,
+            "y": 58,
+            "w": 86,
+            "h": 4
+          },
+          "ocrConfidence": 0.95,
+          "reviewDisposition": "pending"
+        }
+      ],
+      "summary": {
+        "totalChecks": 5,
+        "potentialIssues": 2,
+        "passedChecks": 2,
+        "reviewRequired": 1,
+        "dispositionSummary": {
+          "confirmed": 2,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 1
+        }
+      },
+      "createdAt": "2026-10-29T14:20:00.000Z",
+      "updatedAt": "2026-10-29T14:35:00.000Z"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule_1",
+      "ruleId": "LM-MRP-001",
+      "name": "Statutory MRP Presence & Phrasing Format",
+      "description": "Mandates conspicuous Maximum Retail Price declaration with \"Inclusive of all taxes\" syntax and currency symbol.",
+      "pillar": "legal_metrology",
+      "field": "mrp",
+      "severity": "critical",
+      "legalReference": "Legal Metrology (Packaged Commodities) Rules, 2011 — Rule 6(1)(e)",
+      "version": "1.2.0",
+      "status": "enabled",
+      "validationType": "regex_format",
+      "testCasesSummary": "Verifies presence of \"MRP\", \"Rs.\" or \"₹\", and explicit \"incl. of all taxes\" notice.",
+      "updatedAt": "2026-10-29T19:34:57.143Z"
+    },
+    {
+      "id": "rule_2",
+      "ruleId": "MST-MRP-201",
+      "name": "SKU Master Retail Price Consistency Check",
+      "description": "Ensures printed packaging retail price matches authoritative ERP SKU master price with zero tolerance.",
+      "pillar": "product_master",
+      "field": "mrp",
+      "severity": "critical",
+      "legalReference": "Internal SKU Master Governance & Pre-Press QA Checklist v3.1",
+      "version": "2.0.0",
+      "status": "enabled",
+      "validationType": "presence_and_master_match",
+      "testCasesSummary": "Asserts numeric equality between artwork MRP and master record MRP."
+    },
+    {
+      "id": "rule_3",
+      "ruleId": "LM-QTY-002",
+      "name": "Statutory Net Quantity Standard SI Units",
+      "description": "Verifies net quantity is expressed in correct standard SI units (g, kg, mL, L) or piece count \"N\" / \"U\".",
+      "pillar": "legal_metrology",
+      "field": "net_quantity",
+      "severity": "critical",
+      "legalReference": "Legal Metrology (Packaged Commodities) Rules, 2011 — Rule 12 & Rule 13",
+      "version": "1.1.0",
+      "status": "enabled",
+      "validationType": "si_unit_standard",
+      "testCasesSummary": "Rejects non-standard abbreviations and checks unit consistency."
+    },
+    {
+      "id": "rule_4",
+      "ruleId": "MST-QTY-202",
+      "name": "SKU Master Net Quantity Piece Count Match",
+      "description": "Cross-validates that declared pack pieces or weight precisely equals the SKU product master declaration.",
+      "pillar": "product_master",
+      "field": "net_quantity",
+      "severity": "critical",
+      "legalReference": "ERP Master Data Specification — Section 4 (Unit of Measure)",
+      "version": "1.0.0",
+      "status": "enabled",
+      "validationType": "presence_and_master_match",
+      "testCasesSummary": "Flags unit mismatch (e.g. 10 pens master vs 12 pens printed artwork)."
+    },
+    {
+      "id": "rule_5",
+      "ruleId": "LM-MFR-003",
+      "name": "Manufacturer / Packer Full Address & PIN Code",
+      "description": "Requires full name and registered physical postal address of manufacturer or packer including 6-digit postal PIN code.",
+      "pillar": "legal_metrology",
+      "field": "manufacturer_details",
+      "severity": "critical",
+      "legalReference": "Legal Metrology (Packaged Commodities) Rules, 2011 — Rule 6(1)(a)",
+      "version": "1.2.0",
+      "status": "enabled",
+      "validationType": "regex_format",
+      "testCasesSummary": "Checks for corporate entity indicator and valid 6-digit Indian PIN code."
+    },
+    {
+      "id": "rule_6",
+      "ruleId": "LM-CARE-004",
+      "name": "Statutory Consumer Care Details Presence & Legibility",
+      "description": "Requires name/designation of grievance officer, telephone helpline, and email address with minimum OCR legibility threshold.",
+      "pillar": "legal_metrology",
+      "field": "consumer_care",
+      "severity": "warning",
+      "legalReference": "Legal Metrology (Packaged Commodities) Rules, 2011 — Rule 6(1)(da)",
+      "version": "1.3.0",
+      "status": "enabled",
+      "validationType": "contrast_threshold",
+      "testCasesSummary": "Routes low OCR confidence (<0.80) or illegible smudges to Review Required."
+    },
+    {
+      "id": "rule_7",
+      "ruleId": "LM-COO-005",
+      "name": "Statutory Country of Origin Declaration",
+      "description": "Mandatory declaration of country of manufacture or origin on the principal display panel or information panel.",
+      "pillar": "legal_metrology",
+      "field": "country_of_origin",
+      "severity": "critical",
+      "legalReference": "Legal Metrology (Packaged Commodities) Amendment Rules, 2017 — Rule 6(1)(n)",
+      "version": "1.0.0",
+      "status": "enabled",
+      "validationType": "presence_and_master_match",
+      "testCasesSummary": "Ensures origin country is prominently stated."
+    },
+    {
+      "id": "rule_8",
+      "ruleId": "BR-LOGO-101",
+      "name": "Brand Identity Logo Clear Space & Margin Perimeter",
+      "description": "Verifies logo bounding box maintains clear-space perimeter without encroachment from adjacent text or graphics.",
+      "pillar": "brand_identity",
+      "field": "brand_logo",
+      "severity": "info",
+      "legalReference": "Corporate Brand Guidelines v4.2 — Visual Hierarchy",
+      "version": "1.0.0",
+      "status": "enabled",
+      "validationType": "clear_space_margin",
+      "testCasesSummary": "Calculates spatial clearance around detected trademark polygons."
+    },
+    {
+      "id": "rule_9",
+      "ruleId": "BR-CONT-102",
+      "name": "Visual Contrast Ratio & Numeral Height Compliance",
+      "description": "Evaluates luminance contrast ratio (minimum 4.5:1) between statutory text pixels and background artwork.",
+      "pillar": "visual_legibility",
+      "field": "contrast_ratio",
+      "severity": "info",
+      "legalReference": "WCAG 2.1 AA / Legal Metrology Legibility Standards",
+      "version": "1.0.0",
+      "status": "enabled",
+      "validationType": "contrast_threshold",
+      "testCasesSummary": "Computes relative luminance and verifies print legibility."
+    }
+  ],
+  "auditEvents": [
+    {
+      "id": "aud_ssq9zpz",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "REPORT_DOWNLOADED_PDF",
+      "metadata": {
+        "format": "pdf",
+        "inspectionNumber": "INS-2026-1002"
+      },
+      "timestamp": "2026-10-29T19:34:57.879Z"
+    },
+    {
+      "id": "aud_fdhvr8b",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_FINALIZED",
+      "metadata": {
+        "decision": "returned_for_revision",
+        "notes": "Pre-production packaging dieline returned to agency for price and net count correction."
+      },
+      "timestamp": "2026-10-29T19:34:57.875Z"
+    },
+    {
+      "id": "aud_hpzfcty",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "FIELD_CORRECTED",
+      "metadata": {
+        "fieldKey": "consumer_care",
+        "original": "FOR CONSUMER COMPLAINTS / FEEDBACK: CONTACT CUSTOMER CARE MGR PH: 1800-209-???? (UNREADABLE SMUDGE) EMAIL: [ILLEGIBLE]",
+        "corrected": "Ph: 1800-209-1234, Email: customercare@reynoldspens.in"
+      },
+      "timestamp": "2026-10-29T19:34:57.872Z"
+    },
+    {
+      "id": "aud_eybi7mx",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "FINDING_DISMISSED",
+      "metadata": {
+        "findingId": "fnd_lm_mrp_pass",
+        "ruleId": "LM-MRP-001",
+        "action": "dismissed",
+        "reason": "Acceptable promo sticker variant per legal notice",
+        "notes": ""
+      },
+      "timestamp": "2026-10-29T19:34:57.869Z"
+    },
+    {
+      "id": "aud_woedjxl",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "FINDING_CONFIRMED",
+      "metadata": {
+        "findingId": "fnd_mst_mrp_mismatch",
+        "ruleId": "MST-MRP-201",
+        "action": "confirmed",
+        "reason": "",
+        "notes": "Verified mismatch with engineering master"
+      },
+      "timestamp": "2026-10-29T19:34:57.865Z"
+    },
+    {
+      "id": "aud_6lapvb7",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Deterministic Rule Engine",
+        "role": "System"
+      },
+      "action": "ANALYSIS_COMPLETED",
+      "metadata": {
+        "totalRules": 9,
+        "issues": 2,
+        "reviewRequired": 1
+      },
+      "timestamp": "2026-10-29T19:34:57.861Z"
+    },
+    {
+      "id": "aud_5axchvo",
+      "inspectionId": "ins_1uh540t",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1002",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-10-29T19:34:57.149Z"
+    },
+    {
+      "id": "aud_t0rw1hk",
+      "inspectionId": null,
+      "actor": {
+        "name": "Regulatory Rule Admin",
+        "role": "Rule Administrator"
+      },
+      "action": "RULE_STATUS_CHANGED",
+      "metadata": {
+        "ruleId": "LM-MRP-001",
+        "oldStatus": "disabled",
+        "newStatus": "enabled"
+      },
+      "timestamp": "2026-10-29T19:34:57.144Z"
+    },
+    {
+      "id": "aud_91byvc3",
+      "inspectionId": null,
+      "actor": {
+        "name": "Regulatory Rule Admin",
+        "role": "Rule Administrator"
+      },
+      "action": "RULE_STATUS_CHANGED",
+      "metadata": {
+        "ruleId": "LM-MRP-001",
+        "oldStatus": "enabled",
+        "newStatus": "disabled"
+      },
+      "timestamp": "2026-10-29T19:34:57.140Z"
+    },
+    {
+      "id": "aud_1",
+      "inspectionId": "ins_demo_reynolds_045",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1001",
+        "productSku": "REY-045-BLU-10"
+      },
+      "timestamp": "2026-10-29T14:20:00.000Z"
+    },
+    {
+      "id": "aud_2",
+      "inspectionId": "ins_demo_reynolds_045",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer"
+      },
+      "action": "ASSETS_UPLOADED",
+      "metadata": {
+        "assetCount": 2,
+        "panels": [
+          "front",
+          "back"
+        ]
+      },
+      "timestamp": "2026-10-29T14:21:00.000Z"
+    },
+    {
+      "id": "aud_3",
+      "inspectionId": "ins_demo_reynolds_045",
+      "actor": {
+        "name": "Deterministic Rule Engine",
+        "role": "System"
+      },
+      "action": "ANALYSIS_COMPLETED",
+      "metadata": {
+        "totalRulesEvaluated": 5,
+        "potentialIssues": 2,
+        "reviewRequired": 1
+      },
+      "timestamp": "2026-10-29T14:22:15.000Z"
+    },
+    {
+      "id": "aud_4",
+      "inspectionId": "ins_demo_reynolds_045",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer"
+      },
+      "action": "FINDING_CONFIRMED",
+      "metadata": {
+        "findingId": "fnd_mst_mrp_mismatch",
+        "ruleId": "MST-MRP-201",
+        "note": "Confirmed price inflation on back card."
+      },
+      "timestamp": "2026-10-29T14:30:00.000Z"
+    },
+    {
+      "id": "aud_5",
+      "inspectionId": "ins_demo_reynolds_045",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer"
+      },
+      "action": "FINDING_CONFIRMED",
+      "metadata": {
+        "findingId": "fnd_mst_qty_mismatch",
+        "ruleId": "MST-QTY-202",
+        "note": "Count error verified against physical blister layout."
+      },
+      "timestamp": "2026-10-29T14:32:00.000Z"
+    }
+  ]
+}
