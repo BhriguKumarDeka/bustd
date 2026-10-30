@@ -10,18 +10,22 @@ import {
   FileText, 
   Package, 
   ShieldCheck, 
-  ExternalLink,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Plus,
+  Play
 } from 'lucide-react';
 import { api } from '../services/api';
+import { useSystem } from '../context/SystemContext';
 
 export default function Overview() {
   const navigate = useNavigate();
+  const { addToast } = useSystem();
   const [inspections, setInspections] = useState([]);
   const [products, setProducts] = useState([]);
   const [auditEvents, setAuditEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [creatingQuickScan, setCreatingQuickScan] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -43,6 +47,30 @@ export default function Overview() {
     loadData();
   }, []);
 
+  // Quick 1-click test audit using seeded Reynolds pen packaging
+  const handleQuickAuditDemo = async () => {
+    setCreatingQuickScan(true);
+    try {
+      const penProduct = products.find(p => p.sku?.includes('REY')) || products[0];
+      if (!penProduct) {
+        addToast('No product available.', 'error');
+        return;
+      }
+      const inspRes = await api.createInspection({
+        productId: penProduct.id,
+        samplePreset: 'pen'
+      });
+      // Run analysis immediately
+      const analyzeRes = await api.runAnalysis(inspRes.data.id);
+      addToast('Quick Audit complete! Inspect findings on packaging dieline.', 'success');
+      navigate(`/inspections/${inspRes.data.id}`);
+    } catch (err) {
+      addToast(`Quick audit failed: ${err.message}`, 'error');
+    } finally {
+      setCreatingQuickScan(false);
+    }
+  };
+
   // Compute metrics strictly from stored data
   const totalInspections = inspections.length;
   const totalPotentialIssues = inspections.reduce((acc, i) => acc + (i.summary?.potentialIssues || 0), 0);
@@ -50,169 +78,219 @@ export default function Overview() {
   const pendingReviews = inspections.reduce((acc, i) => acc + (i.summary?.dispositionSummary?.pending || 0), 0);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
-      {/* Editorial Hero Action Banner */}
-      <section className="relative overflow-hidden rounded-workspace bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 p-6 sm:p-8 shadow-soft-sm">
-        <div className="max-w-2xl relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-control bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-mono font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-            Decision-Support Screening Engine
-          </div>
+    <div className="space-y-8 max-w-7xl mx-auto pb-16">
+      
+      {/* Editorial Hero Statement */}
+      <section className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-palette-cream/20 dark:bg-palette-dark border border-palette-cream/30 text-palette-dark dark:text-palette-cream text-xs font-mono font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#84CC16] shadow-[0_0_8px_#84CC16]" />
+          Pre-Production Legal Metrology &amp; SKU Master Audit
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-palette-dark dark:text-palette-sand">
+          Spot the red flags in packaging dielines before they go to print.
+        </h2>
+        <p className="text-xs sm:text-sm text-olive-500 dark:text-olive-300 max-w-2xl leading-relaxed">
+          BUSTD cross-validates packaging declarations simultaneously across SKU master records, brand guidelines, and statutory Legal Metrology rules. Every finding is anchored to visible spatial evidence.
+        </p>
+      </section>
 
-          <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-charcoal-900 dark:text-zinc-100">
-            Spot the red flags in packaging dielines before they go to print.
-          </h2>
-
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            BUSTD cross-validates packaging declarations simultaneously across SKU master records, corporate brand guidelines, and statutory Legal Metrology rules. Every finding is anchored to visible spatial evidence.
-          </p>
-
-          <div className="pt-2 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => navigate('/inspections/new')}
-              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-input bg-charcoal-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black text-xs font-medium tracking-wide shadow-soft-md hover:shadow-soft-lg transition-surface"
-            >
-              <ScanSearch className="w-4 h-4" />
-              Start New Inspection
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-input bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-charcoal-800 dark:text-zinc-200 text-xs font-medium transition-surface"
-            >
-              <Package className="w-3.5 h-3.5" />
-              Manage Products ({products.length})
-            </Link>
-          </div>
+      {/* QUICK START SECTION (Inspired by SmartShort Reference UI) */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
+          <span>Quick Start Actions</span>
         </div>
 
-        {/* Subtle decorative background graphic */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 pointer-events-none opacity-5 dark:opacity-10 flex items-center justify-center overflow-hidden">
-          <ScanSearch className="w-80 h-80 -mr-16 text-charcoal-900 dark:text-white" strokeWidth={1} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Primary Quick Start Card (+ Text to Video style in SmartShort) */}
+          <div
+            onClick={() => navigate('/inspections/new')}
+            className="p-5 rounded-card-lg bg-palette-dark text-palette-sand dark:bg-[#25241E] dark:text-palette-sand border border-palette-cream/15 cursor-pointer shadow-soft-md hover:shadow-soft-lg hover:scale-[1.01] transition-surface group relative overflow-hidden"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-control bg-palette-sand/10 dark:bg-palette-sand/10 text-palette-sand flex items-center justify-center font-bold text-xl group-hover:scale-110 transition-transform">
+                <Plus className="w-6 h-6 stroke-[2.5]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-palette-sand tracking-tight">
+                  Start New Inspection
+                </h3>
+                <p className="text-[11px] text-palette-cream/80 leading-snug mt-0.5">
+                  Multi-panel dieline upload &amp; scanner
+                </p>
+              </div>
+            </div>
+            {/* Subtle glow accent */}
+            <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-[#84CC16]/10 rounded-full blur-xl pointer-events-none" />
+          </div>
+
+          {/* Quick 1-Click Demo Audit */}
+          <div
+            onClick={handleQuickAuditDemo}
+            className="p-5 rounded-card-lg bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 cursor-pointer shadow-soft-sm hover:shadow-soft-md hover:border-palette-cream/40 transition-surface group"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-control bg-palette-cream/30 dark:bg-palette-dark text-palette-dark dark:text-palette-cream flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Play className="w-5 h-5 fill-current" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="text-sm font-semibold text-palette-dark dark:text-palette-sand truncate">
+                    1-Click Pen Audit
+                  </h3>
+                  <span className="px-1.5 py-0.2 rounded text-[9px] font-mono uppercase bg-palette-cream/30 text-palette-dark dark:text-palette-cream font-bold">
+                    Preset
+                  </span>
+                </div>
+                <p className="text-[11px] text-olive-500 dark:text-olive-400 leading-snug mt-0.5 truncate">
+                  {creatingQuickScan ? 'Analyzing dielines...' : 'Audit Reynolds 045 test dielines'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Manage SKU Catalog */}
+          <div
+            onClick={() => navigate('/products')}
+            className="p-5 rounded-card-lg bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 cursor-pointer shadow-soft-sm hover:shadow-soft-md hover:border-palette-cream/40 transition-surface group"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 rounded-control bg-black/5 dark:bg-white/5 text-palette-dark dark:text-palette-sand flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Package className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-palette-dark dark:text-palette-sand">
+                  SKU Master Catalog
+                </h3>
+                <p className="text-[11px] text-olive-500 dark:text-olive-400 leading-snug mt-0.5">
+                  {products.length} master products registered
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Derived Summary Metrics (No fake analytics) */}
+      {/* CLUTTERLESS METRIC SUMMARY PILLS */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5">
-          <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400 text-xs mb-1.5">
+        <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
+          <div className="flex items-center justify-between text-olive-500 dark:text-olive-400 text-xs mb-1">
             <span>Inspections Run</span>
             <FileText className="w-3.5 h-3.5" />
           </div>
-          <div className="text-2xl font-mono font-semibold text-charcoal-900 dark:text-zinc-100">
+          <div className="text-2xl font-mono font-semibold text-palette-dark dark:text-palette-sand">
             {totalInspections}
           </div>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">
-            Persisted in current session
+          <p className="text-[11px] text-olive-500 dark:text-olive-400 mt-0.5">
+            Persisted in session
           </p>
         </div>
 
-        <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5">
-          <div className="flex items-center justify-between text-red-500 text-xs mb-1.5">
-            <span>Potential Issues</span>
+        <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
+          <div className="flex items-center justify-between text-red-600 dark:text-red-400 text-xs mb-1">
+            <span>Potential Red Flags</span>
             <AlertCircle className="w-3.5 h-3.5" />
           </div>
           <div className="text-2xl font-mono font-semibold text-red-600 dark:text-red-400">
             {totalPotentialIssues}
           </div>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">
-            Red flags flagged by engine
+          <p className="text-[11px] text-olive-500 dark:text-olive-400 mt-0.5">
+            Mismatches flagged
           </p>
         </div>
 
-        <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5">
-          <div className="flex items-center justify-between text-amber-500 text-xs mb-1.5">
+        <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
+          <div className="flex items-center justify-between text-amber-600 dark:text-amber-400 text-xs mb-1">
             <span>Reviews Required</span>
             <AlertTriangle className="w-3.5 h-3.5" />
           </div>
           <div className="text-2xl font-mono font-semibold text-amber-600 dark:text-amber-400">
             {totalReviewRequired}
           </div>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">
-            Ambiguous or degraded text
+          <p className="text-[11px] text-olive-500 dark:text-olive-400 mt-0.5">
+            Degraded OCR text
           </p>
         </div>
 
-        <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5">
-          <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400 text-xs mb-1.5">
-            <span>Human Sign-Offs Pending</span>
+        <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
+          <div className="flex items-center justify-between text-olive-500 dark:text-olive-400 text-xs mb-1">
+            <span>Reviews Pending</span>
             <Clock className="w-3.5 h-3.5" />
           </div>
-          <div className="text-2xl font-mono font-semibold text-charcoal-900 dark:text-zinc-100">
+          <div className="text-2xl font-mono font-semibold text-palette-dark dark:text-palette-sand">
             {pendingReviews}
           </div>
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">
-            Awaiting inspector action
+          <p className="text-[11px] text-olive-500 dark:text-olive-400 mt-0.5">
+            Awaiting human sign-off
           </p>
         </div>
       </section>
 
-      {/* Compact explanation of the three possible outcomes */}
-      <section className="p-5 rounded-panel bg-raised-light dark:bg-raised-dark border border-black/5 dark:border-white/5">
-        <div className="text-xs font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3">
-          Inspection Outcome Principles
+      {/* COMPACT OUTCOME PRINCIPLES */}
+      <section className="p-4 rounded-panel bg-raised-light dark:bg-raised-dark border border-black/5 dark:border-white/5">
+        <div className="text-[11px] font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400 mb-2.5">
+          Tri-State Evaluation Protocol
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="flex items-start gap-3 p-3 rounded-control bg-white dark:bg-[#101010] border border-black/5 dark:border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div className="flex items-start gap-2.5 p-3 rounded-control bg-white dark:bg-[#1C1B17] border border-black/5 dark:border-white/5">
             <span className="w-2.5 h-2.5 mt-0.5 rounded-full bg-red-500 shrink-0" />
             <div>
-              <div className="font-semibold text-charcoal-900 dark:text-zinc-200">Potential Issue</div>
-              <p className="text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                Evidence triggers an active rule (e.g. price mismatch or missing tax clause). Requires human reviewer confirmation.
+              <div className="font-semibold text-palette-dark dark:text-palette-sand">Potential Issue</div>
+              <p className="text-olive-500 dark:text-olive-400 mt-0.5 leading-relaxed text-[11px]">
+                Statutory violation or SKU master contradiction detected (e.g. MRP ₹60 vs ₹50). Requires confirmation.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3 rounded-control bg-white dark:bg-[#101010] border border-black/5 dark:border-white/5">
+          <div className="flex items-start gap-2.5 p-3 rounded-control bg-white dark:bg-[#1C1B17] border border-black/5 dark:border-white/5">
             <span className="w-2.5 h-2.5 mt-0.5 rounded-full bg-amber-500 shrink-0" />
             <div>
-              <div className="font-semibold text-charcoal-900 dark:text-zinc-200">Review Required</div>
-              <p className="text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                Image quality, low OCR confidence (&lt;0.80), or ambiguous mapping. Missing OCR text is never assumed to be absent.
+              <div className="font-semibold text-palette-dark dark:text-palette-sand">Review Required</div>
+              <p className="text-olive-500 dark:text-olive-400 mt-0.5 leading-relaxed text-[11px]">
+                Low OCR confidence (&lt;0.80), glare, or smudged print. Absence is never assumed from missing text.
               </p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3 p-3 rounded-control bg-white dark:bg-[#101010] border border-black/5 dark:border-white/5">
+          <div className="flex items-start gap-2.5 p-3 rounded-control bg-white dark:bg-[#1C1B17] border border-black/5 dark:border-white/5">
             <span className="w-2.5 h-2.5 mt-0.5 rounded-full bg-emerald-500 shrink-0" />
             <div>
-              <div className="font-semibold text-charcoal-900 dark:text-zinc-200">No Issue Detected</div>
-              <p className="text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                Available evidence satisfies the specific evaluated rule. Does not claim universal legal immunity.
+              <div className="font-semibold text-palette-dark dark:text-palette-sand">No Issue Detected</div>
+              <p className="text-olive-500 dark:text-olive-400 mt-0.5 leading-relaxed text-[11px]">
+                Available evidence deterministically satisfies the evaluated rule. Not a blanket legal immunity claim.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Main Grid: Recent Inspections & Activity */}
+      {/* RECENT INSPECTIONS & AUDIT FEED (PROGRESSIVE SPLIT) */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left: Recent Inspections Table */}
-        <div className="lg:col-span-2 space-y-4">
+        
+        {/* Left: Recent Inspections (2 Cols) */}
+        <div className="lg:col-span-2 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-charcoal-900 dark:text-zinc-200">
-              Recent Inspections
+            <h3 className="text-xs font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
+              Recent Inspection Sessions
             </h3>
             <Link
               to="/history"
-              className="text-xs text-zinc-500 hover:text-charcoal-900 dark:hover:text-white flex items-center gap-1 transition-colors"
+              className="text-xs text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand flex items-center gap-1 transition-colors"
             >
               View all ({inspections.length})
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 overflow-hidden">
+          <div className="rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 overflow-hidden shadow-soft-sm">
             {loading ? (
-              <div className="p-8 text-center text-xs text-zinc-400">Loading inspection records...</div>
+              <div className="p-8 text-center text-xs text-olive-400">Loading inspection records...</div>
             ) : inspections.length === 0 ? (
               <div className="p-8 text-center space-y-3">
-                <FileText className="w-8 h-8 mx-auto text-zinc-300 dark:text-zinc-600" />
-                <p className="text-xs text-zinc-500">No inspections recorded yet.</p>
+                <FileText className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
+                <p className="text-xs text-olive-500">No inspections recorded yet.</p>
                 <button
                   onClick={() => navigate('/inspections/new')}
-                  className="px-3 py-1.5 text-xs rounded-control bg-charcoal-900 text-white font-medium"
+                  className="px-3.5 py-1.5 text-xs rounded-control bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-medium"
                 >
                   Create first inspection
                 </button>
@@ -222,7 +300,6 @@ export default function Overview() {
                 {inspections.slice(0, 5).map((insp) => {
                   const issues = insp.summary?.potentialIssues || 0;
                   const reviews = insp.summary?.reviewRequired || 0;
-                  const isClean = issues === 0 && reviews === 0;
 
                   return (
                     <div
@@ -232,15 +309,15 @@ export default function Overview() {
                     >
                       <div className="space-y-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-semibold text-charcoal-900 dark:text-zinc-100">
+                          <span className="font-mono text-xs font-semibold text-palette-dark dark:text-palette-sand">
                             {insp.inspectionNumber}
                           </span>
-                          <span className="text-zinc-300 dark:text-zinc-700">•</span>
-                          <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400 truncate">
+                          <span className="text-olive-300 dark:text-olive-600">•</span>
+                          <span className="text-xs font-medium text-palette-dark dark:text-palette-sand truncate">
                             {insp.productSnapshot?.name || 'Packaged Commodity'}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-[11px] text-zinc-400 font-mono">
+                        <div className="flex items-center gap-3 text-[11px] text-olive-500 dark:text-olive-400 font-mono">
                           <span>SKU: {insp.productSnapshot?.sku || 'N/A'}</span>
                           <span>•</span>
                           <span>{new Date(insp.createdAt).toLocaleDateString()}</span>
@@ -249,22 +326,22 @@ export default function Overview() {
 
                       <div className="flex items-center gap-3 shrink-0">
                         {issues > 0 ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
                             <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                             {issues} {issues === 1 ? 'Red Flag' : 'Red Flags'}
                           </span>
                         ) : reviews > 0 ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                            {reviews} Needs Review
+                            {reviews} Review
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                            Clean
+                            Clean Pass
                           </span>
                         )}
-                        <ChevronRight className="w-4 h-4 text-zinc-400" />
+                        <ChevronRight className="w-4 h-4 text-olive-400" />
                       </div>
                     </div>
                   );
@@ -274,34 +351,34 @@ export default function Overview() {
           </div>
         </div>
 
-        {/* Right: Recent Audit Trail Feed */}
-        <div className="space-y-4">
+        {/* Right: Append-Only Audit Feed (1 Col) */}
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-charcoal-900 dark:text-zinc-200">
-              Recent Activity & Audit
+            <h3 className="text-xs font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
+              Audit Event Feed
             </h3>
-            <span className="text-[11px] font-mono text-zinc-400">Append-only</span>
+            <span className="text-[10px] font-mono text-olive-400">Append-only</span>
           </div>
 
-          <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 space-y-3 max-h-[380px] overflow-y-auto">
+          <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-3 max-h-[380px] overflow-y-auto shadow-soft-sm">
             {auditEvents.length === 0 ? (
-              <p className="text-xs text-zinc-400 py-4 text-center">No recent audit logs.</p>
+              <p className="text-xs text-olive-400 py-4 text-center">No recent audit logs.</p>
             ) : (
-              auditEvents.slice(0, 7).map((ev) => (
+              auditEvents.slice(0, 6).map((ev) => (
                 <div key={ev.id} className="text-xs space-y-1 pb-2.5 border-b border-black/5 dark:border-white/5 last:border-none last:pb-0">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-mono font-medium text-charcoal-800 dark:text-zinc-300">
+                    <span className="font-mono font-semibold text-palette-dark dark:text-palette-sand">
                       {ev.action.replace(/_/g, ' ')}
                     </span>
-                    <span className="text-zinc-400 font-mono text-[10px]">
+                    <span className="text-olive-400 font-mono text-[10px]">
                       {new Date(ev.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                  <p className="text-[11px] text-olive-500 dark:text-olive-400">
                     By {ev.actor?.name || 'Inspector'}
                   </p>
                   {ev.metadata?.note && (
-                    <p className="text-[11px] text-zinc-600 dark:text-zinc-300 italic bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
+                    <p className="text-[11px] text-palette-dark dark:text-palette-sand italic bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
                       "{ev.metadata.note}"
                     </p>
                   )}
@@ -310,7 +387,9 @@ export default function Overview() {
             )}
           </div>
         </div>
+
       </section>
+
     </div>
   );
 }

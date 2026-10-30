@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -7,7 +7,6 @@ import {
   AlertTriangle, 
   CheckCircle2, 
   AlertCircle, 
-  Eye, 
   FileText, 
   Layers, 
   ZoomIn, 
@@ -16,12 +15,11 @@ import {
   Check, 
   X, 
   Clock, 
-  CornerDownRight, 
   Edit3, 
-  History, 
-  ExternalLink,
   ChevronDown,
-  Sparkles
+  ChevronUp,
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
@@ -35,9 +33,12 @@ export default function InspectionDetail() {
   const [inspection, setInspection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('findings'); // 'findings' | 'comparison' | 'fields' | 'audit'
-  const [statusFilter, setStatusFilter] = useState('all'); // 'all' | 'potential_issue' | 'review_required' | 'no_issue'
+  const [statusFilter, setStatusFilter] = useState('all');
   const [selectedFindingId, setSelectedFindingId] = useState(null);
   const [activeAssetIndex, setActiveAssetIndex] = useState(0);
+
+  // Progressive disclosure: map of findingId -> boolean
+  const [expandedDetails, setExpandedDetails] = useState({});
 
   // Zoom & Pan state
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -69,7 +70,6 @@ export default function InspectionDetail() {
       const firstIssue = res.data.findings?.find(f => f.status === 'potential_issue');
       if (firstIssue) {
         setSelectedFindingId(firstIssue.findingId);
-        // Find which asset has this finding
         const assetIdx = res.data.assets?.findIndex(a => a.assetId === firstIssue.evidenceAssetId);
         if (assetIdx !== -1) setActiveAssetIndex(assetIdx);
       } else if (res.data.findings?.length > 0) {
@@ -90,23 +90,30 @@ export default function InspectionDetail() {
     loadInspection();
   }, [id]);
 
+  const toggleDetails = (findingId) => {
+    setExpandedDetails(prev => ({
+      ...prev,
+      [findingId]: !prev[findingId]
+    }));
+  };
+
   if (loading) {
     return (
-      <div className="p-12 text-center text-xs text-zinc-400 space-y-2">
-        <div className="w-8 h-8 rounded-full border-2 border-red-500 border-t-transparent animate-spin mx-auto" />
-        <p>Loading inspection workspace and evidence layers...</p>
+      <div className="p-16 text-center text-xs text-olive-400 space-y-3">
+        <div className="w-8 h-8 rounded-full border-2 border-palette-dark dark:border-palette-cream border-t-transparent animate-spin mx-auto" />
+        <p>Loading inspection workspace and spatial evidence layers...</p>
       </div>
     );
   }
 
   if (!inspection) {
     return (
-      <div className="p-12 text-center text-xs text-zinc-400 space-y-3">
+      <div className="p-16 text-center text-xs text-olive-400 space-y-3">
         <AlertCircle className="w-8 h-8 mx-auto text-red-500" />
         <p>Inspection record #{id} could not be resolved.</p>
         <button
           onClick={() => navigate('/history')}
-          className="px-3 py-1.5 rounded-control bg-charcoal-900 text-white font-medium"
+          className="px-4 py-2 rounded-control bg-palette-dark text-palette-sand font-medium"
         >
           Return to History
         </button>
@@ -138,7 +145,6 @@ export default function InspectionDetail() {
       });
       setInspection(res.data);
       addToast(`Finding marked as ${action.toUpperCase()}.`, 'success');
-      // Refresh audit events
       const audRes = await api.getAuditEvents(inspection.id);
       setAuditEvents(audRes.data || []);
     } catch (err) {
@@ -174,7 +180,6 @@ export default function InspectionDetail() {
       setInspection(res.data);
       setFinalizeModalOpen(false);
       addToast(`Inspection screening decision saved: ${finalizeDecision.toUpperCase()}`, 'success');
-      // Refresh audit events
       const audRes = await api.getAuditEvents(inspection.id);
       setAuditEvents(audRes.data || []);
     } catch (err) {
@@ -199,7 +204,6 @@ export default function InspectionDetail() {
       setInspection(res.data);
       setCorrectFieldModalOpen(false);
       addToast(`Declaration "${targetFieldKey}" corrected and logged.`, 'success');
-      // Refresh audit events
       const audRes = await api.getAuditEvents(inspection.id);
       setAuditEvents(audRes.data || []);
     } catch (err) {
@@ -221,35 +225,36 @@ export default function InspectionDetail() {
   };
 
   return (
-    <div className="space-y-6 pb-20 max-w-[1600px] mx-auto">
-      {/* Top Breadcrumb & Executive Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 shadow-soft-sm">
+    <div className="space-y-6 pb-24 max-w-[1600px] mx-auto">
+      
+      {/* Top Header Bar: Reference, SKU, Inspector & Quick Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/history')}
-              className="text-zinc-400 hover:text-charcoal-900 dark:hover:text-white p-1 rounded-control hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand p-1 rounded-control hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               title="Return to History"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <span className="font-mono text-xs font-semibold text-charcoal-900 dark:text-zinc-100">
+            <span className="font-mono text-xs font-semibold text-palette-dark dark:text-palette-sand">
               {inspection.inspectionNumber}
             </span>
-            <span className="text-zinc-300 dark:text-zinc-700">•</span>
-            <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+            <span className="text-olive-300 dark:text-olive-600">•</span>
+            <span className="text-xs font-medium text-palette-dark dark:text-palette-sand truncate max-w-md">
               {product.name}
             </span>
-            <span className="text-zinc-300 dark:text-zinc-700">•</span>
-            <span className="font-mono text-[11px] text-zinc-400">
+            <span className="text-olive-300 dark:text-olive-600">•</span>
+            <span className="font-mono text-[11px] text-olive-500 dark:text-olive-400">
               SKU: {product.sku}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] text-zinc-400 font-mono pl-7">
+          <div className="flex items-center gap-2 text-[11px] text-olive-500 dark:text-olive-400 font-mono pl-7">
             <span>Inspector: {inspection.inspector?.name || 'Lead Reviewer'}</span>
             <span>•</span>
-            <span>Recorded: {new Date(inspection.createdAt).toLocaleString()}</span>
+            <span>{new Date(inspection.createdAt).toLocaleString()}</span>
           </div>
         </div>
 
@@ -257,10 +262,10 @@ export default function InspectionDetail() {
         <div className="flex items-center gap-2.5 shrink-0 pl-7 sm:pl-0">
           <button
             onClick={() => setFinalizeModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-control bg-charcoal-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black text-xs font-medium shadow-soft-sm transition-surface"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-control bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm transition-surface"
           >
             <ShieldCheck className="w-3.5 h-3.5" />
-            Finalize Decision
+            <span>Finalize Decision</span>
             {inspection.finalDecision && inspection.finalDecision !== 'pending' && (
               <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] uppercase font-mono bg-emerald-500/20 text-emerald-800 dark:text-emerald-950 font-bold">
                 {inspection.finalDecision.replace(/_/g, ' ')}
@@ -271,10 +276,10 @@ export default function InspectionDetail() {
           <button
             onClick={handleDownloadPdf}
             disabled={downloadingPdf}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-control bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-charcoal-900 dark:text-zinc-200 text-xs font-medium transition-surface disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-control bg-raised-light dark:bg-raised-dark hover:bg-black/10 dark:hover:bg-white/10 text-palette-dark dark:text-palette-sand text-xs font-medium border border-black/5 dark:border-white/5 transition-surface disabled:opacity-50"
           >
             <Download className="w-3.5 h-3.5" />
-            {downloadingPdf ? 'Generating PDF...' : 'Download Report'}
+            <span>{downloadingPdf ? 'Exporting...' : 'Download PDF'}</span>
           </button>
         </div>
       </div>
@@ -311,9 +316,9 @@ export default function InspectionDetail() {
               {inspection.finalDecision !== 'pending'
                 ? `FINAL DECISION: ${inspection.finalDecision.replace(/_/g, ' ')}`
                 : summary.potentialIssues > 0
-                ? `${summary.potentialIssues} POTENTIAL ISSUE(S) DETECTED`
+                ? `${summary.potentialIssues} POTENTIAL RED FLAG(S) DETECTED`
                 : summary.reviewRequired > 0
-                ? `${summary.reviewRequired} DECLARATION(S) REQUIRE HUMAN REVIEW`
+                ? `${summary.reviewRequired} DECLARATION(S) REQUIRE MANUAL REVIEW`
                 : 'ALL EVALUATED RULES PASSED'}
             </div>
             <p className="text-xs opacity-90 leading-relaxed font-sans">
@@ -327,17 +332,17 @@ export default function InspectionDetail() {
         </div>
 
         {/* Small live summary badges */}
-        <div className="flex items-center gap-3 shrink-0 text-xs font-mono">
-          <span className="px-2 py-1 rounded bg-black/5 dark:bg-white/10 text-charcoal-900 dark:text-zinc-200">
-            Total Checks: {summary.totalChecks || findings.length}
+        <div className="flex items-center gap-2.5 shrink-0 text-xs font-mono">
+          <span className="px-2 py-1 rounded bg-black/5 dark:bg-white/10 text-palette-dark dark:text-palette-sand">
+            Checks: {summary.totalChecks || findings.length}
           </span>
-          <span className="px-2 py-1 rounded bg-red-500/15 text-red-700 dark:text-red-400 font-bold">
+          <span className="px-2 py-1 rounded bg-red-500/15 text-red-600 dark:text-red-400 font-bold">
             Issues: {summary.potentialIssues || 0}
           </span>
-          <span className="px-2 py-1 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold">
+          <span className="px-2 py-1 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">
             Review: {summary.reviewRequired || 0}
           </span>
-          <span className="px-2 py-1 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-bold">
+          <span className="px-2 py-1 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
             Passed: {summary.passedChecks || 0}
           </span>
         </div>
@@ -348,7 +353,7 @@ export default function InspectionDetail() {
         
         {/* LEFT COLUMN: INTERACTIVE EVIDENCE VIEWER & PACKAGING ARTWORK CANVAS (7 Cols) */}
         <div className="lg:col-span-7 space-y-3">
-          <div className="p-3.5 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 flex items-center justify-between gap-3 text-xs shadow-soft-sm">
+          <div className="p-3.5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 flex items-center justify-between gap-3 text-xs shadow-soft-sm">
             {/* Panel Switcher Tabs */}
             <div className="flex items-center gap-1.5 overflow-x-auto">
               {assets.map((asset, idx) => (
@@ -360,12 +365,15 @@ export default function InspectionDetail() {
                   }}
                   className={`px-3 py-1.5 rounded-control capitalize font-medium text-xs transition-surface flex items-center gap-1.5 shrink-0 ${
                     activeAssetIndex === idx
-                      ? 'bg-charcoal-900 dark:bg-white text-white dark:text-black shadow-soft-sm'
-                      : 'text-zinc-500 hover:text-charcoal-900 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5'
+                      ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold'
+                      : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5" />
-                  {asset.panel} Panel ({asset.originalFilename.split('.').pop()})
+                  <span>{asset.panel} Panel</span>
+                  <span className="text-[10px] font-mono opacity-60">
+                    ({asset.originalFilename.split('.').pop()})
+                  </span>
                 </button>
               ))}
             </div>
@@ -374,24 +382,24 @@ export default function InspectionDetail() {
             <div className="flex items-center gap-1 shrink-0 border-l border-black/5 dark:border-white/5 pl-2">
               <button
                 onClick={() => setZoomLevel(prev => Math.max(0.7, prev - 0.2))}
-                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-500 hover:text-charcoal-900 dark:hover:text-white transition-colors"
+                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
                 title="Zoom Out"
               >
                 <ZoomOut className="w-3.5 h-3.5" />
               </button>
-              <span className="font-mono text-[11px] text-zinc-400 w-10 text-center">
+              <span className="font-mono text-[11px] text-olive-500 dark:text-olive-400 w-10 text-center">
                 {Math.round(zoomLevel * 100)}%
               </span>
               <button
                 onClick={() => setZoomLevel(prev => Math.min(2.5, prev + 0.2))}
-                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-500 hover:text-charcoal-900 dark:hover:text-white transition-colors"
+                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
                 title="Zoom In"
               >
                 <ZoomIn className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setZoomLevel(1)}
-                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-zinc-500 hover:text-charcoal-900 dark:hover:text-white transition-colors"
+                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
                 title="Reset Zoom"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -400,7 +408,7 @@ export default function InspectionDetail() {
           </div>
 
           {/* Interactive Artwork Canvas Viewport */}
-          <div className="relative rounded-workspace bg-zinc-950/90 dark:bg-[#070707] border border-black/10 dark:border-white/10 overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
+          <div className="relative rounded-workspace bg-[#14130F] border border-black/10 dark:border-white/10 overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
             {currentAsset ? (
               <div
                 className="relative transition-transform duration-200 origin-center select-none"
@@ -424,10 +432,10 @@ export default function InspectionDetail() {
                     let strokeColor = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
                     let badgeBg = 'bg-emerald-600';
                     if (finding.status === 'potential_issue') {
-                      strokeColor = 'border-red-500 bg-red-500/15 text-red-300';
+                      strokeColor = 'border-red-500 bg-red-500/20 text-red-300';
                       badgeBg = 'bg-red-600';
                     } else if (finding.status === 'review_required') {
-                      strokeColor = 'border-amber-500 bg-amber-500/15 text-amber-300';
+                      strokeColor = 'border-amber-500 bg-amber-500/20 text-amber-300';
                       badgeBg = 'bg-amber-600';
                     }
 
@@ -444,12 +452,12 @@ export default function InspectionDetail() {
                         }}
                         className={`border-2 rounded cursor-pointer transition-all duration-150 ${strokeColor} ${
                           isSelected
-                            ? 'ring-4 ring-red-500/40 ring-offset-1 z-20 scale-[1.01]'
+                            ? 'ring-4 ring-[#84CC16]/60 ring-offset-1 z-20 scale-[1.01]'
                             : 'hover:border-white hover:bg-white/10 z-10'
                         }`}
                         title={`${finding.title} (${finding.ruleId})`}
                       >
-                        {/* Interactive Pill Tag on the Canvas */}
+                        {/* Interactive Tag Pill on the Canvas */}
                         <div
                           className={`absolute -top-5 left-0 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold text-white shadow-sm flex items-center gap-1 ${badgeBg}`}
                         >
@@ -463,13 +471,13 @@ export default function InspectionDetail() {
                   })}
               </div>
             ) : (
-              <div className="text-zinc-500 text-xs">No packaging assets available.</div>
+              <div className="text-olive-400 text-xs">No packaging assets attached.</div>
             )}
 
             {/* Bottom canvas watermark & instructions */}
-            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-zinc-400 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-control pointer-events-none">
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-palette-cream bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-control pointer-events-none border border-white/10">
               <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-red-500" />
+                <span className="w-2 h-2 rounded-full bg-[#84CC16] shadow-[0_0_6px_#84CC16]" />
                 Click bounding boxes to inspect findings
               </span>
               <span>
@@ -479,15 +487,15 @@ export default function InspectionDetail() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: FINDINGS, COMPARISONS, & REVIEWER ACTIONS (5 Cols) */}
+        {/* RIGHT COLUMN: FINDINGS, PROGRESSIVE DETAILS & HUMAN ACTIONS (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
           
           {/* Sub-navigation Tabs */}
-          <div className="flex items-center gap-1 p-1 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 text-xs shadow-soft-sm">
+          <div className="flex items-center gap-1 p-1 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 text-xs shadow-soft-sm">
             {[
               { id: 'findings', label: 'Findings', badge: findings.length },
               { id: 'comparison', label: 'Master Check', badge: 'Diff' },
-              { id: 'fields', label: 'Extracted Fields' },
+              { id: 'fields', label: 'Tokens' },
               { id: 'audit', label: 'Audit Trail', badge: auditEvents.length }
             ].map((tab) => (
               <button
@@ -495,14 +503,14 @@ export default function InspectionDetail() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-1.5 px-2 rounded-control font-medium transition-surface flex items-center justify-center gap-1.5 ${
                   activeTab === tab.id
-                    ? 'bg-charcoal-900 dark:bg-white text-white dark:text-black font-semibold shadow-soft-sm'
-                    : 'text-zinc-500 hover:text-charcoal-900 dark:hover:text-zinc-200'
+                    ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold'
+                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
                 }`}
               >
                 <span>{tab.label}</span>
                 {tab.badge !== undefined && (
-                  <span className={`px-1 py-0.2 rounded text-[10px] font-mono ${
-                    activeTab === tab.id ? 'bg-black/20 text-white dark:text-black' : 'bg-black/5 dark:bg-white/10 text-zinc-400'
+                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono ${
+                    activeTab === tab.id ? 'bg-palette-cream/40 text-palette-dark' : 'bg-black/5 dark:bg-white/10 text-olive-400'
                   }`}>
                     {tab.badge}
                   </span>
@@ -511,24 +519,24 @@ export default function InspectionDetail() {
             ))}
           </div>
 
-          {/* TAB 1: FINDINGS LIST & DISPOSITIONS */}
+          {/* TAB 1: FINDINGS & REVIEWER ACTIONS (WITH PROGRESSIVE DISCLOSURE) */}
           {activeTab === 'findings' && (
             <div className="space-y-3">
               {/* Finding Status Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
                 {[
                   { id: 'all', label: 'All Findings' },
-                  { id: 'potential_issue', label: 'Potential Issues', count: summary.potentialIssues },
+                  { id: 'potential_issue', label: 'Red Flags', count: summary.potentialIssues },
                   { id: 'review_required', label: 'Review Required', count: summary.reviewRequired },
-                  { id: 'no_issue', label: 'Passed Checks', count: summary.passedChecks }
+                  { id: 'no_issue', label: 'Passed', count: summary.passedChecks }
                 ].map((f) => (
                   <button
                     key={f.id}
                     onClick={() => setStatusFilter(f.id)}
-                    className={`px-2.5 py-1 rounded text-[11px] font-medium transition-surface shrink-0 ${
+                    className={`px-3 py-1 rounded-control text-[11px] font-medium transition-surface shrink-0 ${
                       statusFilter === f.id
-                        ? 'bg-black/10 dark:bg-white/10 text-charcoal-900 dark:text-white font-semibold'
-                        : 'text-zinc-400 hover:text-zinc-200'
+                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm'
+                        : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
                     }`}
                   >
                     {f.label} {f.count !== undefined && `(${f.count})`}
@@ -542,29 +550,28 @@ export default function InspectionDetail() {
                   const isSelected = selectedFindingId === finding.findingId;
                   const isIssue = finding.status === 'potential_issue';
                   const isReview = finding.status === 'review_required';
-                  const isPass = finding.status === 'no_issue';
+                  const isExpanded = expandedDetails[finding.findingId];
 
                   return (
                     <div
                       key={finding.findingId}
                       onClick={() => {
                         setSelectedFindingId(finding.findingId);
-                        // Auto-switch to asset containing finding
                         const assetIdx = assets.findIndex(a => a.assetId === finding.evidenceAssetId);
                         if (assetIdx !== -1) setActiveAssetIndex(assetIdx);
                       }}
                       className={`p-4 rounded-panel border transition-surface cursor-pointer space-y-3 ${
                         isSelected
-                          ? 'bg-white dark:bg-[#161616] border-charcoal-900 dark:border-white shadow-soft-md ring-1 ring-black/5 dark:ring-white/10'
-                          : 'bg-white/60 dark:bg-[#121212] border-black/5 dark:border-white/5 hover:border-black/15 dark:hover:border-white/15'
+                          ? 'bg-white dark:bg-[#25241E] border-palette-dark dark:border-palette-cream shadow-soft-md ring-1 ring-black/5 dark:ring-white/10'
+                          : 'bg-white/70 dark:bg-[#1E1D18] border-black/5 dark:border-white/5 hover:border-palette-cream/40'
                       }`}
                     >
-                      {/* Finding Card Header */}
+                      {/* Header */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
                                 isIssue
                                   ? 'bg-red-500/15 text-red-600 dark:text-red-400'
                                   : isReview
@@ -574,49 +581,87 @@ export default function InspectionDetail() {
                             >
                               {finding.status.replace(/_/g, ' ')}
                             </span>
-                            <span className="font-mono text-[10px] text-zinc-400">
+                            <span className="font-mono text-[10px] text-olive-500 dark:text-olive-400">
                               {finding.ruleId} v{finding.ruleVersion}
                             </span>
                           </div>
 
-                          <h4 className="text-xs font-semibold text-charcoal-900 dark:text-zinc-100 leading-snug">
+                          <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand leading-snug">
                             {finding.title}
                           </h4>
                         </div>
 
-                        {/* Severity Badge */}
                         <span className={`text-[10px] font-mono uppercase px-1.5 py-0.2 rounded shrink-0 ${
-                          finding.severity === 'critical' ? 'text-red-500 bg-red-500/10' : 'text-zinc-400 bg-black/5 dark:bg-white/5'
+                          finding.severity === 'critical' ? 'text-red-500 bg-red-500/10' : 'text-olive-400 bg-black/5 dark:bg-white/5'
                         }`}>
                           {finding.severity}
                         </span>
                       </div>
 
-                      {/* Values Comparison Strip */}
-                      <div className="p-2.5 rounded bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2 text-xs font-mono">
+                      {/* Values Comparison Strip (High contrast, clutterless) */}
+                      <div className="p-3 rounded-control bg-raised-light dark:bg-[#2A2922] border border-black/5 dark:border-white/5 space-y-2 text-xs font-mono">
                         <div>
-                          <span className="text-[10px] text-zinc-400 block uppercase">Expected Baseline:</span>
-                          <span className="text-zinc-700 dark:text-zinc-300 font-medium">
+                          <span className="text-[10px] text-olive-500 dark:text-olive-400 block uppercase">
+                            Expected Baseline:
+                          </span>
+                          <span className="text-palette-dark dark:text-palette-sand font-medium">
                             {finding.expectedValue}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-zinc-400 block uppercase">Detected on Artwork:</span>
-                          <span className={isIssue ? 'text-red-600 dark:text-red-400 font-bold' : 'text-zinc-800 dark:text-zinc-200'}>
+                          <span className="text-[10px] text-olive-500 dark:text-olive-400 block uppercase">
+                            Detected on Artwork:
+                          </span>
+                          <span className={isIssue ? 'text-red-600 dark:text-red-400 font-bold' : 'text-palette-dark dark:text-palette-sand'}>
                             {finding.detectedValue}
                           </span>
                         </div>
                       </div>
 
                       {/* Explanation */}
-                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed font-sans">
+                      <p className="text-[11px] text-olive-600 dark:text-olive-300 leading-relaxed font-sans">
                         {finding.explanation}
                       </p>
+
+                      {/* Progressive Disclosure Toggle */}
+                      <div className="pt-1">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDetails(finding.findingId);
+                          }}
+                          className="inline-flex items-center gap-1 text-[10px] font-mono uppercase text-olive-500 dark:text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                        >
+                          <span>{isExpanded ? 'Hide Technical Evidence' : 'Show Rule Citation & Evidence'}</span>
+                          {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                        </button>
+
+                        {/* Collapsible Technical Details */}
+                        {isExpanded && (
+                          <div className="mt-2 p-2.5 rounded bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 space-y-1.5 text-[11px] font-mono animate-in fade-in duration-150">
+                            <div className="flex justify-between">
+                              <span className="text-olive-400">Pillar:</span>
+                              <span className="text-palette-dark dark:text-palette-sand capitalize">{finding.pillar.replace(/_/g, ' ')}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-olive-400">OCR Confidence:</span>
+                              <span className="text-palette-dark dark:text-palette-sand">{Math.round((finding.ocrConfidence || 0) * 100)}%</span>
+                            </div>
+                            {finding.evidenceBox && (
+                              <div className="flex justify-between">
+                                <span className="text-olive-400">Spatial Box [x,y,w,h]:</span>
+                                <span className="text-palette-dark dark:text-palette-sand">[{finding.evidenceBox.x}, {finding.evidenceBox.y}, {finding.evidenceBox.w}, {finding.evidenceBox.h}]</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
 
                       {/* Reviewer Disposition Section */}
                       <div className="pt-2 border-t border-black/5 dark:border-white/5 flex flex-col gap-2">
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="font-mono text-zinc-400">Reviewer Disposition:</span>
+                          <span className="font-mono text-olive-500 dark:text-olive-400">Reviewer Disposition:</span>
                           <span className={`font-mono font-bold uppercase text-[10px] px-2 py-0.5 rounded ${
                             finding.reviewDisposition === 'confirmed'
                               ? 'bg-red-500/20 text-red-600 dark:text-red-400'
@@ -624,19 +669,19 @@ export default function InspectionDetail() {
                               ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
                               : finding.reviewDisposition === 'deferred'
                               ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
-                              : 'bg-black/5 dark:bg-white/5 text-zinc-400'
+                              : 'bg-black/5 dark:bg-white/5 text-olive-400'
                           }`}>
                             {finding.reviewDisposition || 'pending'}
                           </span>
                         </div>
 
                         {finding.dismissReason && (
-                          <div className="p-2 rounded bg-black/5 dark:bg-white/5 text-[11px] text-zinc-600 dark:text-zinc-300 italic">
+                          <div className="p-2 rounded bg-black/5 dark:bg-white/5 text-[11px] text-palette-dark dark:text-palette-sand italic">
                             Dismissal Reason: "{finding.dismissReason}"
                           </div>
                         )}
 
-                        {/* Interactive Reviewer Action Buttons */}
+                        {/* Tactile Reviewer Action Buttons */}
                         <div className="flex items-center gap-1.5 pt-1">
                           <button
                             type="button"
@@ -676,7 +721,7 @@ export default function InspectionDetail() {
                               e.stopPropagation();
                               handleReviewAction(finding.findingId, 'deferred');
                             }}
-                            className={`px-2.5 py-1.5 rounded-control text-xs font-medium transition-surface flex items-center justify-center gap-1 ${
+                            className={`px-3 py-1.5 rounded-control text-xs font-medium transition-surface flex items-center justify-center gap-1 ${
                               finding.reviewDisposition === 'deferred'
                                 ? 'bg-amber-600 text-white'
                                 : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20'
@@ -697,21 +742,21 @@ export default function InspectionDetail() {
 
           {/* TAB 2: PRODUCT MASTER COMPARISON (CROSS-SOURCE CONSISTENCY) */}
           {activeTab === 'comparison' && (
-            <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
+            <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
               <div className="space-y-1">
-                <h4 className="text-xs font-semibold text-charcoal-900 dark:text-zinc-100">
+                <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
                   SKU Master Baseline vs Printed Packaging Artwork
                 </h4>
-                <p className="text-[11px] text-zinc-500">
+                <p className="text-[11px] text-olive-500">
                   Cross-validating authoritative ERP records against OCR-extracted tokens.
                 </p>
               </div>
 
               <div className="space-y-3 text-xs">
                 {/* MRP Comparison */}
-                <div className="p-3 rounded-control bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-charcoal-800 dark:text-zinc-200">
+                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
                       Maximum Retail Price (MRP)
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
@@ -720,14 +765,14 @@ export default function InspectionDetail() {
                   </div>
                   <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
                     <div>
-                      <span className="text-zinc-400 text-[10px] block">Expected (Master)</span>
-                      <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                      <span className="text-olive-500 text-[10px] block">Expected (Master)</span>
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                         ₹{Number(product.mrp).toFixed(2)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-zinc-400 text-[10px] block">Detected (Artwork)</span>
-                      <span className="font-medium text-red-600 dark:text-red-400">
+                      <span className="text-olive-500 text-[10px] block">Detected (Artwork)</span>
+                      <span className="font-semibold text-red-600 dark:text-red-400">
                         {inspection.extractedFields?.mrp?.rawText || '₹60.00'}
                       </span>
                     </div>
@@ -735,9 +780,9 @@ export default function InspectionDetail() {
                 </div>
 
                 {/* Net Quantity Comparison */}
-                <div className="p-3 rounded-control bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-charcoal-800 dark:text-zinc-200">
+                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
                       Net Quantity Declaration
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
@@ -746,14 +791,14 @@ export default function InspectionDetail() {
                   </div>
                   <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
                     <div>
-                      <span className="text-zinc-400 text-[10px] block">Expected (Master)</span>
-                      <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                      <span className="text-olive-500 text-[10px] block">Expected (Master)</span>
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                         {product.netQuantity} ({product.netQuantityNumeric} units)
                       </span>
                     </div>
                     <div>
-                      <span className="text-zinc-400 text-[10px] block">Detected (Artwork)</span>
-                      <span className="font-medium text-red-600 dark:text-red-400">
+                      <span className="text-olive-500 text-[10px] block">Detected (Artwork)</span>
+                      <span className="font-semibold text-red-600 dark:text-red-400">
                         {inspection.extractedFields?.net_quantity?.rawText || '12 N (pens)'}
                       </span>
                     </div>
@@ -761,31 +806,31 @@ export default function InspectionDetail() {
                 </div>
 
                 {/* Manufacturer Comparison */}
-                <div className="p-3 rounded-control bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-charcoal-800 dark:text-zinc-200">
+                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
                       Manufacturer Address &amp; PIN
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
                       VERIFIED (600001)
                     </span>
                   </div>
-                  <div className="text-[11px] text-zinc-600 dark:text-zinc-400 font-sans">
+                  <div className="text-[11px] text-olive-600 dark:text-olive-300 font-sans">
                     {product.manufacturer}
                   </div>
                 </div>
 
                 {/* Consumer Care Comparison */}
-                <div className="p-3 rounded-control bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold text-charcoal-800 dark:text-zinc-200">
+                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
                       Consumer Care Helpline &amp; Email
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
                       DEGRADED OCR (42%)
                     </span>
                   </div>
-                  <div className="text-[11px] font-mono text-zinc-600 dark:text-zinc-400">
+                  <div className="text-[11px] font-mono text-olive-600 dark:text-olive-300">
                     Detected: {inspection.extractedFields?.consumer_care?.rawText || 'Smudged resolution'}
                   </div>
                 </div>
@@ -793,14 +838,14 @@ export default function InspectionDetail() {
             </div>
           )}
 
-          {/* TAB 3: EXTRACTED FIELDS & FIELD-LEVEL CORRECTION */}
+          {/* TAB 3: EXTRACTED FIELDS & FIELD CORRECTION */}
           {activeTab === 'fields' && (
-            <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
+            <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
               <div className="space-y-1">
-                <h4 className="text-xs font-semibold text-charcoal-900 dark:text-zinc-100">
+                <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
                   Extracted Declaration Tokens
                 </h4>
-                <p className="text-[11px] text-zinc-500">
+                <p className="text-[11px] text-olive-500">
                   Reviewers may correct extracted text or mark uncertain without altering original machine traces.
                 </p>
               </div>
@@ -809,33 +854,33 @@ export default function InspectionDetail() {
                 {Object.entries(inspection.extractedFields || {}).map(([key, field]) => (
                   <div
                     key={key}
-                    className="p-3 rounded-control bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2 text-xs"
+                    className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2 text-xs"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono uppercase font-semibold text-zinc-700 dark:text-zinc-300">
+                      <span className="font-mono uppercase font-semibold text-palette-dark dark:text-palette-sand">
                         {key.replace(/_/g, ' ')}
                       </span>
                       <button
                         onClick={() => openCorrectModal(key, field.rawText)}
-                        className="inline-flex items-center gap-1 text-[11px] text-zinc-500 hover:text-charcoal-900 dark:hover:text-white"
+                        className="inline-flex items-center gap-1 text-[11px] text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
                       >
                         <Edit3 className="w-3 h-3" />
                         Correct
                       </button>
                     </div>
 
-                    <div className="font-mono text-[11px] text-charcoal-800 dark:text-zinc-200 bg-black/5 dark:bg-white/5 p-2 rounded break-all">
+                    <div className="font-mono text-[11px] text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 p-2 rounded break-all">
                       {field.rawText}
                     </div>
 
-                    <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-olive-500 dark:text-olive-400">
                       <span>Confidence: {Math.round((field.confidence || 0) * 100)}%</span>
                       <span className="capitalize">Status: {field.status}</span>
                     </div>
 
                     {field.reviewerCorrection && (
                       <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono italic">
-                        Human Correction applied by {field.reviewerCorrection.correctedBy}
+                        Correction applied by {field.reviewerCorrection.correctedBy}
                       </div>
                     )}
                   </div>
@@ -846,12 +891,12 @@ export default function InspectionDetail() {
 
           {/* TAB 4: AUDIT LOG TIMELINE */}
           {activeTab === 'audit' && (
-            <div className="p-4 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
+            <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
               <div className="space-y-1">
-                <h4 className="text-xs font-semibold text-charcoal-900 dark:text-zinc-100">
+                <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
                   Immutable Inspection Audit Trail
                 </h4>
-                <p className="text-[11px] text-zinc-500">
+                <p className="text-[11px] text-olive-500">
                   Append-only record of every automated run and human reviewer decision.
                 </p>
               </div>
@@ -860,18 +905,18 @@ export default function InspectionDetail() {
                 {auditEvents.map((ev) => (
                   <div key={ev.id} className="text-xs space-y-1 pb-3 border-b border-black/5 dark:border-white/5 last:border-none">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-mono font-medium text-charcoal-900 dark:text-zinc-200">
+                      <span className="font-mono font-medium text-palette-dark dark:text-palette-sand">
                         {ev.action}
                       </span>
-                      <span className="font-mono text-zinc-400 text-[10px]">
+                      <span className="font-mono text-olive-400 text-[10px]">
                         {new Date(ev.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
-                    <p className="text-[11px] text-zinc-500">
+                    <p className="text-[11px] text-olive-500">
                       Actor: {ev.actor?.name} ({ev.actor?.role})
                     </p>
                     {ev.metadata?.reason && (
-                      <p className="text-[11px] text-zinc-700 dark:text-zinc-300 bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
+                      <p className="text-[11px] text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
                         Reason: "{ev.metadata.reason}"
                       </p>
                     )}
@@ -883,7 +928,7 @@ export default function InspectionDetail() {
         </div>
       </div>
 
-      {/* DISMISS FINDING REASON MODAL (Strict requirement from Section 7) */}
+      {/* DISMISS FINDING REASON MODAL */}
       <Modal
         isOpen={dismissModalOpen}
         onClose={() => setDismissModalOpen(false)}
@@ -901,7 +946,7 @@ export default function InspectionDetail() {
           </div>
 
           <div>
-            <label className="block text-zinc-600 dark:text-zinc-300 font-medium mb-1.5">
+            <label className="block text-olive-600 dark:text-olive-300 font-medium mb-1.5">
               Justification / Dismissal Reason *
             </label>
             <textarea
@@ -910,7 +955,7 @@ export default function InspectionDetail() {
               value={dismissReason}
               onChange={e => setDismissReason(e.target.value)}
               placeholder="e.g. Approved promotional pricing sticker amendment, or verified regional exception per Legal Metrology Gazette notification..."
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white focus:outline-none focus:border-charcoal-900 dark:focus:border-white"
+              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-palette-dark dark:focus:border-palette-sand"
             />
           </div>
 
@@ -918,7 +963,7 @@ export default function InspectionDetail() {
             <button
               type="button"
               onClick={() => setDismissModalOpen(false)}
-              className="px-4 py-2 rounded-input text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
@@ -941,7 +986,7 @@ export default function InspectionDetail() {
       >
         <form onSubmit={handleFinalizeInspection} className="space-y-4 text-xs">
           <div className="space-y-2">
-            <label className="block text-zinc-600 dark:text-zinc-300 font-medium">
+            <label className="block text-olive-600 dark:text-olive-300 font-medium">
               Reviewer Final Decision *
             </label>
 
@@ -955,7 +1000,7 @@ export default function InspectionDetail() {
                   key={opt.id}
                   className={`flex items-center gap-3 p-3 rounded-control border cursor-pointer transition-surface ${
                     finalizeDecision === opt.id
-                      ? 'bg-black/5 dark:bg-white/10 border-charcoal-900 dark:border-white'
+                      ? 'bg-black/5 dark:bg-white/10 border-palette-dark dark:border-palette-sand font-semibold'
                       : 'border-black/5 dark:border-white/5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]'
                   }`}
                 >
@@ -965,7 +1010,7 @@ export default function InspectionDetail() {
                     value={opt.id}
                     checked={finalizeDecision === opt.id}
                     onChange={() => setFinalizeDecision(opt.id)}
-                    className="accent-charcoal-900 dark:accent-white"
+                    className="accent-palette-dark dark:accent-palette-sand"
                   />
                   <span className={`font-medium ${opt.color}`}>
                     {opt.label}
@@ -976,7 +1021,7 @@ export default function InspectionDetail() {
           </div>
 
           <div>
-            <label className="block text-zinc-600 dark:text-zinc-300 font-medium mb-1">
+            <label className="block text-olive-600 dark:text-olive-300 font-medium mb-1">
               Final Reviewer Remarks
             </label>
             <textarea
@@ -984,7 +1029,7 @@ export default function InspectionDetail() {
               value={finalizeNotes}
               onChange={e => setFinalizeNotes(e.target.value)}
               placeholder="e.g. Pre-production screening passed with minor caveat, or packaging returned to agency for price and net count correction..."
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
             />
           </div>
 
@@ -992,13 +1037,13 @@ export default function InspectionDetail() {
             <button
               type="button"
               onClick={() => setFinalizeModalOpen(false)}
-              className="px-4 py-2 rounded-input text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-charcoal-900 dark:bg-white text-white dark:text-black font-semibold shadow-soft-sm"
+              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm"
             >
               Save Final Decision
             </button>
@@ -1015,7 +1060,7 @@ export default function InspectionDetail() {
       >
         <form onSubmit={submitCorrectField} className="space-y-4 text-xs">
           <div>
-            <label className="block text-zinc-600 dark:text-zinc-300 font-medium mb-1">
+            <label className="block text-olive-600 dark:text-olive-300 font-medium mb-1">
               Corrected Text Value *
             </label>
             <textarea
@@ -1023,7 +1068,7 @@ export default function InspectionDetail() {
               required
               value={correctedValue}
               onChange={e => setCorrectedValue(e.target.value)}
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white font-mono"
+              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
             />
           </div>
 
@@ -1031,13 +1076,13 @@ export default function InspectionDetail() {
             <button
               type="button"
               onClick={() => setCorrectFieldModalOpen(false)}
-              className="px-4 py-2 rounded-input text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-charcoal-900 dark:bg-white text-white dark:text-black font-semibold"
+              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold"
             >
               Save Field Correction
             </button>

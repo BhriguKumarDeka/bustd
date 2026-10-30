@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -12,12 +12,23 @@ import Products from './pages/Products';
 import RuleLibrary from './pages/RuleLibrary';
 
 export default function App() {
-  return (
-    <div className="min-h-screen bg-canvas-light dark:bg-canvas-dark text-charcoal-900 dark:text-zinc-100 flex transition-colors">
-      {/* Left Navigation Rail */}
-      <Sidebar />
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('bustd_sidebar_collapsed') === 'true';
+  });
 
-      {/* Main Content Area */}
+  useEffect(() => {
+    localStorage.setItem('bustd_sidebar_collapsed', isSidebarCollapsed);
+  }, [isSidebarCollapsed]);
+
+  return (
+    <div className="min-h-screen bg-canvas-light dark:bg-canvas-dark text-palette-dark dark:text-palette-sand flex transition-colors selection:bg-palette-cream selection:text-palette-dark">
+      {/* Collapsible Left Navigation Rail */}
+      <Sidebar 
+        isCollapsed={isSidebarCollapsed} 
+        setIsCollapsed={setIsSidebarCollapsed} 
+      />
+
+      {/* Main Workspace Area */}
       <div className="flex-1 flex flex-col min-w-0">
         <Header />
         

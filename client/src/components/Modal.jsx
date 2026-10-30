@@ -25,22 +25,22 @@ export default function Modal({ isOpen, onClose, title, subtitle, children, maxW
         onClick={onClose} 
       />
       <div 
-        className={`relative w-full ${maxWidth} bg-white dark:bg-[#151515] border border-black/10 dark:border-white/10 rounded-workspace shadow-soft-lg dark:shadow-dark-lg overflow-hidden z-10 transition-all`}
+        className={`relative w-full ${maxWidth} bg-white dark:bg-[#201F1A] border border-black/10 dark:border-white/10 rounded-workspace shadow-soft-lg dark:shadow-dark-lg overflow-hidden z-10 transition-all`}
       >
         <div className="flex items-start justify-between p-5 border-b border-black/5 dark:border-white/5">
           <div>
-            <h3 className="text-base font-semibold text-charcoal-900 dark:text-zinc-100 tracking-tight">
+            <h3 className="text-base font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
               {title}
             </h3>
             {subtitle && (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
                 {subtitle}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1 rounded-control hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand p-1 rounded-control hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

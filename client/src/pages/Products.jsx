@@ -4,8 +4,6 @@ import {
   Search, 
   Edit3, 
   Package, 
-  ExternalLink, 
-  ShieldCheck, 
   Tag, 
   Building2, 
   FileText 
@@ -114,7 +112,6 @@ export default function Products() {
     }
   };
 
-  // Filtered
   const filtered = products.filter(p => {
     const q = searchTerm.toLowerCase();
     const matchesSearch = 
@@ -130,21 +127,21 @@ export default function Products() {
   const categories = ['all', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="space-y-6 max-w-7xl mx-auto pb-20">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-charcoal-900 dark:text-zinc-100 tracking-tight">
+          <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
             Product Master &amp; SKU Catalog
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
             Authoritative product records used as the source of truth for pre-press packaging consistency checks.
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-input bg-charcoal-900 hover:bg-black dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black text-xs font-medium shadow-soft-sm transition-surface"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm transition-surface"
         >
           <Plus className="w-3.5 h-3.5" />
           Add Product Master
@@ -152,15 +149,15 @@ export default function Products() {
       </div>
 
       {/* Search & Filter */}
-      <div className="p-3.5 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-soft-sm">
+      <div className="p-3.5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-soft-sm">
         <div className="relative w-full sm:w-80">
-          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
+          <Search className="w-3.5 h-3.5 text-olive-400 absolute left-3 top-2.5" />
           <input
             type="text"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search by SKU, Brand, or Name..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none"
+            className="w-full pl-9 pr-3 py-1.5 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none"
           />
         </div>
 
@@ -171,8 +168,8 @@ export default function Products() {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-control text-xs font-medium capitalize transition-surface shrink-0 ${
                 selectedCategory === cat
-                  ? 'bg-charcoal-900 dark:bg-white text-white dark:text-black font-semibold shadow-soft-sm'
-                  : 'text-zinc-500 hover:text-charcoal-900 dark:hover:text-zinc-200 hover:bg-black/5 dark:hover:bg-white/5'
+                  ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm'
+                  : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
               }`}
             >
               {cat === 'all' ? 'All Categories' : cat}
@@ -183,10 +180,10 @@ export default function Products() {
 
       {/* Products Grid */}
       {loading ? (
-        <div className="p-12 text-center text-xs text-zinc-400">Loading product master records...</div>
+        <div className="p-12 text-center text-xs text-olive-400">Loading product master records...</div>
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center text-xs text-zinc-400 space-y-2">
-          <Package className="w-8 h-8 mx-auto text-zinc-300 dark:text-zinc-600" />
+        <div className="p-12 text-center text-xs text-olive-400 space-y-2">
+          <Package className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
           <p>No products match your search filter.</p>
         </div>
       ) : (
@@ -194,26 +191,26 @@ export default function Products() {
           {filtered.map(product => (
             <div
               key={product.id}
-              className="p-5 rounded-panel bg-white dark:bg-[#121212] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm hover:border-black/15 dark:hover:border-white/15 transition-surface"
+              className="p-5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm hover:border-palette-cream/40 transition-surface"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-charcoal-900 dark:text-zinc-100">
+                    <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand">
                       {product.sku}
                     </span>
-                    <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-black/5 dark:bg-white/5 text-zinc-500">
+                    <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-palette-cream/30 text-palette-dark dark:text-palette-cream">
                       {product.brand}
                     </span>
                   </div>
-                  <h3 className="font-medium text-xs text-charcoal-800 dark:text-zinc-200 line-clamp-2 leading-snug">
+                  <h3 className="font-medium text-xs text-palette-dark dark:text-palette-sand line-clamp-2 leading-snug">
                     {product.name}
                   </h3>
                 </div>
 
                 <button
                   onClick={() => openEditModal(product)}
-                  className="p-1 rounded text-zinc-400 hover:text-charcoal-900 dark:hover:text-white transition-colors"
+                  className="p-1 rounded text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
                   title="Edit Master Record"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
@@ -221,38 +218,38 @@ export default function Products() {
               </div>
 
               {/* Master Data Metrics */}
-              <div className="grid grid-cols-2 gap-2 p-3 rounded-control bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 font-mono text-xs">
+              <div className="grid grid-cols-2 gap-2 p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 font-mono text-xs">
                 <div>
-                  <span className="text-[10px] text-zinc-400 block">Master MRP</span>
-                  <span className="font-semibold text-charcoal-900 dark:text-zinc-100">
+                  <span className="text-[10px] text-olive-400 block">Master MRP</span>
+                  <span className="font-semibold text-palette-dark dark:text-palette-sand">
                     ₹{Number(product.mrp).toFixed(2)}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-zinc-400 block">Declared Net Qty</span>
-                  <span className="font-semibold text-charcoal-900 dark:text-zinc-100">
+                  <span className="text-[10px] text-olive-400 block">Declared Net Qty</span>
+                  <span className="font-semibold text-palette-dark dark:text-palette-sand">
                     {product.netQuantity}
                   </span>
                 </div>
               </div>
 
               {/* Manufacturer & Origin */}
-              <div className="space-y-1.5 text-[11px] text-zinc-500">
+              <div className="space-y-1.5 text-[11px] text-olive-500">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-zinc-400">Origin:</span>
-                  <span className="text-charcoal-800 dark:text-zinc-300 font-medium">
+                  <span className="font-mono text-olive-400">Origin:</span>
+                  <span className="text-palette-dark dark:text-palette-sand font-medium">
                     {product.countryOfOrigin}
                   </span>
                 </div>
                 <div className="flex items-start gap-1.5">
-                  <span className="font-mono text-zinc-400 shrink-0">Mfr:</span>
-                  <span className="text-zinc-600 dark:text-zinc-400 line-clamp-2 font-sans">
+                  <span className="font-mono text-olive-400 shrink-0">Mfr:</span>
+                  <span className="text-olive-600 dark:text-olive-300 line-clamp-2 font-sans">
                     {product.manufacturer}
                   </span>
                 </div>
                 <div className="flex items-start gap-1.5">
-                  <span className="font-mono text-zinc-400 shrink-0">Care:</span>
-                  <span className="text-zinc-600 dark:text-zinc-400 line-clamp-1 font-sans">
+                  <span className="font-mono text-olive-400 shrink-0">Care:</span>
+                  <span className="text-olive-600 dark:text-olive-300 line-clamp-1 font-sans">
                     {product.consumerCare}
                   </span>
                 </div>
@@ -273,43 +270,43 @@ export default function Products() {
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-500 mb-1">Product Name *</label>
+              <label className="block text-olive-500 mb-1">Product Name *</label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Reynolds 045 Carbure Ball Pen"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
               />
             </div>
             <div>
-              <label className="block text-zinc-500 mb-1">SKU Code *</label>
+              <label className="block text-olive-500 mb-1">SKU Code *</label>
               <input
                 type="text"
                 required
                 value={formData.sku}
                 onChange={e => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
                 placeholder="REY-045-BLU-10"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white font-mono"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-zinc-500 mb-1">Brand *</label>
+              <label className="block text-olive-500 mb-1">Brand *</label>
               <input
                 type="text"
                 required
                 value={formData.brand}
                 onChange={e => setFormData({ ...formData, brand: e.target.value })}
                 placeholder="Reynolds"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
               />
             </div>
             <div>
-              <label className="block text-zinc-500 mb-1">Master MRP (₹) *</label>
+              <label className="block text-olive-500 mb-1">Master MRP (₹) *</label>
               <input
                 type="number"
                 step="0.01"
@@ -317,65 +314,65 @@ export default function Products() {
                 value={formData.mrp}
                 onChange={e => setFormData({ ...formData, mrp: e.target.value })}
                 placeholder="50.00"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white font-mono"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
               />
             </div>
             <div>
-              <label className="block text-zinc-500 mb-1">Net Quantity *</label>
+              <label className="block text-olive-500 mb-1">Net Quantity *</label>
               <input
                 type="text"
                 required
                 value={formData.netQuantity}
                 onChange={e => setFormData({ ...formData, netQuantity: e.target.value })}
                 placeholder="10 N"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white font-mono"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-500 mb-1">Category</label>
+              <label className="block text-olive-500 mb-1">Category</label>
               <input
                 type="text"
                 value={formData.category}
                 onChange={e => setFormData({ ...formData, category: e.target.value })}
                 placeholder="Writing Instruments"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
               />
             </div>
             <div>
-              <label className="block text-zinc-500 mb-1">Country of Origin *</label>
+              <label className="block text-olive-500 mb-1">Country of Origin *</label>
               <input
                 type="text"
                 required
                 value={formData.countryOfOrigin}
                 onChange={e => setFormData({ ...formData, countryOfOrigin: e.target.value })}
                 placeholder="India"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-zinc-500 mb-1">Manufacturer Address (with 6-digit PIN code) *</label>
+            <label className="block text-olive-500 mb-1">Manufacturer Address (with 6-digit PIN code) *</label>
             <textarea
               rows={2}
               required
               value={formData.manufacturer}
               onChange={e => setFormData({ ...formData, manufacturer: e.target.value })}
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
             />
           </div>
 
           <div>
-            <label className="block text-zinc-500 mb-1">Consumer Care Details *</label>
+            <label className="block text-olive-500 mb-1">Consumer Care Details *</label>
             <input
               type="text"
               required
               value={formData.consumerCare}
               onChange={e => setFormData({ ...formData, consumerCare: e.target.value })}
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-charcoal-900 dark:text-white"
+              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
             />
           </div>
 
@@ -383,13 +380,13 @@ export default function Products() {
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-input text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-charcoal-900 dark:bg-white text-white dark:text-black font-semibold shadow-soft-sm"
+              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm"
             >
               {editingProduct ? 'Save Changes' : 'Create Product Master'}
             </button>
