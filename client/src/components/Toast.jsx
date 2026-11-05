@@ -11,8 +11,8 @@ export default function ToastContainer() {
       <AnimatePresence>
         {toasts && toasts.map(toast => {
           let Icon = Info;
-          let borderClass = 'border-black/10 dark:border-white/10';
-          let bgClass = 'bg-white dark:bg-slate-900';
+          let borderClass = 'border-subtle';
+          let bgClass = 'bg-surface-raised';
           let iconClass = 'text-sky-500';
 
           if (toast.type === 'success') {
@@ -38,12 +38,12 @@ export default function ToastContainer() {
               className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-2xl shadow-soft-lg border ${borderClass} ${bgClass} text-xs`}
             >
               <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${iconClass}`} />
-              <div className="flex-1 text-slate-900 dark:text-slate-100 leading-snug font-medium">
+              <div className="flex-1 text-primary leading-snug font-medium">
                 {toast.message}
               </div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 p-0.5 rounded-full"
+                className="text-muted hover:text-primary p-0.5 rounded-full"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

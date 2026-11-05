@@ -23,6 +23,10 @@ import Modal from '../components/Modal';
 import DoubleLayerCard from '../components/DoubleLayerCard';
 import FilePill from '../components/FilePill';
 import PackFormatSelector, { PACK_FORMATS } from '../components/PackFormatSelector';
+import Surface from '../components/ui/Surface';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 export default function NewInspection() {
   const navigate = useNavigate();
@@ -118,113 +122,105 @@ export default function NewInspection() {
 
   // Step 3: Handle real file uploads
   const handleFileUpload = async (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    if (!inspection) return;
+    const files = Array.from(e.target.files);
+    if (!files.length || !inspection) return;
 
-    setLoading(true);
-    try {
-      const res = await api.uploadAssets(inspection.id, files, panelType);
-      setInspection(res.data);
-      setUploadedFiles(res.data.assets || []);
-      addToast(`Uploaded ${files.length} artwork panel(s) successfully.`, 'success');
-    } catch (err) {
-      addToast(`Upload failed: ${err.message}`, 'error');
-    } finally {
-      setLoading(false);
-      e.target.value = '';
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('artwork', file);
+      formData.append('panel', panelType);
+
+      try {
+        setLoading(true);
+        const res = await api.uploadAsset(inspection.id, formData);
+        setUploadedFiles(prev => [...prev, res.data]);
+        addToast(`Uploaded ${file.name} as ${panelType} panel`, 'success');
+      } catch (err) {
+        addToast(`Failed to upload ${file.name}: ${err.message}`, 'error');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  const handleRemoveAsset = async (assetId) => {
-    if (!inspection) return;
-    try {
-      const res = await api.removeAsset(inspection.id, assetId);
-      setInspection(res.data);
-      setUploadedFiles(res.data.assets || []);
-      addToast('Asset removed.', 'info');
-    } catch (err) {
-      addToast(`Failed to remove asset: ${err.message}`, 'error');
-    }
-  };
-
-  // Load sample pen artwork preset (FIXED: loads seeded assets directly into active session)
+  // Step 3: Load sample assets
   const handleLoadSampleAssets = async () => {
     if (!inspection) return;
     setLoading(true);
     try {
       const res = await api.loadPreset(inspection.id, 'pen');
-      setInspection(res.data);
       setUploadedFiles(res.data.assets || []);
-      addToast('Loaded high-resolution Reynolds 045 sample packaging dielines.', 'success');
+      addToast('Loaded seeded pen packaging dieline assets.', 'success');
     } catch (err) {
-      addToast(`Failed to load demo assets: ${err.message}`, 'error');
+      addToast(`Failed to load preset assets: ${err.message}`, 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 5: Run real inspection analysis with meaningful progress stages
+  // Step 3: Remove asset
+  const handleRemoveAsset = async (assetId) => {
+    if (!inspection) return;
+    try {
+      await api.deleteAsset(inspection.id, assetId);
+      setUploadedFiles(prev => prev.filter(a => a.assetId !== assetId));
+      addToast('Packaging panel removed.', 'info');
+    } catch (err) {
+      addToast(`Failed to remove asset: ${err.message}`, 'error');
+    }
+  };
+
+  // Step 5: Execute real analysis workflow with staged progress
   const handleRunAnalysis = async () => {
     if (!inspection) return;
-    if (uploadedFiles.length === 0) {
-      addToast('Please upload at least one packaging image before running inspection.', 'warning');
-      return;
-    }
-
     setAnalyzing(true);
     setAnalysisStage(0);
 
-    const timer1 = setTimeout(() => setAnalysisStage(1), 500);
-    const timer2 = setTimeout(() => setAnalysisStage(2), 1200);
-    const timer3 = setTimeout(() => setAnalysisStage(3), 1900);
-    const timer4 = setTimeout(() => setAnalysisStage(4), 2600);
+    const interval = setInterval(() => {
+      setAnalysisStage(prev => {
+        if (prev < 4) return prev + 1;
+        clearInterval(interval);
+        return prev;
+      });
+    }, 650);
 
     try {
       await api.runAnalysis(inspection.id);
       setTimeout(() => {
-        setAnalyzing(false);
-        addToast('Inspection analysis complete! Review findings.', 'success');
+        clearInterval(interval);
+        addToast('Inspection scan complete! Redirecting to Evidence Viewer...', 'success');
         navigate(`/inspections/${inspection.id}`);
-      }, 3200);
+      }, 3400);
     } catch (err) {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-      clearTimeout(timer4);
+      clearInterval(interval);
       setAnalyzing(false);
-      addToast(`Analysis failed: ${err.message}`, 'error');
+      addToast(`Analysis run failed: ${err.message}`, 'error');
     }
   };
 
-  // Create new product form submit
+  // Create inline product baseline
   const handleCreateProductSubmit = async (e) => {
     e.preventDefault();
-    if (!newProductForm.name || !newProductForm.sku || !newProductForm.mrp) {
-      addToast('Please complete name, SKU, and MRP.', 'error');
-      return;
-    }
-
     try {
       const res = await api.createProduct({
         ...newProductForm,
         mrp: parseFloat(newProductForm.mrp)
       });
+      addToast('Product baseline registered.', 'success');
       setProducts(prev => [res.data, ...prev]);
       setSelectedProductId(res.data.id);
       setIsNewProductModalOpen(false);
-      addToast(`Created product ${res.data.name} (${res.data.sku}).`, 'success');
     } catch (err) {
-      addToast(`Failed to create product: ${err.message}`, 'error');
+      addToast(`Failed to save product: ${err.message}`, 'error');
     }
   };
 
   const stepsList = [
-    { num: 1, title: 'Select Spec' },
+    { num: 1, title: 'Product Master' },
     { num: 2, title: 'Pack Format' },
-    { num: 3, title: 'Upload Proofs' },
-    { num: 4, title: 'Check Rules' },
-    { num: 5, title: 'Run Scan' }
+    { num: 3, title: 'Artwork Ingestion' },
+    { num: 4, title: 'Rule Set' },
+    { num: 5, title: 'Execute Scan' }
   ];
 
   return (
@@ -243,8 +239,8 @@ export default function NewInspection() {
                       isCompleted
                         ? 'bg-gradient-bustd text-white shadow-sm'
                         : isActive
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-sm'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
+                        ? 'tactile-active-nav font-bold shadow-sm'
+                        : 'bg-surface-subtle text-muted'
                     }`}
                   >
                     {isCompleted ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : s.num}
@@ -252,10 +248,10 @@ export default function NewInspection() {
                   <span
                     className={`text-xs font-medium hidden sm:inline ${
                       isActive
-                        ? 'text-slate-900 dark:text-white font-semibold'
+                        ? 'text-primary font-semibold'
                         : isCompleted
-                        ? 'text-slate-700 dark:text-slate-300'
-                        : 'text-slate-400'
+                        ? 'text-secondary'
+                        : 'text-muted'
                     }`}
                   >
                     {s.title}
@@ -264,7 +260,7 @@ export default function NewInspection() {
                 {idx < stepsList.length - 1 && (
                   <div
                     className={`flex-1 h-[2px] mx-2 transition-colors ${
-                      isCompleted ? 'bg-gradient-bustd' : 'bg-slate-200 dark:bg-slate-800'
+                      isCompleted ? 'bg-gradient-bustd' : 'bg-surface-interactive'
                     }`}
                   />
                 )}
@@ -283,20 +279,21 @@ export default function NewInspection() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl font-semibold text-primary tracking-tight">
                 1. Select Product Specification Baseline
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-secondary mt-0.5">
                 Declarations on packaging artwork will be audited against this ERP master record.
               </p>
             </div>
-            <button
+            <Button
+              variant="secondary"
+              icon={Plus}
               onClick={() => setIsNewProductModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white transition-colors self-start sm:self-auto"
+              className="self-start sm:self-auto"
             >
-              <Plus className="w-3.5 h-3.5" />
               New Product Spec
-            </button>
+            </Button>
           </div>
 
           {/* Product Cards List */}
@@ -304,44 +301,43 @@ export default function NewInspection() {
             {products.map((p) => {
               const isSelected = selectedProductId === p.id;
               return (
-                <div
+                <Surface
                   key={p.id}
+                  variant="interactive"
                   onClick={() => setSelectedProductId(p.id)}
-                  className={`p-4 rounded-2xl cursor-pointer border transition-all text-xs space-y-2.5 ${
-                    isSelected
-                      ? 'bg-white dark:bg-slate-850 border-pink-500/50 shadow-soft-md ring-2 ring-pink-500/30'
-                      : 'bg-white dark:bg-slate-900/60 border-slate-200/80 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20'
+                  className={`p-4 text-xs space-y-2.5 ${
+                    isSelected ? 'ring-2 ring-pink-500/40 border-pink-500/50 shadow-soft-md' : ''
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-[11px] font-semibold text-slate-900 dark:text-white">
+                    <span className="font-mono text-[11px] font-semibold text-primary">
                       {p.sku}
                     </span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 font-medium">
+                    <Badge variant="neutral" size="sm">
                       {p.brand}
-                    </span>
+                    </Badge>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white line-clamp-1">
+                    <h3 className="font-semibold text-primary line-clamp-1">
                       {p.name}
                     </h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                    <p className="text-[11px] text-secondary mt-0.5 line-clamp-1">
                       {p.category}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 dark:border-white/5 grid grid-cols-2 gap-2 text-[11px] font-mono">
+                  <div className="pt-2 border-t border-subtle grid grid-cols-2 gap-2 text-[11px] font-mono">
                     <div>
-                      <span className="text-slate-400 block text-[10px]">Declared MRP</span>
-                      <span className="font-bold text-slate-900 dark:text-white">₹{Number(p.mrp).toFixed(2)}</span>
+                      <span className="text-muted block text-[10px]">Declared MRP</span>
+                      <span className="font-bold text-primary">₹{Number(p.mrp).toFixed(2)}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block text-[10px]">Net Quantity</span>
-                      <span className="font-bold text-slate-900 dark:text-white">{p.netQuantity}</span>
+                      <span className="text-muted block text-[10px]">Net Quantity</span>
+                      <span className="font-bold text-primary">{p.netQuantity}</span>
                     </div>
                   </div>
-                </div>
+                </Surface>
               );
             })}
           </div>
@@ -350,27 +346,27 @@ export default function NewInspection() {
           {selectedProduct && (
             <DoubleLayerCard
               header={
-                <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-muted">
                   Master Baseline Specifications
                 </div>
               }
             >
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-mono">Manufacturer</span>
-                  <p className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 leading-snug">
+                  <span className="text-[10px] text-muted block uppercase font-mono">Manufacturer</span>
+                  <p className="font-medium text-primary mt-0.5 leading-snug">
                     {selectedProduct.manufacturer}
                   </p>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-mono">Country of Origin</span>
-                  <p className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 leading-snug">
+                  <span className="text-[10px] text-muted block uppercase font-mono">Country of Origin</span>
+                  <p className="font-medium text-primary mt-0.5 leading-snug">
                     {selectedProduct.countryOfOrigin}
                   </p>
                 </div>
                 <div className="col-span-2">
-                  <span className="text-[10px] text-slate-400 block uppercase font-mono">Consumer Care Declaration</span>
-                  <p className="font-medium text-slate-800 dark:text-slate-200 mt-0.5 leading-snug">
+                  <span className="text-[10px] text-muted block uppercase font-mono">Consumer Care Declaration</span>
+                  <p className="font-medium text-primary mt-0.5 leading-snug">
                     {selectedProduct.consumerCare}
                   </p>
                 </div>
@@ -379,19 +375,19 @@ export default function NewInspection() {
           )}
 
           <div className="flex justify-end pt-2">
-            <button
-              onClick={handleProceedFromProduct}
+            <Button
+              variant="gradient"
+              icon={ArrowRight}
               disabled={loading || !selectedProduct}
-              className="btn-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold shadow-sm transition-opacity"
+              onClick={handleProceedFromProduct}
             >
-              <span>{loading ? 'Initializing Session...' : 'Next: Choose Pack Format'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+              {loading ? 'Initializing Session...' : 'Next: Choose Pack Format'}
+            </Button>
           </div>
         </motion.section>
       )}
 
-      {/* STEP 2: PACK FORMAT TEMPLATE (From user's uploaded reference image!) */}
+      {/* STEP 2: PACK FORMAT TEMPLATE */}
       {step === 2 && (
         <motion.section 
           initial={{ opacity: 0, y: 6 }}
@@ -403,17 +399,17 @@ export default function NewInspection() {
               <div className="text-[11px] font-mono uppercase text-pink-500 font-bold tracking-wider mb-0.5">
                 STEP 02 / PACK FORMAT
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-primary tracking-tight">
                 What type of pack is this?
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-secondary mt-0.5">
                 Selecting the packaging structure helps the AI localize label directions, panel boundaries, and aspect ratios automatically.
               </p>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-slate-400">
-                Active: <span className="text-slate-900 dark:text-white font-semibold">{selectedPackFormat?.name}</span>
+              <span className="text-xs font-mono text-muted">
+                Active: <span className="text-primary font-semibold">{selectedPackFormat?.name}</span>
               </span>
             </div>
           </div>
@@ -425,21 +421,21 @@ export default function NewInspection() {
           />
 
           <div className="flex items-center justify-between pt-2">
-            <button
+            <Button
+              variant="ghost"
+              icon={ArrowLeft}
               onClick={() => setStep(1)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
               Back
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="gradient"
+              icon={ArrowRight}
               onClick={handleProceedFromFormat}
-              className="btn-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold shadow-sm transition-opacity"
             >
-              <span>Next: Upload Artwork Proofs</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+              Next: Upload Artwork Proofs
+            </Button>
           </div>
         </motion.section>
       )}
@@ -453,23 +449,23 @@ export default function NewInspection() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl font-semibold text-primary tracking-tight">
                 3. Ingest Packaging Artwork Panels
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Template: <span className="font-semibold text-slate-900 dark:text-white">{selectedPackFormat?.name}</span> • Ingests {selectedPackFormat?.panels.join(', ')}
+              <p className="text-xs text-secondary mt-0.5">
+                Template: <span className="font-semibold text-primary">{selectedPackFormat?.name}</span> • Ingests {selectedPackFormat?.panels.join(', ')}
               </p>
             </div>
 
-            {/* FIXED: Load Seeded Pen Dielines Button */}
-            <button
-              onClick={handleLoadSampleAssets}
+            <Button
+              variant="secondary"
+              icon={Sparkles}
               disabled={loading}
-              className="btn-shimmer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-white/10 transition-colors self-start sm:self-auto"
+              onClick={handleLoadSampleAssets}
+              className="self-start sm:self-auto"
             >
-              <Sparkles className="w-3.5 h-3.5 text-pink-500" />
-              <span>Load Seeded Pen Dielines</span>
-            </button>
+              Load Seeded Pen Dielines
+            </Button>
           </div>
 
           {/* Double-Layered Upload & File Tag Shell */}
@@ -497,22 +493,22 @@ export default function NewInspection() {
           >
             {/* Inner Upload Drop Target */}
             <div className="text-center space-y-4 py-6">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center mx-auto text-slate-500">
+              <div className="w-12 h-12 rounded-2xl bg-surface-subtle flex items-center justify-center mx-auto text-secondary">
                 <Upload className="w-5 h-5" />
               </div>
 
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                <h3 className="text-sm font-semibold text-primary">
                   Drag and drop packaging artwork proofs or select files
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-muted">
                   Accepts PNG, JPG, JPEG, and PDF (Max 25MB). Actual artwork is used as inspection evidence.
                 </p>
               </div>
 
               {/* Panel Assignment Pills */}
-              <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-white/5 text-xs">
-                <span className="text-slate-500 px-2 font-mono text-[11px]">Assign Panel:</span>
+              <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-surface-subtle text-xs border border-subtle">
+                <span className="text-secondary px-2 font-mono text-[11px]">Assign Panel:</span>
                 {['back', 'front', 'side'].map((p) => (
                   <button
                     key={p}
@@ -520,8 +516,8 @@ export default function NewInspection() {
                     onClick={() => setPanelType(p)}
                     className={`px-3 py-1 rounded-lg text-xs capitalize transition-all ${
                       panelType === p
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-sm'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                        ? 'tactile-active-nav font-semibold shadow-sm'
+                        : 'text-secondary hover:text-primary'
                     }`}
                   >
                     {p === 'back' ? 'Back (Declarations)' : p === 'front' ? 'Front (PDP)' : 'Side'}
@@ -530,7 +526,7 @@ export default function NewInspection() {
               </div>
 
               <div>
-                <label className="btn-shimmer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold cursor-pointer shadow-sm hover:opacity-95 transition-opacity">
+                <label className="btn-shimmer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-inverse text-xs font-semibold cursor-pointer shadow-sm hover:opacity-95 transition-opacity">
                   <Plus className="w-3.5 h-3.5" />
                   <span>Choose Files from Computer</span>
                   <input
@@ -548,7 +544,7 @@ export default function NewInspection() {
           {/* Uploaded Panel Proof Cards */}
           {uploadedFiles.length > 0 && (
             <div className="space-y-3">
-              <div className="text-xs font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              <div className="text-xs font-mono uppercase tracking-wider text-muted">
                 Attached Artwork Panels ({uploadedFiles.length})
               </div>
 
@@ -556,11 +552,12 @@ export default function NewInspection() {
                 {uploadedFiles.map((asset) => {
                   const panelLabel = asset.panel || asset.panelType || 'artwork';
                   return (
-                    <div
+                    <Surface
                       key={asset.assetId}
-                      className="p-3 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/5 space-y-2.5 shadow-soft-sm group relative"
+                      variant="default"
+                      className="p-3 space-y-2.5 shadow-soft-sm group relative"
                     >
-                      <div className="aspect-[4/3] rounded-xl bg-slate-100 dark:bg-black/40 overflow-hidden relative border border-slate-200/60 dark:border-white/5 flex items-center justify-center">
+                      <div className="aspect-[4/3] rounded-xl bg-surface-subtle overflow-hidden relative border border-subtle flex items-center justify-center">
                         <img
                           src={asset.storedPath}
                           alt={asset.originalFilename}
@@ -571,7 +568,7 @@ export default function NewInspection() {
                         />
                         <button
                           onClick={() => handleRemoveAsset(asset.assetId)}
-                          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-slate-900/80 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-neutral-900/80 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                           title="Remove panel"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -579,14 +576,14 @@ export default function NewInspection() {
                       </div>
 
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-slate-900 dark:text-white truncate max-w-[140px]">
+                        <span className="font-medium text-primary truncate max-w-[140px]">
                           {asset.originalFilename}
                         </span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono uppercase bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 font-semibold">
+                        <Badge variant="neutral" size="sm">
                           {panelLabel}
-                        </span>
+                        </Badge>
                       </div>
-                    </div>
+                    </Surface>
                   );
                 })}
               </div>
@@ -594,22 +591,22 @@ export default function NewInspection() {
           )}
 
           <div className="flex items-center justify-between pt-2">
-            <button
+            <Button
+              variant="ghost"
+              icon={ArrowLeft}
               onClick={() => setStep(2)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
               Back
-            </button>
+            </Button>
 
-            <button
-              onClick={() => setStep(4)}
+            <Button
+              variant="gradient"
+              icon={ArrowRight}
               disabled={uploadedFiles.length === 0}
-              className="btn-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold shadow-sm transition-opacity disabled:opacity-50"
+              onClick={() => setStep(4)}
             >
-              <span>Next: Review Active Rules</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+              Next: Review Active Rules
+            </Button>
           </div>
         </motion.section>
       )}
@@ -622,48 +619,42 @@ export default function NewInspection() {
           className="space-y-6"
         >
           <div>
-            <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-lg sm:text-xl font-semibold text-primary tracking-tight">
               4. Review Configured Statutory Compliance Rules
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-secondary mt-0.5">
               These deterministic rules will execute against detected packaging tokens on your {selectedPackFormat?.name}.
             </p>
           </div>
 
           <DoubleLayerCard innerClassName="p-0 overflow-hidden">
-            <div className="divide-y divide-slate-100 dark:divide-white/5">
+            <div className="divide-y divide-subtle">
               {rules.map((rule) => {
                 const isEnabled = rule.status === 'enabled';
                 return (
                   <div key={rule.ruleId} className="p-4 flex items-center justify-between gap-4 text-xs">
                     <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-slate-900 dark:text-white">
+                        <span className="font-mono font-bold text-primary">
                           {rule.ruleId}
                         </span>
-                        <span className="text-slate-300 dark:text-slate-600">•</span>
-                        <span className="font-semibold text-slate-900 dark:text-white">
+                        <span className="text-muted">•</span>
+                        <span className="font-semibold text-primary">
                           {rule.name}
                         </span>
-                        <span className="px-2 py-0.2 rounded-full text-[10px] font-mono uppercase bg-slate-100 dark:bg-white/5 text-slate-500">
+                        <Badge variant="neutral" size="sm">
                           {rule.pillar.replace(/_/g, ' ')}
-                        </span>
+                        </Badge>
                       </div>
-                      <p className="text-slate-500 dark:text-slate-400 text-[11px] leading-snug">
+                      <p className="text-secondary text-[11px] leading-snug">
                         {rule.description}
                       </p>
                     </div>
 
                     <div className="shrink-0 flex items-center gap-2">
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase ${
-                          isEnabled
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                            : 'bg-slate-100 dark:bg-white/5 text-slate-400'
-                        }`}
-                      >
+                      <Badge variant={isEnabled ? 'pass' : 'neutral'} size="sm">
                         {rule.status}
-                      </span>
+                      </Badge>
                     </div>
                   </div>
                 );
@@ -672,26 +663,26 @@ export default function NewInspection() {
           </DoubleLayerCard>
 
           <div className="flex items-center justify-between pt-2">
-            <button
+            <Button
+              variant="ghost"
+              icon={ArrowLeft}
               onClick={() => setStep(3)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
               Back
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="gradient"
+              icon={ArrowRight}
               onClick={() => setStep(5)}
-              className="btn-shimmer inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold shadow-sm transition-opacity"
             >
-              <span>Next: Execute Inspection</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+              Next: Execute Inspection
+            </Button>
           </div>
         </motion.section>
       )}
 
-      {/* STEP 5: RUN ANALYSIS (With Radiant Progress Shimmer) */}
+      {/* STEP 5: RUN ANALYSIS */}
       {step === 5 && (
         <motion.section 
           initial={{ opacity: 0, y: 6 }}
@@ -699,18 +690,17 @@ export default function NewInspection() {
           className="space-y-6"
         >
           <div className="text-center max-w-xl mx-auto space-y-2 py-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-primary tracking-tight">
               Ready to Execute Inspection Scan
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Target SKU: <span className="font-mono font-bold text-slate-900 dark:text-white">{selectedProduct?.sku}</span> ({selectedProduct?.name})
+            <p className="text-xs text-secondary leading-relaxed">
+              Target SKU: <span className="font-mono font-bold text-primary">{selectedProduct?.sku}</span> ({selectedProduct?.name})
               <br />
-              Pack Format: <span className="font-semibold text-pink-600 dark:text-pink-400">{selectedPackFormat?.name}</span> • <span className="font-mono font-bold text-slate-900 dark:text-white">{uploadedFiles.length} panels</span> attached.
+              Pack Format: <span className="font-semibold text-pink-600 dark:text-pink-400">{selectedPackFormat?.name}</span> • <span className="font-mono font-bold text-primary">{uploadedFiles.length} panels</span> attached.
             </p>
           </div>
 
           {analyzing ? (
-            /* Analysis Progress Shell with Multi-Hue Gradient & Continuous Shimmer Flare */
             <DoubleLayerCard className="max-w-md mx-auto" innerClassName="text-center space-y-6 py-8">
               <div className="w-14 h-14 rounded-2xl bg-gradient-bustd flex items-center justify-center text-white mx-auto shadow-glow-bustd animate-pulse">
                 <Scan className="w-7 h-7" />
@@ -720,13 +710,13 @@ export default function NewInspection() {
                 <span className="font-mono text-xs text-gradient-bustd uppercase tracking-wider font-bold">
                   Stage {analysisStage + 1} of 5
                 </span>
-                <p className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">
+                <p className="text-xs sm:text-sm font-semibold text-primary">
                   {stages[analysisStage]}
                 </p>
               </div>
 
               {/* Fluid Gradient Progress Bar with Animated Shimmer Sweep */}
-              <div className="w-full bg-slate-100 dark:bg-white/5 h-2.5 rounded-full overflow-hidden relative">
+              <div className="w-full bg-surface-subtle h-2.5 rounded-full overflow-hidden relative border border-subtle">
                 <motion.div
                   className="bg-gradient-bustd h-full rounded-full relative overflow-hidden progress-bar-shimmer"
                   initial={{ width: '0%' }}
@@ -735,46 +725,47 @@ export default function NewInspection() {
                 />
               </div>
 
-              <p className="text-[11px] text-slate-400 font-mono">
+              <p className="text-[11px] text-muted font-mono">
                 Preserving original OCR tokens &amp; computing spatial coordinates...
               </p>
             </DoubleLayerCard>
           ) : (
             <DoubleLayerCard className="max-w-lg mx-auto" innerClassName="text-center space-y-5 py-6">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-800 dark:text-slate-200 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-surface-subtle text-primary flex items-center justify-center mx-auto border border-subtle">
                 <Scan className="w-6 h-6" />
               </div>
 
               <div className="space-y-1 max-w-sm mx-auto">
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                <h3 className="text-sm font-semibold text-primary">
                   All Inputs &amp; Templates Validated
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-secondary">
                   Click below to trigger OCR token extraction, field mapping, and deterministic rule evaluation.
                 </p>
               </div>
 
               <div className="pt-2">
-                <button
+                <Button
+                  variant="gradient"
+                  icon={Sparkles}
+                  size="lg"
                   onClick={handleRunAnalysis}
-                  className="btn-shimmer inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold shadow-glow-bustd transition-all active:scale-95"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>Run Inspection Scan</span>
-                </button>
+                  Run Inspection Scan
+                </Button>
               </div>
             </DoubleLayerCard>
           )}
 
           {!analyzing && (
             <div className="flex justify-start">
-              <button
+              <Button
+                variant="ghost"
+                icon={ArrowLeft}
                 onClick={() => setStep(4)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
                 Back
-              </button>
+              </Button>
             </div>
           )}
         </motion.section>
@@ -788,46 +779,46 @@ export default function NewInspection() {
       >
         <form onSubmit={handleCreateProductSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-500 dark:text-slate-400 mb-1 font-mono text-[11px]">Product Name *</label>
+            <label className="block text-secondary mb-1 font-mono text-[11px]">Product Name *</label>
             <input
               type="text"
               required
               value={newProductForm.name}
               onChange={(e) => setNewProductForm({ ...newProductForm, name: e.target.value })}
               placeholder="e.g. Reynolds 045 Fine Carbure Ball Pen (Blue)"
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
+              className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary focus:outline-none focus:border-pink-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-500 dark:text-slate-400 mb-1 font-mono text-[11px]">SKU Identifier *</label>
+              <label className="block text-secondary mb-1 font-mono text-[11px]">SKU Identifier *</label>
               <input
                 type="text"
                 required
                 value={newProductForm.sku}
                 onChange={(e) => setNewProductForm({ ...newProductForm, sku: e.target.value })}
                 placeholder="e.g. REY-045-BLU-10"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 font-mono"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary focus:outline-none focus:border-pink-500 font-mono"
               />
             </div>
 
             <div>
-              <label className="block text-slate-500 dark:text-slate-400 mb-1 font-mono text-[11px]">Brand Name *</label>
+              <label className="block text-secondary mb-1 font-mono text-[11px]">Brand Name *</label>
               <input
                 type="text"
                 required
                 value={newProductForm.brand}
                 onChange={(e) => setNewProductForm({ ...newProductForm, brand: e.target.value })}
                 placeholder="e.g. Reynolds"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary focus:outline-none focus:border-pink-500"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-500 dark:text-slate-400 mb-1 font-mono text-[11px]">Declared MRP (INR) *</label>
+              <label className="block text-secondary mb-1 font-mono text-[11px]">Declared MRP (INR) *</label>
               <input
                 type="number"
                 step="0.01"
@@ -835,48 +826,47 @@ export default function NewInspection() {
                 value={newProductForm.mrp}
                 onChange={(e) => setNewProductForm({ ...newProductForm, mrp: e.target.value })}
                 placeholder="50.00"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 font-mono"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary focus:outline-none focus:border-pink-500 font-mono"
               />
             </div>
 
             <div>
-              <label className="block text-slate-500 dark:text-slate-400 mb-1 font-mono text-[11px]">Declared Net Quantity *</label>
+              <label className="block text-secondary mb-1 font-mono text-[11px]">Declared Net Quantity *</label>
               <input
                 type="text"
                 required
                 value={newProductForm.netQuantity}
                 onChange={(e) => setNewProductForm({ ...newProductForm, netQuantity: e.target.value })}
                 placeholder="10 N (Pens)"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 font-mono"
+                className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary focus:outline-none focus:border-pink-500 font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-500 dark:text-slate-400 mb-1 font-mono text-[11px]">Manufacturer &amp; Address *</label>
+            <label className="block text-secondary mb-1 font-mono text-[11px]">Manufacturer &amp; Address *</label>
             <textarea
               rows={2}
               required
               value={newProductForm.manufacturer}
               onChange={(e) => setNewProductForm({ ...newProductForm, manufacturer: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 text-xs"
+              className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary focus:outline-none focus:border-pink-500 text-xs"
             />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               onClick={() => setIsNewProductModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="gradient"
               type="submit"
-              className="btn-shimmer px-4 py-2 rounded-xl bg-gradient-bustd text-white font-semibold text-xs shadow-sm"
             >
               Save Product Master
-            </button>
+            </Button>
           </div>
         </form>
       </Modal>

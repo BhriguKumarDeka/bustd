@@ -8,44 +8,34 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Pure modern neutral gray/blackish tokens (zero blue, zero olive)
-        canvas: {
-          light: '#F7F7F8', // Pure soft neutral gray
-          dark: '#0E0F11'   // Deep pure charcoal/black
+        // Theme Dualing Semantic Tokens (Zero slate, pure neutral dual-theme system)
+        canvas: 'var(--color-canvas)',
+        surface: {
+          DEFAULT: 'var(--color-surface)',
+          raised: 'var(--color-surface-raised)',
+          subtle: 'var(--color-surface-subtle)',
+          interactive: 'var(--color-surface-interactive)',
+          overlay: 'var(--color-surface-overlay)',
         },
-        nav: {
-          light: '#FFFFFF',
-          dark: '#111214'   // Pure neutral rail
+        border: {
+          subtle: 'var(--color-border-subtle)',
+          muted: 'var(--color-border-muted)',
+          strong: 'var(--color-border-strong)',
         },
-        card: {
-          light: '#FFFFFF',
-          dark: '#141517'   // Refined neutral dark surface
-        },
-        raised: {
-          light: '#F4F4F6',
-          dark: '#1C1D20'
-        },
-        interactive: {
-          light: '#E5E5E8',
-          dark: '#24252A'
-        },
-        popover: {
-          light: '#FFFFFF',
-          dark: '#161719'
-        },
-        // Mapped to pure neutral zinc/charcoal (zero blue undertones)
-        slate: {
+        // Pure neutral palette (zero slate, zero blue)
+        neutral: {
           50: '#FAFAFA',
-          100: '#F4F4F5',
-          200: '#E4E4E7',
-          300: '#D4D4D8',
-          400: '#A1A1AA',
-          500: '#71717A',
-          600: '#52525B',
-          700: '#3F3F46',
-          800: '#27272A',
-          850: '#1E1E22',
-          900: '#151618',
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+          400: '#A3A3A3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          850: '#1C1C1E',
+          900: '#151517',
+          925: '#101012',
           950: '#0A0A0C',
         },
         accent: {
@@ -61,6 +51,25 @@ export default {
           magenta: '#EC4899',
           orange: '#F97316'
         }
+      },
+      textColor: {
+        primary: 'var(--color-text-primary)',
+        secondary: 'var(--color-text-secondary)',
+        muted: 'var(--color-text-muted)',
+        inverse: 'var(--color-text-inverse)',
+      },
+      borderColor: {
+        subtle: 'var(--color-border-subtle)',
+        muted: 'var(--color-border-muted)',
+        strong: 'var(--color-border-strong)',
+      },
+      backgroundColor: {
+        canvas: 'var(--color-canvas)',
+        surface: 'var(--color-surface)',
+        'surface-raised': 'var(--color-surface-raised)',
+        'surface-subtle': 'var(--color-surface-subtle)',
+        'surface-interactive': 'var(--color-surface-interactive)',
+        'surface-overlay': 'var(--color-surface-overlay)',
       },
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

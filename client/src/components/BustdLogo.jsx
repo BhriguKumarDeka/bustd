@@ -16,7 +16,7 @@ export default function BustdLogo({ collapsed = false, size = 'default', showTag
     >
       {/* Brand Icon Mark */}
       <div className="relative shrink-0 flex items-center justify-center">
-        <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-slate-800 border border-slate-200 dark:border-white/10 shadow-soft-sm flex items-center justify-center relative overflow-hidden transition-all group-hover:border-pink-500/40">
+        <div className="w-9 h-9 rounded-xl bg-surface-raised border border-subtle shadow-soft-sm flex items-center justify-center relative overflow-hidden transition-all group-hover:border-pink-500/40">
           {/* Radiant Noisy Gradient Dot */}
           <div className="w-4 h-4 rounded-full bg-gradient-bustd shadow-[0_0_10px_rgba(236,72,153,0.6)] group-hover:scale-110 transition-transform flex items-center justify-center">
             <div className="w-1.5 h-1.5 rounded-full bg-white/90 animate-pulse" />
@@ -28,15 +28,15 @@ export default function BustdLogo({ collapsed = false, size = 'default', showTag
       {!collapsed && (
         <div className="min-w-0">
           <div className="flex items-center gap-1.5 leading-none">
-            <span className="font-bold tracking-tight text-base text-slate-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+            <span className="font-bold tracking-tight text-base text-primary group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
               bustd
             </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 font-semibold">
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-surface-subtle text-muted font-semibold">
               v1.2
             </span>
           </div>
           {showTagline && (
-            <span className="text-[11px] text-slate-400 block mt-0.5 truncate font-normal">
+            <span className="text-[11px] text-muted block mt-0.5 truncate font-normal">
               Spot the red flags.
             </span>
           )}

@@ -302,14 +302,14 @@ export default function PackFormatSelector({ selectedFormatId, onSelectFormat })
                 onClick={() => setActiveCategory(cat)}
                 className={`relative px-3.5 py-1.5 rounded-xl font-medium transition-colors shrink-0 ${
                   isActive
-                    ? 'text-slate-900 dark:text-white font-semibold'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                    ? 'text-primary font-semibold'
+                    : 'text-secondary hover:text-primary'
                 }`}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeCategoryMorph"
-                    className="absolute inset-0 bg-white dark:bg-slate-800/90 rounded-xl shadow-soft-sm border border-slate-200/80 dark:border-white/10"
+                    className="absolute inset-0 bg-surface rounded-xl shadow-soft-sm border border-subtle"
                     transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                   />
                 )}
@@ -321,13 +321,13 @@ export default function PackFormatSelector({ selectedFormatId, onSelectFormat })
 
         {/* Search */}
         <div className="relative w-full md:w-64">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             type="text"
             placeholder="Search pack templates..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-pink-500"
+            className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-surface-subtle border border-subtle text-xs text-primary placeholder:text-muted focus:outline-none focus:border-pink-500"
           />
         </div>
       </div>
@@ -344,15 +344,15 @@ export default function PackFormatSelector({ selectedFormatId, onSelectFormat })
               whileTap={{ scale: 0.98 }}
               className={`p-4 rounded-2xl cursor-pointer transition-all relative flex flex-col justify-between border ${
                 isSelected
-                  ? 'bg-white dark:bg-slate-800/90 border-pink-500/50 shadow-soft-md ring-2 ring-pink-500/30'
-                  : 'bg-white/80 dark:bg-slate-900/60 border-slate-200/80 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15'
+                  ? 'bg-surface border-pink-500/50 shadow-soft-md ring-2 ring-pink-500/30'
+                  : 'bg-surface border-subtle hover:border-border-muted'
               }`}
             >
               <div className="space-y-3">
                 {/* Header: Wireframe & Popular Badge */}
                 <div className="flex items-start justify-between">
                   <div className={`p-2 rounded-xl transition-colors ${
-                    isSelected ? 'bg-pink-500/10 text-pink-500' : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300'
+                    isSelected ? 'bg-pink-500/10 text-pink-500' : 'bg-surface-subtle text-secondary'
                   }`}>
                     <PackFormatWireframe type={format.iconType} isSelected={isSelected} />
                   </div>
@@ -362,7 +362,7 @@ export default function PackFormatSelector({ selectedFormatId, onSelectFormat })
                       <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
                   ) : format.popular ? (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-surface-subtle text-muted">
                       Standard
                     </span>
                   ) : null}
@@ -370,29 +370,29 @@ export default function PackFormatSelector({ selectedFormatId, onSelectFormat })
 
                 {/* Title & Description */}
                 <div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-0.5">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-muted mb-0.5">
                     {format.category}
                   </div>
-                  <h4 className="text-xs font-semibold text-slate-900 dark:text-white leading-snug">
+                  <h4 className="text-xs font-semibold text-primary leading-snug">
                     {format.name}
                   </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-snug line-clamp-2">
+                  <p className="text-[11px] text-secondary mt-1 leading-snug line-clamp-2">
                     {format.subtitle}
                   </p>
                 </div>
               </div>
 
               {/* Panel Expectations Breakdown */}
-              <div className="pt-3 mt-3 border-t border-slate-100 dark:border-white/5 space-y-1 text-[10px] font-mono">
-                <span className="text-slate-400 block uppercase">Expected Panels:</span>
+              <div className="pt-3 mt-3 border-t border-subtle space-y-1 text-[10px] font-mono">
+                <span className="text-muted block uppercase">Expected Panels:</span>
                 <div className="flex flex-wrap gap-1">
                   {format.panels.slice(0, 3).map((p) => (
-                    <span key={p} className="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 truncate max-w-[120px]">
+                    <span key={p} className="px-1.5 py-0.2 rounded bg-surface-subtle text-secondary truncate max-w-[120px]">
                       {p}
                     </span>
                   ))}
                   {format.panels.length > 3 && (
-                    <span className="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-white/5 text-slate-400">
+                    <span className="px-1.5 py-0.2 rounded bg-surface-subtle text-muted">
                       +{format.panels.length - 3} more
                     </span>
                   )}
@@ -408,17 +408,17 @@ export default function PackFormatSelector({ selectedFormatId, onSelectFormat })
         <motion.div
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/50 border border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+          className="p-3.5 rounded-2xl bg-surface border border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
         >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0">
               <PackageCheck className="w-4 h-4" />
             </div>
             <div>
-              <div className="font-semibold text-slate-900 dark:text-white">
+              <div className="font-semibold text-primary">
                 Selected Template: {selectedFormat.name}
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+              <p className="text-[11px] text-muted font-mono">
                 Dieline: {selectedFormat.dielineType} • Ingests {selectedFormat.panels.join(', ')}
               </p>
             </div>

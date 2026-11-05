@@ -1,5 +1,5 @@
 // BUSTD Brand Identity & Visual Design Tokens
-// Modern editorial design, cool slate/obsidian palette, and radiant multi-hue noise gradient.
+// Modern editorial design, pure neutral gray/black palette, and radiant multi-hue noise gradient.
 
 export const BRAND = {
   name: 'BUSTD',
@@ -16,16 +16,16 @@ export const BRAND = {
     glow: '0 0 24px -2px rgba(236, 72, 153, 0.45), 0 0 10px -1px rgba(56, 189, 248, 0.35)',
   },
 
-  // Color tokens: Clean cool slate & obsidian
+  // Pure neutral color tokens (zero chromatic blue/olive cast)
   palette: {
-    dark: '#0F172A',         // Slate 900
-    slateMuted: '#475569',   // Slate 600
-    slateLight: '#F1F5F9',   // Slate 100
-    canvasLight: '#F8FAFC',  // Slate 50
-    canvasDark: '#090B0E',   // Deep obsidian
+    dark: '#171717',         // Neutral 900
+    neutralMuted: '#737373', // Neutral 500
+    neutralLight: '#F5F5F5', // Neutral 100
+    canvasLight: '#FAFAFA',  // Neutral 50
+    canvasDark: '#0A0A0C',   // Neutral 950 deep canvas
     pureWhite: '#FFFFFF',
-    darkSurface: '#14171F',
-    darkRaised: '#1B1E28',
+    darkSurface: '#141416',
+    darkRaised: '#1E1E22',
   },
 
   // Tri-State evaluation tokens

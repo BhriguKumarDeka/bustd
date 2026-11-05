@@ -8,7 +8,6 @@ import {
   AlertTriangle, 
   CheckCircle2, 
   AlertCircle, 
-  FileText, 
   Layers, 
   ZoomIn, 
   ZoomOut, 
@@ -18,14 +17,14 @@ import {
   Clock, 
   Edit3, 
   ChevronDown,
-  ChevronUp,
-  Sparkles,
-  ExternalLink
+  ChevronUp
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
 import Modal from '../components/Modal';
 import DoubleLayerCard from '../components/DoubleLayerCard';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
 
 export default function InspectionDetail() {
   const { id } = useParams();
@@ -101,7 +100,7 @@ export default function InspectionDetail() {
 
   if (loading) {
     return (
-      <div className="p-16 text-center text-xs text-slate-400 space-y-3">
+      <div className="p-16 text-center text-xs text-muted space-y-3">
         <div className="w-8 h-8 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
         <p>Loading inspection workspace and spatial evidence layers...</p>
       </div>
@@ -110,15 +109,15 @@ export default function InspectionDetail() {
 
   if (!inspection) {
     return (
-      <div className="p-16 text-center text-xs text-slate-400 space-y-3">
+      <div className="p-16 text-center text-xs text-muted space-y-3">
         <AlertCircle className="w-8 h-8 mx-auto text-red-500" />
         <p>Inspection record #{id} could not be resolved.</p>
-        <button
+        <Button
+          variant="primary"
           onClick={() => navigate('/history')}
-          className="px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-medium"
         >
           Return to History
-        </button>
+        </Button>
       </div>
     );
   }
@@ -134,8 +133,6 @@ export default function InspectionDetail() {
     if (statusFilter === 'all') return true;
     return f.status === statusFilter;
   });
-
-  const selectedFinding = findings.find(f => f.findingId === selectedFindingId) || findings[0];
 
   // Reviewer action handler
   const handleReviewAction = async (findingId, action, reason = '', notes = '') => {
@@ -232,27 +229,27 @@ export default function InspectionDetail() {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6 pb-24 max-w-[1600px] mx-auto"
     >
-      {/* Top Header: Inspection SKU Context & Actions (No duplicate title) */}
+      {/* Top Header: Inspection SKU Context & Actions */}
       <DoubleLayerCard innerClassName="p-3 sm:p-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/history')}
-              className="text-slate-400 hover:text-slate-900 dark:hover:text-white p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              className="text-muted hover:text-primary p-1.5 rounded-lg hover:bg-surface-subtle transition-colors"
               title="Return to History"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
+                <span className="font-mono text-xs font-bold text-primary">
                   {inspection.inspectionNumber}
                 </span>
-                <span className="text-slate-300 dark:text-slate-600 text-xs">•</span>
-                <span className="text-xs font-semibold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
+                <span className="text-muted text-xs">•</span>
+                <span className="text-xs font-semibold text-primary truncate max-w-xs sm:max-w-md">
                   {product.name}
                 </span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 font-semibold">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface-subtle text-secondary font-semibold border border-subtle">
                   {product.sku}
                 </span>
                 {inspection.packFormat && (
@@ -261,7 +258,7 @@ export default function InspectionDetail() {
                   </span>
                 )}
               </div>
-              <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-muted font-mono mt-0.5">
                 Inspector: {inspection.inspector?.name || 'QA Reviewer'} • {new Date(inspection.createdAt).toLocaleString()}
               </div>
             </div>
@@ -269,27 +266,29 @@ export default function InspectionDetail() {
 
           {/* Action Controls */}
           <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={ShieldCheck}
               onClick={() => setFinalizeModalOpen(true)}
-              className="btn-shimmer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all hover:opacity-95"
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
               <span>Sign-Off Decision</span>
               {inspection.finalDecision && inspection.finalDecision !== 'pending' && (
-                <span className="ml-1 px-1.5 py-0.2 rounded text-[9px] uppercase font-mono bg-emerald-500/20 text-emerald-800 dark:text-emerald-950 font-bold">
+                <span className="ml-1 px-1.5 py-0.2 rounded text-[9px] uppercase font-mono bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-bold">
                   {inspection.finalDecision.replace(/_/g, ' ')}
                 </span>
               )}
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="gradient"
+              size="sm"
+              icon={Download}
               onClick={handleDownloadPdf}
               disabled={downloadingPdf}
-              className="btn-shimmer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-bustd text-white text-xs font-semibold shadow-glow-bustd transition-all hover:opacity-95 disabled:opacity-50"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>{downloadingPdf ? 'Exporting...' : 'Export PDF'}</span>
-            </button>
+              {downloadingPdf ? 'Exporting...' : 'Export PDF'}
+            </Button>
           </div>
         </div>
       </DoubleLayerCard>
@@ -297,14 +296,14 @@ export default function InspectionDetail() {
       {/* Real-time Screening Status Banner */}
       <div className={`p-4 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
         inspection.finalDecision === 'approved'
-          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-900 dark:text-emerald-200'
+          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-200'
           : inspection.finalDecision === 'returned_for_revision'
-          ? 'bg-red-500/10 border-red-500/20 text-red-900 dark:text-red-200'
+          ? 'bg-red-500/10 border-red-500/20 text-red-800 dark:text-red-200'
           : summary.potentialIssues > 0
-          ? 'bg-red-500/5 border-red-500/20 text-red-900 dark:text-red-300'
+          ? 'bg-red-500/5 border-red-500/20 text-red-800 dark:text-red-300'
           : summary.reviewRequired > 0
-          ? 'bg-amber-500/5 border-amber-500/20 text-amber-900 dark:text-amber-300'
-          : 'bg-emerald-500/5 border-emerald-500/20 text-emerald-900 dark:text-emerald-300'
+          ? 'bg-amber-500/5 border-amber-500/20 text-amber-800 dark:text-amber-300'
+          : 'bg-emerald-500/5 border-emerald-500/20 text-emerald-800 dark:text-emerald-300'
       }`}>
         <div className="flex items-start gap-3">
           {summary.potentialIssues > 0 ? (
@@ -343,7 +342,7 @@ export default function InspectionDetail() {
 
         {/* Small live summary badges */}
         <div className="flex items-center gap-2 shrink-0 text-xs font-mono">
-          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-slate-900 dark:text-slate-100">
+          <span className="px-2 py-0.5 rounded-full bg-surface-subtle text-primary border border-subtle">
             Checks: {summary.totalChecks || findings.length}
           </span>
           <span className="px-2 py-0.5 rounded-full bg-red-500/15 text-red-600 dark:text-red-400 font-bold">
@@ -376,8 +375,8 @@ export default function InspectionDetail() {
                     }}
                     className={`px-3 py-1.5 rounded-xl capitalize font-medium text-xs transition-all flex items-center gap-1.5 shrink-0 ${
                       activeAssetIndex === idx
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-sm'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100'
+                        ? 'bg-surface-raised text-primary font-semibold shadow-sm border border-subtle'
+                        : 'text-muted hover:text-primary hover:bg-surface-subtle'
                     }`}
                   >
                     <Layers className="w-3.5 h-3.5" />
@@ -390,27 +389,27 @@ export default function InspectionDetail() {
               </div>
 
               {/* Canvas Zoom Controls */}
-              <div className="flex items-center gap-1 shrink-0 border-l border-black/5 dark:border-white/5 pl-2">
+              <div className="flex items-center gap-1 shrink-0 border-l border-subtle pl-2">
                 <button
                   onClick={() => setZoomLevel(prev => Math.max(0.7, prev - 0.2))}
-                  className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                  className="p-1.5 rounded hover:bg-surface-subtle text-muted hover:text-primary transition-colors"
                   title="Zoom Out"
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
-                <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 w-10 text-center">
+                <span className="font-mono text-[11px] text-muted w-10 text-center">
                   {Math.round(zoomLevel * 100)}%
                 </span>
                 <button
                   onClick={() => setZoomLevel(prev => Math.min(2.5, prev + 0.2))}
-                  className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                  className="p-1.5 rounded hover:bg-surface-subtle text-muted hover:text-primary transition-colors"
                   title="Zoom In"
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setZoomLevel(1)}
-                  className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                  className="p-1.5 rounded hover:bg-surface-subtle text-muted hover:text-primary transition-colors"
                   title="Reset Zoom"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -420,7 +419,7 @@ export default function InspectionDetail() {
           </DoubleLayerCard>
 
           {/* Interactive Artwork Canvas Viewport */}
-          <div className="relative rounded-2xl bg-slate-950 dark:bg-[#0B0B0C] border border-black/10 dark:border-white/10 overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
+          <div className="relative rounded-2xl bg-neutral-950 border border-subtle overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
             {currentAsset ? (
               <div
                 className="relative transition-transform duration-200 origin-center select-none"
@@ -483,11 +482,11 @@ export default function InspectionDetail() {
                   })}
               </div>
             ) : (
-              <div className="text-slate-400 text-xs">No packaging assets attached.</div>
+              <div className="text-muted text-xs">No packaging assets attached.</div>
             )}
 
-            {/* Bottom canvas watermark & instructions with vibrant accent (Replacing Lime) */}
-            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-slate-100 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-xl pointer-events-none border border-white/10">
+            {/* Bottom canvas watermark & instructions */}
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-neutral-200 bg-neutral-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-xl pointer-events-none border border-neutral-700/40">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-gradient-bustd shadow-[0_0_6px_rgba(236,72,153,0.8)]" />
                 Click bounding boxes to inspect findings
@@ -516,21 +515,21 @@ export default function InspectionDetail() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`relative flex-1 py-1.5 px-2 rounded-xl font-medium transition-colors flex items-center justify-center gap-1.5 ${
                     activeTab === tab.id
-                      ? 'text-slate-900 dark:text-white font-semibold'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      ? 'text-primary font-semibold'
+                      : 'text-muted hover:text-primary'
                   }`}
                 >
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="activeSubTabMorph"
-                      className="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-soft-sm border border-slate-200/80 dark:border-white/10"
+                      className="absolute inset-0 bg-surface-raised rounded-xl shadow-soft-sm border border-subtle"
                       transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                     />
                   )}
                   <span className="relative z-10">{tab.label}</span>
                   {tab.badge !== undefined && (
                     <span className={`relative z-10 px-1.5 py-0.2 rounded text-[10px] font-mono ${
-                      activeTab === tab.id ? 'bg-pink-500/15 text-pink-600 dark:text-pink-400 font-bold' : 'bg-slate-100 dark:bg-white/10 text-slate-400'
+                      activeTab === tab.id ? 'bg-pink-500/15 text-pink-600 dark:text-pink-400 font-bold' : 'bg-surface-subtle text-muted'
                     }`}>
                       {tab.badge}
                     </span>
@@ -556,8 +555,8 @@ export default function InspectionDetail() {
                     onClick={() => setStatusFilter(f.id)}
                     className={`px-3 py-1 rounded-full text-[11px] font-medium transition-all shrink-0 ${
                       statusFilter === f.id
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-sm'
-                        : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-black/5 dark:hover:bg-white/5'
+                        ? 'bg-surface-raised text-primary font-semibold shadow-sm border border-subtle'
+                        : 'text-muted hover:text-primary hover:bg-surface-subtle'
                     }`}
                   >
                     {f.label} {f.count !== undefined && `(${f.count})`}
@@ -583,64 +582,58 @@ export default function InspectionDetail() {
                       }}
                       className={`p-4 rounded-xl border transition-all cursor-pointer space-y-3 ${
                         isSelected
-                          ? 'bg-white dark:bg-[#25241E] border-pink-500/50 shadow-soft-md ring-1 ring-pink-500/20'
-                          : 'bg-black/[0.02] dark:bg-white/[0.02] border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20'
+                          ? 'bg-surface-raised border-pink-500/50 shadow-soft-md ring-1 ring-pink-500/20'
+                          : 'bg-surface border-subtle hover:border-muted'
                       }`}
                     >
                       {/* Header */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
-                                isIssue
-                                  ? 'bg-red-500/15 text-red-600 dark:text-red-400'
-                                  : isReview
-                                  ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                                  : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                              }`}
+                            <Badge
+                              variant={isIssue ? 'issue' : isReview ? 'review' : 'pass'}
                             >
                               {finding.status.replace(/_/g, ' ')}
-                            </span>
-                            <span className="font-mono text-[10px] text-slate-500 dark:text-slate-400">
+                            </Badge>
+                            <span className="font-mono text-[10px] text-muted">
                               {finding.ruleId} v{finding.ruleVersion}
                             </span>
                           </div>
 
-                          <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100 leading-snug">
+                          <h4 className="text-xs font-semibold text-primary leading-snug">
                             {finding.title}
                           </h4>
                         </div>
 
                         <span className={`text-[10px] font-mono uppercase px-1.5 py-0.2 rounded shrink-0 ${
-                          finding.severity === 'critical' ? 'text-red-500 bg-red-500/10' : 'text-slate-400 bg-black/5 dark:bg-white/5'
+                          finding.severity === 'critical' ? 'text-red-500 bg-red-500/10' : 'text-muted bg-surface-subtle'
                         }`}>
                           {finding.severity}
                         </span>
                       </div>
 
                       {/* Values Comparison Strip */}
-                      <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] space-y-1.5 text-xs font-mono">
+                      <div className="p-3 rounded-xl bg-surface-subtle border border-subtle space-y-1.5 text-xs font-mono">
                         <div>
-                          <span className="text-[10px] text-slate-400 block uppercase">
+                          <span className="text-[10px] text-muted block uppercase">
                             Expected Baseline:
                           </span>
-                          <span className="text-slate-900 dark:text-slate-100 font-medium">
+                          <span className="text-primary font-medium">
                             {finding.expectedValue}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 block uppercase">
+                          <span className="text-[10px] text-muted block uppercase">
                             Detected on Artwork:
                           </span>
-                          <span className={isIssue ? 'text-red-600 dark:text-red-400 font-bold' : 'text-slate-900 dark:text-slate-100'}>
+                          <span className={isIssue ? 'text-red-600 dark:text-red-400 font-bold' : 'text-primary'}>
                             {finding.detectedValue}
                           </span>
                         </div>
                       </div>
 
                       {/* Explanation */}
-                      <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-sans">
+                      <p className="text-[11px] text-secondary leading-relaxed font-sans">
                         {finding.explanation}
                       </p>
 
@@ -652,7 +645,7 @@ export default function InspectionDetail() {
                             e.stopPropagation();
                             toggleDetails(finding.findingId);
                           }}
-                          className="inline-flex items-center gap-1 text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                          className="inline-flex items-center gap-1 text-[10px] font-mono uppercase text-muted hover:text-primary transition-colors"
                         >
                           <span>{isExpanded ? 'Hide Technical Evidence' : 'Show Rule Citation & Evidence'}</span>
                           {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -660,19 +653,19 @@ export default function InspectionDetail() {
 
                         {/* Collapsible Technical Details */}
                         {isExpanded && (
-                          <div className="mt-2 p-2.5 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 space-y-1.5 text-[11px] font-mono animate-in fade-in duration-150">
+                          <div className="mt-2 p-2.5 rounded-lg bg-surface border border-subtle space-y-1.5 text-[11px] font-mono animate-in fade-in duration-150">
                             <div className="flex justify-between">
-                              <span className="text-slate-400">Pillar:</span>
-                              <span className="text-slate-900 dark:text-slate-100 capitalize">{finding.pillar.replace(/_/g, ' ')}</span>
+                              <span className="text-muted">Pillar:</span>
+                              <span className="text-primary capitalize">{finding.pillar.replace(/_/g, ' ')}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-slate-400">OCR Confidence:</span>
-                              <span className="text-slate-900 dark:text-slate-100">{Math.round((finding.ocrConfidence || 0) * 100)}%</span>
+                              <span className="text-muted">OCR Confidence:</span>
+                              <span className="text-primary">{Math.round((finding.ocrConfidence || 0) * 100)}%</span>
                             </div>
                             {finding.evidenceBox && (
                               <div className="flex justify-between">
-                                <span className="text-slate-400">Spatial Box [x,y,w,h]:</span>
-                                <span className="text-slate-900 dark:text-slate-100">[{finding.evidenceBox.x}, {finding.evidenceBox.y}, {finding.evidenceBox.w}, {finding.evidenceBox.h}]</span>
+                                <span className="text-muted">Spatial Box [x,y,w,h]:</span>
+                                <span className="text-primary">[{finding.evidenceBox.x}, {finding.evidenceBox.y}, {finding.evidenceBox.w}, {finding.evidenceBox.h}]</span>
                               </div>
                             )}
                           </div>
@@ -680,9 +673,9 @@ export default function InspectionDetail() {
                       </div>
 
                       {/* Reviewer Disposition Section */}
-                      <div className="pt-2 border-t border-black/5 dark:border-white/5 flex flex-col gap-2">
+                      <div className="pt-2 border-t border-subtle flex flex-col gap-2">
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="font-mono text-slate-500 dark:text-slate-400">Reviewer Disposition:</span>
+                          <span className="font-mono text-muted">Reviewer Disposition:</span>
                           <span className={`font-mono font-bold uppercase text-[10px] px-2 py-0.5 rounded-full ${
                             finding.reviewDisposition === 'confirmed'
                               ? 'bg-red-500/20 text-red-600 dark:text-red-400'
@@ -690,14 +683,14 @@ export default function InspectionDetail() {
                               ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400'
                               : finding.reviewDisposition === 'deferred'
                               ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
-                              : 'bg-black/5 dark:bg-white/5 text-slate-400'
+                              : 'bg-surface-subtle text-muted'
                           }`}>
                             {finding.reviewDisposition || 'pending'}
                           </span>
                         </div>
 
                         {finding.dismissReason && (
-                          <div className="p-2 rounded-lg bg-black/5 dark:bg-white/5 text-[11px] text-slate-900 dark:text-slate-100 italic">
+                          <div className="p-2 rounded-lg bg-surface-subtle border border-subtle text-[11px] text-primary italic">
                             Dismissal Reason: "{finding.dismissReason}"
                           </div>
                         )}
@@ -766,19 +759,19 @@ export default function InspectionDetail() {
             <DoubleLayerCard>
               <div className="space-y-4 text-xs">
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                  <h4 className="text-xs font-semibold text-primary">
                     Master Baseline vs Detected Artwork
                   </h4>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-muted">
                     Cross-validating authoritative ERP records against OCR-extracted tokens.
                   </p>
                 </div>
 
                 <div className="space-y-3">
                   {/* MRP Comparison */}
-                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                  <div className="p-3 rounded-xl bg-surface-subtle border border-subtle space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-primary">
                         Maximum Retail Price (MRP)
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
@@ -787,13 +780,13 @@ export default function InspectionDetail() {
                     </div>
                     <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
                       <div>
-                        <span className="text-slate-400 text-[10px] block">Expected (Master)</span>
+                        <span className="text-muted text-[10px] block">Expected (Master)</span>
                         <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                           ₹{Number(product.mrp).toFixed(2)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-400 text-[10px] block">Detected (Artwork)</span>
+                        <span className="text-muted text-[10px] block">Detected (Artwork)</span>
                         <span className="font-semibold text-red-600 dark:text-red-400">
                           {inspection.extractedFields?.mrp?.rawText || '₹60.00'}
                         </span>
@@ -802,9 +795,9 @@ export default function InspectionDetail() {
                   </div>
 
                   {/* Net Quantity Comparison */}
-                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                  <div className="p-3 rounded-xl bg-surface-subtle border border-subtle space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-primary">
                         Net Quantity Declaration
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
@@ -813,13 +806,13 @@ export default function InspectionDetail() {
                     </div>
                     <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
                       <div>
-                        <span className="text-slate-400 text-[10px] block">Expected (Master)</span>
+                        <span className="text-muted text-[10px] block">Expected (Master)</span>
                         <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                           {product.netQuantity} ({product.netQuantityNumeric} units)
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-400 text-[10px] block">Detected (Artwork)</span>
+                        <span className="text-muted text-[10px] block">Detected (Artwork)</span>
                         <span className="font-semibold text-red-600 dark:text-red-400">
                           {inspection.extractedFields?.net_quantity?.rawText || '12 N (pens)'}
                         </span>
@@ -828,31 +821,31 @@ export default function InspectionDetail() {
                   </div>
 
                   {/* Manufacturer Comparison */}
-                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                  <div className="p-3 rounded-xl bg-surface-subtle border border-subtle space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-primary">
                         Manufacturer Address &amp; PIN
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
                         VERIFIED (600001)
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-600 dark:text-slate-300 font-sans">
+                    <div className="text-[11px] text-secondary font-sans">
                       {product.manufacturer}
                     </div>
                   </div>
 
                   {/* Consumer Care Comparison */}
-                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                  <div className="p-3 rounded-xl bg-surface-subtle border border-subtle space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100">
+                      <span className="font-semibold text-primary">
                         Consumer Care Helpline &amp; Email
                       </span>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
                         DEGRADED OCR (42%)
                       </span>
                     </div>
-                    <div className="text-[11px] font-mono text-slate-600 dark:text-slate-300">
+                    <div className="text-[11px] font-mono text-secondary">
                       Detected: {inspection.extractedFields?.consumer_care?.rawText || 'Smudged resolution'}
                     </div>
                   </div>
@@ -866,10 +859,10 @@ export default function InspectionDetail() {
             <DoubleLayerCard>
               <div className="space-y-4 text-xs">
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                  <h4 className="text-xs font-semibold text-primary">
                     Extracted Declaration Tokens
                   </h4>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-muted">
                     Reviewers may correct extracted text or mark uncertain without altering original machine traces.
                   </p>
                 </div>
@@ -878,26 +871,26 @@ export default function InspectionDetail() {
                   {Object.entries(inspection.extractedFields || {}).map(([key, field]) => (
                     <div
                       key={key}
-                      className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2 text-xs"
+                      className="p-3 rounded-xl bg-surface-subtle border border-subtle space-y-2 text-xs"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono uppercase font-semibold text-slate-900 dark:text-slate-100">
+                        <span className="font-mono uppercase font-semibold text-primary">
                           {key.replace(/_/g, ' ')}
                         </span>
                         <button
                           onClick={() => openCorrectModal(key, field.rawText)}
-                          className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] text-muted hover:text-primary transition-colors"
                         >
                           <Edit3 className="w-3 h-3" />
                           Correct
                         </button>
                       </div>
 
-                      <div className="font-mono text-[11px] text-slate-900 dark:text-slate-100 bg-black/5 dark:bg-white/5 p-2 rounded-lg break-all">
+                      <div className="font-mono text-[11px] text-primary bg-surface p-2 rounded-lg border border-subtle break-all">
                         {field.rawText}
                       </div>
 
-                      <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center justify-between text-[10px] font-mono text-muted">
                         <span>Confidence: {Math.round((field.confidence || 0) * 100)}%</span>
                         <span className="capitalize">Status: {field.status}</span>
                       </div>
@@ -919,30 +912,30 @@ export default function InspectionDetail() {
             <DoubleLayerCard>
               <div className="space-y-4 text-xs">
                 <div className="space-y-0.5">
-                  <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                  <h4 className="text-xs font-semibold text-primary">
                     Immutable Inspection Audit Trail
                   </h4>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-muted">
                     Append-only record of every automated run and human reviewer decision.
                   </p>
                 </div>
 
                 <div className="space-y-3 max-h-[580px] overflow-y-auto">
                   {auditEvents.map((ev) => (
-                    <div key={ev.id} className="text-xs space-y-1 pb-3 border-b border-black/5 dark:border-white/5 last:border-none">
+                    <div key={ev.id} className="text-xs space-y-1 pb-3 border-b border-subtle last:border-none">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="font-mono font-medium text-slate-900 dark:text-slate-100">
+                        <span className="font-mono font-medium text-primary">
                           {ev.action}
                         </span>
-                        <span className="font-mono text-slate-400 text-[10px]">
+                        <span className="font-mono text-muted text-[10px]">
                           {new Date(ev.timestamp).toLocaleTimeString()}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-muted">
                         Actor: {ev.actor?.name} ({ev.actor?.role})
                       </p>
                       {ev.metadata?.reason && (
-                        <p className="text-[11px] text-slate-900 dark:text-slate-100 bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
+                        <p className="text-[11px] text-primary bg-surface p-2 rounded border border-subtle">
                           Reason: "{ev.metadata.reason}"
                         </p>
                       )}
@@ -973,7 +966,7 @@ export default function InspectionDetail() {
           </div>
 
           <div>
-            <label className="block text-slate-600 dark:text-slate-300 font-medium mb-1.5">
+            <label className="block text-secondary font-medium mb-1.5">
               Justification / Dismissal Reason *
             </label>
             <textarea
@@ -982,24 +975,24 @@ export default function InspectionDetail() {
               value={dismissReason}
               onChange={e => setDismissReason(e.target.value)}
               placeholder="e.g. Approved promotional pricing sticker amendment, or verified regional exception per Legal Metrology Gazette notification..."
-              className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-pink-500"
+              className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary placeholder:text-muted focus:outline-none focus:border-pink-500"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-black/5 dark:border-white/5">
-            <button
+          <div className="flex justify-end gap-2 pt-2 border-t border-subtle">
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setDismissModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium shadow-sm"
+              variant="danger"
             >
               Confirm Dismissal
-            </button>
+            </Button>
           </div>
         </form>
       </Modal>
@@ -1013,7 +1006,7 @@ export default function InspectionDetail() {
       >
         <form onSubmit={handleFinalizeInspection} className="space-y-4 text-xs">
           <div className="space-y-2">
-            <label className="block text-slate-600 dark:text-slate-300 font-medium">
+            <label className="block text-secondary font-medium">
               Reviewer Final Decision *
             </label>
 
@@ -1027,8 +1020,8 @@ export default function InspectionDetail() {
                   key={opt.id}
                   className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     finalizeDecision === opt.id
-                      ? 'bg-black/5 dark:bg-white/10 border-slate-900 dark:border-slate-100 font-semibold'
-                      : 'border-black/5 dark:border-white/5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]'
+                      ? 'bg-surface-raised border-primary font-semibold'
+                      : 'border-subtle hover:bg-surface-subtle'
                   }`}
                 >
                   <input
@@ -1048,7 +1041,7 @@ export default function InspectionDetail() {
           </div>
 
           <div>
-            <label className="block text-slate-600 dark:text-slate-300 font-medium mb-1">
+            <label className="block text-secondary font-medium mb-1">
               Final Reviewer Remarks
             </label>
             <textarea
@@ -1056,24 +1049,24 @@ export default function InspectionDetail() {
               value={finalizeNotes}
               onChange={e => setFinalizeNotes(e.target.value)}
               placeholder="e.g. Pre-production screening passed with minor caveat, or packaging returned to agency for price and net count correction..."
-              className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-900 dark:text-slate-100"
+              className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary placeholder:text-muted focus:outline-none focus:border-pink-500"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-black/5 dark:border-white/5">
-            <button
+          <div className="flex justify-end gap-2 pt-2 border-t border-subtle">
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setFinalizeModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-gradient-bustd text-white font-semibold shadow-sm"
+              variant="gradient"
             >
               Save Final Decision
-            </button>
+            </Button>
           </div>
         </form>
       </Modal>
@@ -1087,7 +1080,7 @@ export default function InspectionDetail() {
       >
         <form onSubmit={submitCorrectField} className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-600 dark:text-slate-300 font-medium mb-1">
+            <label className="block text-secondary font-medium mb-1">
               Corrected Text Value *
             </label>
             <textarea
@@ -1095,24 +1088,24 @@ export default function InspectionDetail() {
               required
               value={correctedValue}
               onChange={e => setCorrectedValue(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-slate-900 dark:text-slate-100 font-mono"
+              className="w-full px-3 py-2 rounded-xl bg-surface-subtle border border-subtle text-primary font-mono placeholder:text-muted focus:outline-none focus:border-pink-500"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-black/5 dark:border-white/5">
-            <button
+          <div className="flex justify-end gap-2 pt-2 border-t border-subtle">
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => setCorrectFieldModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold"
+              variant="primary"
             >
               Save Field Correction
-            </button>
+            </Button>
           </div>
         </form>
       </Modal>

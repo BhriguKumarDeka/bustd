@@ -21,7 +21,7 @@ export default function App() {
   }, [isSidebarCollapsed]);
 
   return (
-    <div className="min-h-screen app-canvas-bg text-slate-900 dark:text-slate-100 flex transition-colors selection:bg-pink-500/20 selection:text-pink-900 dark:selection:text-pink-200">
+    <div className="min-h-screen app-canvas-bg text-primary flex transition-colors selection:bg-pink-500/20 selection:text-pink-900 dark:selection:text-pink-200">
       {/* Collapsible Left Navigation Rail */}
       <Sidebar 
         isCollapsed={isSidebarCollapsed} 
