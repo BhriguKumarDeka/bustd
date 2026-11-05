@@ -526,7 +526,7 @@ export default function NewInspection() {
               </div>
 
               <div>
-                <label className="btn-shimmer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-inverse text-xs font-semibold cursor-pointer shadow-sm hover:opacity-95 transition-opacity">
+                <label className="btn-shimmer inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-btn text-xs font-semibold cursor-pointer shadow-sm active:scale-[0.98]">
                   <Plus className="w-3.5 h-3.5" />
                   <span>Choose Files from Computer</span>
                   <input

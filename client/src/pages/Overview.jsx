@@ -118,7 +118,7 @@ export default function Overview() {
               icon={Play}
               disabled={creatingQuickScan}
               onClick={handleQuickAuditDemo}
-              className="text-white bg-white/10 hover:bg-white/15 border-white/10"
+              className="text-white bg-white/10 hover:bg-white/15 border border-subtle"
             >
               {creatingQuickScan ? 'Analyzing Pen Artwork...' : 'Try 1-Click Pen Demo'}
             </Button>

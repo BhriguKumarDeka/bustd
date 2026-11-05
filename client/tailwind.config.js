@@ -54,17 +54,20 @@ export default {
       },
       textColor: {
         primary: 'var(--color-text-primary)',
+        'primary-btn': 'var(--color-primary-text)',
         secondary: 'var(--color-text-secondary)',
         muted: 'var(--color-text-muted)',
         inverse: 'var(--color-text-inverse)',
       },
       borderColor: {
+        DEFAULT: 'var(--color-border-subtle)',
         subtle: 'var(--color-border-subtle)',
         muted: 'var(--color-border-muted)',
         strong: 'var(--color-border-strong)',
       },
       backgroundColor: {
         canvas: 'var(--color-canvas)',
+        primary: 'var(--color-primary-bg)',
         surface: 'var(--color-surface)',
         'surface-raised': 'var(--color-surface-raised)',
         'surface-subtle': 'var(--color-surface-subtle)',

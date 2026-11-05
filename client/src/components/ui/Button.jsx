@@ -17,8 +17,8 @@ export default function Button({
   ...props
 }) {
   const variantStyles = {
-    gradient: 'btn-shimmer bg-gradient-bustd text-white font-semibold shadow-sm hover:opacity-95 active:scale-[0.98]',
-    primary: 'bg-primary text-inverse hover:opacity-90 font-semibold active:scale-[0.98]',
+    gradient: 'btn-shimmer bg-gradient-bustd text-white font-semibold shadow-sm hover:shadow-glow-bustd active:scale-[0.98]',
+    primary: 'btn-shimmer bg-primary text-primary-btn font-semibold shadow-sm active:scale-[0.98]',
     secondary: 'bg-surface-raised hover:bg-surface-interactive text-primary border border-subtle font-medium transition-colors active:scale-[0.98]',
     ghost: 'text-secondary hover:text-primary hover:bg-surface-subtle transition-colors',
     danger: 'bg-red-600 hover:bg-red-700 text-white font-medium shadow-sm active:scale-[0.98]',
