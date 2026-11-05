@@ -419,7 +419,7 @@ export default function InspectionDetail() {
           </DoubleLayerCard>
 
           {/* Interactive Artwork Canvas Viewport */}
-          <div className="relative rounded-2xl bg-neutral-950 border border-subtle overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
+          <div className="relative rounded-2xl bg-surface-subtle border border-subtle overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
             {currentAsset ? (
               <div
                 className="relative transition-transform duration-200 origin-center select-none"
@@ -486,7 +486,7 @@ export default function InspectionDetail() {
             )}
 
             {/* Bottom canvas watermark & instructions */}
-            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-neutral-200 bg-neutral-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-xl pointer-events-none border border-neutral-700/40">
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-primary bg-surface-raised/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl pointer-events-none border border-subtle">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-gradient-bustd shadow-[0_0_6px_rgba(236,72,153,0.8)]" />
                 Click bounding boxes to inspect findings

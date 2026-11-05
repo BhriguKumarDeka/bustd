@@ -98,7 +98,7 @@ export default function Header() {
           {isDark ? (
             <Sun className="w-4 h-4 text-amber-300 transition-transform hover:rotate-45" />
           ) : (
-            <Moon className="w-4 h-4 text-neutral-800 transition-transform hover:-rotate-12" />
+            <Moon className="w-4 h-4 text-primary transition-transform hover:-rotate-12" />
           )}
         </button>
       </div>

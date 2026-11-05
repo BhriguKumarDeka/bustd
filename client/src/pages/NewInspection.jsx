@@ -568,7 +568,7 @@ export default function NewInspection() {
                         />
                         <button
                           onClick={() => handleRemoveAsset(asset.assetId)}
-                          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-neutral-900/80 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-surface-overlay border border-subtle hover:bg-red-600 hover:text-white text-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
                           title="Remove panel"
                         >
                           <Trash2 className="w-3 h-3" />

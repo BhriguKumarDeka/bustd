@@ -89,17 +89,17 @@ export default function Overview() {
       className="space-y-10 max-w-7xl mx-auto pb-16"
     >
       {/* Narrative Hero Banner */}
-      <section className="relative rounded-3xl overflow-hidden p-6 sm:p-9 bg-neutral-900 text-white shadow-soft-lg noisy-overlay border border-neutral-800">
+      <section className="relative rounded-3xl overflow-hidden p-6 sm:p-9 bg-surface-raised text-primary shadow-soft-md noisy-overlay border border-subtle">
         {/* Soft Multi-hue Glow Background */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-gradient-bustd opacity-20 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-gradient-bustd opacity-15 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-20 w-64 h-64 rounded-full bg-pink-500/10 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-2xl space-y-3.5">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-primary leading-tight">
             Spot packaging red flags before they go to print.
           </h2>
 
-          <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed max-w-xl">
+          <p className="text-xs sm:text-sm text-secondary leading-relaxed max-w-xl">
             BUSTD cross-examines packaging artwork against ERP master records and statutory declarations. Pre-configured 3D pack format dielines provide structured, evidence-backed inspection.
           </p>
 
@@ -114,11 +114,10 @@ export default function Overview() {
             </Button>
 
             <Button
-              variant="subtle"
+              variant="secondary"
               icon={Play}
               disabled={creatingQuickScan}
               onClick={handleQuickAuditDemo}
-              className="text-white bg-white/10 hover:bg-white/15 border border-subtle"
             >
               {creatingQuickScan ? 'Analyzing Pen Artwork...' : 'Try 1-Click Pen Demo'}
             </Button>
@@ -140,38 +139,44 @@ export default function Overview() {
 
         <DoubleLayerCard>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Action 1: New Inspection */}
+            {/* Action 1: New Inspection (Primary Action) */}
             <div
               onClick={() => navigate('/inspections/new')}
-              className="p-4 rounded-xl cursor-pointer bg-neutral-900 text-white hover:scale-[1.01] transition-transform group flex items-start gap-3.5"
+              className="p-4 rounded-xl cursor-pointer bg-surface-raised border border-subtle hover:border-pink-500/40 hover:shadow-soft-md transition-all group flex items-start gap-3.5"
             >
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-gradient-bustd text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                 <Plus className="w-5 h-5" />
               </div>
-              <div className="min-w-0">
-                <div className="text-xs font-semibold text-white">
-                  Start New Inspection
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-primary group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                    Start New Inspection
+                  </span>
+                  <Badge variant="accent" size="sm">
+                    Primary
+                  </Badge>
                 </div>
-                <p className="text-[11px] text-neutral-400 mt-0.5 leading-snug">
+                <p className="text-[11px] text-secondary mt-0.5 leading-snug">
                   Choose pack format template &amp; scan packaging panels
                 </p>
               </div>
+              <ArrowRight className="w-3.5 h-3.5 text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all mt-1 ml-auto shrink-0" />
             </div>
 
-            {/* Action 2: 1-Click Pen Audit */}
+            {/* Action 2: 1-Click Pen Audit (Preset Demo) */}
             <div
               onClick={handleQuickAuditDemo}
               className="p-4 rounded-xl cursor-pointer bg-surface-subtle hover:bg-surface-interactive transition-colors group flex items-start gap-3.5 border border-subtle"
             >
-              <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-surface-raised border border-subtle text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <Play className="w-4 h-4 fill-current" />
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-semibold text-primary">
                     Reynolds Pen Audit
                   </span>
-                  <Badge variant="accent" size="sm">
+                  <Badge variant="neutral" size="sm">
                     Preset
                   </Badge>
                 </div>
@@ -179,6 +184,7 @@ export default function Overview() {
                   {creatingQuickScan ? 'Executing 5 analysis stages...' : 'Instant test with ₹10 mismatch & degraded text'}
                 </p>
               </div>
+              <ArrowRight className="w-3.5 h-3.5 text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all mt-1 ml-auto shrink-0" />
             </div>
 
             {/* Action 3: SKU Master Catalog */}
@@ -186,17 +192,23 @@ export default function Overview() {
               onClick={() => navigate('/products')}
               className="p-4 rounded-xl cursor-pointer bg-surface-subtle hover:bg-surface-interactive transition-colors group flex items-start gap-3.5 border border-subtle"
             >
-              <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-surface-raised border border-subtle text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                 <Package className="w-5 h-5" />
               </div>
-              <div className="min-w-0">
-                <div className="text-xs font-semibold text-primary">
-                  SKU Master Catalog
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-primary">
+                    SKU Master Catalog
+                  </span>
+                  <Badge variant="count" size="sm">
+                    {products.length} SKUs
+                  </Badge>
                 </div>
                 <p className="text-[11px] text-secondary mt-0.5 leading-snug">
-                  {products.length} master product specifications configured
+                  Authoritative ERP master product specifications
                 </p>
               </div>
+              <ArrowRight className="w-3.5 h-3.5 text-muted group-hover:text-primary group-hover:translate-x-0.5 transition-all mt-1 ml-auto shrink-0" />
             </div>
           </div>
         </DoubleLayerCard>
@@ -211,7 +223,7 @@ export default function Overview() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-2 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-xs text-secondary">
-              <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
+              <span className="w-1.5 h-1.5 rounded-full bg-muted" />
               <span>Inspections Run</span>
             </div>
             <div className="text-3xl font-mono font-bold tracking-tight text-primary">
