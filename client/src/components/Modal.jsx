@@ -37,22 +37,22 @@ export default function Modal({ isOpen, onClose, title, subtitle, children, maxW
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className={`relative w-full ${maxWidth} bg-white dark:bg-[#1E1D18] border border-black/10 dark:border-white/10 rounded-2xl shadow-soft-lg overflow-hidden z-10`}
+            className={`relative w-full ${maxWidth} bg-white dark:bg-slate-900 border border-black/10 dark:border-white/10 rounded-2xl shadow-soft-lg overflow-hidden z-10`}
           >
             <div className="flex items-start justify-between p-5 border-b border-black/5 dark:border-white/5">
               <div>
-                <h3 className="text-sm sm:text-base font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+                <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
                   {title}
                 </h3>
                 {subtitle && (
-                  <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     {subtitle}
                   </p>
                 )}
               </div>
               <button
                 onClick={onClose}
-                className="text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>

@@ -8,44 +8,45 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Modern cool neutral palette (Slate / Obsidian / Blue-Pink)
+        // Pure modern neutral gray/blackish tokens (zero blue, zero olive)
         canvas: {
-          light: '#F8FAFC', // Cool slate-50
-          dark: '#090B0E'   // Deep obsidian black
+          light: '#F7F7F8', // Pure soft neutral gray
+          dark: '#0E0F11'   // Deep pure charcoal/black
         },
         nav: {
           light: '#FFFFFF',
-          dark: '#0E1015'   // Obsidian rail
+          dark: '#111214'   // Pure neutral rail
         },
         card: {
           light: '#FFFFFF',
-          dark: '#14171F'   // Refined slate surface
+          dark: '#141517'   // Refined neutral dark surface
         },
         raised: {
-          light: '#F1F5F9',
-          dark: '#1B1E28'
+          light: '#F4F4F6',
+          dark: '#1C1D20'
         },
         interactive: {
-          light: '#E2E8F0',
-          dark: '#242936'
+          light: '#E5E5E8',
+          dark: '#24252A'
         },
         popover: {
           light: '#FFFFFF',
-          dark: '#181B24'
+          dark: '#161719'
         },
-        // Modern cool text slate tokens
+        // Mapped to pure neutral zinc/charcoal (zero blue undertones)
         slate: {
-          50: '#F8FAFC',
-          100: '#F1F5F9',
-          200: '#E2E8F0',
-          300: '#CBD5E1',
-          400: '#94A3B8',
-          500: '#64748B',
-          600: '#475569',
-          700: '#334155',
-          800: '#1E293B',
-          900: '#0F172A',
-          950: '#020617',
+          50: '#FAFAFA',
+          100: '#F4F4F5',
+          200: '#E4E4E7',
+          300: '#D4D4D8',
+          400: '#A1A1AA',
+          500: '#71717A',
+          600: '#52525B',
+          700: '#3F3F46',
+          800: '#27272A',
+          850: '#1E1E22',
+          900: '#151618',
+          950: '#0A0A0C',
         },
         accent: {
           red: '#EF4444',
@@ -73,9 +74,9 @@ export default {
         'card-lg': '22px'
       },
       boxShadow: {
-        'soft-sm': '0 1px 3px 0 rgba(15, 23, 42, 0.05)',
-        'soft-md': '0 4px 14px 0 rgba(15, 23, 42, 0.07), 0 1px 3px 0 rgba(15, 23, 42, 0.03)',
-        'soft-lg': '0 12px 30px -4px rgba(15, 23, 42, 0.1), 0 4px 8px -2px rgba(15, 23, 42, 0.04)',
+        'soft-sm': '0 1px 3px 0 rgba(0, 0, 0, 0.04)',
+        'soft-md': '0 4px 14px 0 rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.02)',
+        'soft-lg': '0 12px 30px -4px rgba(0, 0, 0, 0.09), 0 4px 8px -2px rgba(0, 0, 0, 0.03)',
         'dark-sm': '0 1px 3px 0 rgba(0, 0, 0, 0.5)',
         'dark-md': '0 6px 18px 0 rgba(0, 0, 0, 0.65)',
         'dark-lg': '0 16px 36px -6px rgba(0, 0, 0, 0.85)',

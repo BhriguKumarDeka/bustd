@@ -74,7 +74,7 @@ export default function Header() {
   };
 
   return (
-    <header className="h-14 px-5 sm:px-6 bg-white/80 dark:bg-canvas-dark/85 backdrop-blur-md border-b border-slate-200/80 dark:border-white/5 flex items-center justify-between sticky top-0 z-20 transition-colors">
+    <header className="h-14 px-5 sm:px-6 bg-white/40 dark:bg-[#121315]/40 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between sticky top-0 z-20 transition-colors">
       {/* Left: Responsive Brand & Non-Duplicated Breadcrumb Trail */}
       <div className="flex items-center gap-3">
         <div className="sm:hidden">

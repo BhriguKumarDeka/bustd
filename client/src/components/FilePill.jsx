@@ -34,12 +34,12 @@ export default function FilePill({
         )}
       </div>
 
-      <span className="truncate max-w-[130px] sm:max-w-[180px] text-palette-dark dark:text-palette-sand font-medium">
+      <span className="truncate max-w-[130px] sm:max-w-[180px] text-slate-900 dark:text-slate-100 font-medium">
         {name}
       </span>
 
       {size && (
-        <span className="text-[10px] text-olive-500 dark:text-olive-400 font-mono">
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
           {size}
         </span>
       )}
@@ -51,7 +51,7 @@ export default function FilePill({
             e.stopPropagation();
             onRemove();
           }}
-          className="w-4 h-4 rounded-full flex items-center justify-center text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/10 transition-colors ml-0.5"
+          className="w-4 h-4 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-black/5 dark:hover:bg-white/10 transition-colors ml-0.5"
           title="Remove file"
         >
           <X className="w-3 h-3" />

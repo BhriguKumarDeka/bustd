@@ -5,38 +5,41 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   BUSTD COLOR SYSTEM: Crisp Slate / Deep Obsidian / Cool Gray / Blue-Pink
-   (Completely replaced all warm/olive tones with sharp modern neutrals)
+   BUSTD COLOR SYSTEM: Pure Neutral Gray/Blackish System
+   - Subtle vertical gradient: slightly lighter at top, deeper towards bottom
+   - Zero blue tint, zero olive/warm cast
    ========================================================================== */
 
 :root {
-  --bg-canvas: #F8FAFC;
+  --canvas-gradient: linear-gradient(180deg, #FFFFFF 0%, #F7F7F8 45%, #ECECEE 100%);
+  --bg-canvas: #F7F7F8;
   --bg-nav: #FFFFFF;
   --bg-surface: #FFFFFF;
-  --bg-raised: #F1F5F9;
-  --bg-interactive: #E2E8F0;
+  --bg-raised: #F4F4F6;
+  --bg-interactive: #E5E5E8;
   --bg-popover: #FFFFFF;
-  --border-subtle: rgba(148, 163, 184, 0.22);
-  --border-medium: rgba(148, 163, 184, 0.38);
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-medium: rgba(0, 0, 0, 0.14);
+  --text-primary: #151618;
+  --text-secondary: #52525B;
+  --text-muted: #71717A;
   --accent-pink: #EC4899;
   --accent-sky: #38BDF8;
 }
 
 .dark {
-  --bg-canvas: #090B0E;
-  --bg-nav: #0E1015;
-  --bg-surface: #14171F;
-  --bg-raised: #1B1E28;
-  --bg-interactive: #242936;
-  --bg-popover: #181B24;
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.16);
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --canvas-gradient: linear-gradient(180deg, #18191B 0%, #121315 45%, #0A0A0C 100%);
+  --bg-canvas: #0E0F11;
+  --bg-nav: #111214;
+  --bg-surface: #141517;
+  --bg-raised: #1C1D20;
+  --bg-interactive: #24252A;
+  --bg-popover: #161719;
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-medium: rgba(255, 255, 255, 0.14);
+  --text-primary: #EDEDED;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
   --accent-pink: #EC4899;
   --accent-sky: #38BDF8;
 }
@@ -46,8 +49,19 @@ body {
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  background-image: var(--canvas-gradient);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-color: var(--bg-canvas);
   color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.app-canvas-bg {
+  background-image: var(--canvas-gradient);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: var(--bg-canvas);
 }
 
 /* Restrained, minimal scrollbars */
@@ -184,38 +198,38 @@ body {
 
 .tactile-active-nav {
   position: relative;
-  color: #0F172A !important;
+  color: #151618 !important;
   background: #FFFFFF;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08), inset 0 1px 0 0 #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06), inset 0 1px 0 0 #FFFFFF;
 }
 
 .dark .tactile-active-nav {
   color: #FFFFFF !important;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
 }
 
 /* Double Layer Shell (Reference 1 & 2) */
 .double-layer-outer {
-  background: rgba(15, 23, 42, 0.025);
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 20px;
   padding: 8px;
 }
 .dark .double-layer-outer {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .double-layer-inner {
   background: #FFFFFF;
   border-radius: 14px;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 }
 .dark .double-layer-inner {
-  background: #14171F;
+  background: #141517;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.45);
 }
@@ -228,15 +242,15 @@ body {
   padding: 6px 12px;
   border-radius: 9999px;
   background: #FFFFFF;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
   font-size: 12px;
   font-weight: 500;
   transition: all 180ms ease;
 }
 .dark .file-pill {
-  background: #1B1E28;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1A1B1E;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 .file-pill:hover {
@@ -259,14 +273,14 @@ body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   font-weight: 700;
-  background-color: #0F172A;
-  color: #F8FAFC;
+  background-color: #151618;
+  color: #FFFFFF;
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 .dark .badge-count {
-  background-color: rgba(255, 255, 255, 0.12);
-  color: #F8FAFC;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #EDEDED;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* Smooth surface transition */

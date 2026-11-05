@@ -21,18 +21,18 @@ export default function App() {
   }, [isSidebarCollapsed]);
 
   return (
-    <div className="min-h-screen bg-canvas-light dark:bg-canvas-dark text-slate-900 dark:text-slate-100 flex transition-colors selection:bg-pink-500/20 selection:text-pink-900 dark:selection:text-pink-200">
+    <div className="min-h-screen app-canvas-bg text-slate-900 dark:text-slate-100 flex transition-colors selection:bg-pink-500/20 selection:text-pink-900 dark:selection:text-pink-200">
       {/* Collapsible Left Navigation Rail */}
       <Sidebar 
         isCollapsed={isSidebarCollapsed} 
         setIsCollapsed={setIsSidebarCollapsed} 
       />
 
-      {/* Main Workspace Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main Workspace Area - Connected directly to the subtle vertical gradient */}
+      <div className="flex-1 flex flex-col min-w-0 bg-transparent">
         <Header />
         
-        <main className="flex-1 p-6 md:p-8 max-w-full overflow-y-auto">
+        <main className="flex-1 p-6 md:p-8 max-w-full overflow-y-auto bg-transparent">
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/inspections/new" element={<NewInspection />} />

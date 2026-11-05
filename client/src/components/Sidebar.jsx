@@ -26,19 +26,19 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
 
   return (
     <aside 
-      className={`relative shrink-0 bg-white dark:bg-[#0E1015] border-r border-slate-200/80 dark:border-white/5 flex flex-col justify-between h-screen sticky top-0 transition-all duration-200 select-none z-30 ${
+      className={`relative shrink-0 bg-white/70 dark:bg-[#111214]/80 backdrop-blur-xl border-r border-black/[0.06] dark:border-white/[0.06] flex flex-col justify-between h-screen sticky top-0 transition-all duration-200 select-none z-30 ${
         isCollapsed ? 'w-20' : 'w-64'
       }`}
     >
       <div>
         {/* Top Header: Responsive Interactive BUSTD Logo & Collapse Toggle */}
-        <div className={`p-4 pb-3 flex items-center justify-between border-b border-slate-200/80 dark:border-white/5 ${isCollapsed ? 'justify-center' : ''}`}>
+        <div className={`p-4 pb-3 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.06] ${isCollapsed ? 'justify-center' : ''}`}>
           <BustdLogo collapsed={isCollapsed} showTagline={!isCollapsed} />
 
           {!isCollapsed && (
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               title="Collapse Sidebar"
             >
               <ChevronsLeft className="w-4 h-4" />
@@ -190,7 +190,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       </div>
 
       {/* Bottom Area: Clean Demo User Profile */}
-      <div className="p-3 border-t border-slate-200/80 dark:border-white/5">
+      <div className="p-3 border-t border-black/[0.06] dark:border-white/[0.06]">
         <div className={`flex items-center gap-2.5 p-1.5 rounded-xl ${isCollapsed ? 'justify-center' : ''}`}>
           <div className="w-8 h-8 rounded-full bg-gradient-bustd text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
             QA

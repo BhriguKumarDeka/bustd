@@ -88,8 +88,8 @@ export default function Overview() {
       {/* Narrative Hero Banner (Tag removed per user instruction 3) */}
       <section className="relative rounded-3xl overflow-hidden p-6 sm:p-9 bg-slate-900 text-white shadow-soft-lg noisy-overlay border border-slate-800">
         {/* Soft Multi-hue Glow Background */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-gradient-bustd opacity-25 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-20 w-64 h-64 rounded-full bg-[#38BDF8] opacity-15 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-gradient-bustd opacity-20 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-20 w-64 h-64 rounded-full bg-pink-500/10 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-2xl space-y-3.5">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white leading-tight">
