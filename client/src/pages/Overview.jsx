@@ -90,9 +90,54 @@ export default function Overview() {
     >
       {/* Narrative Hero Banner */}
       <section className="relative rounded-3xl overflow-hidden p-6 sm:p-9 bg-surface-raised text-primary shadow-soft-md noisy-overlay border border-subtle">
-        {/* Soft Multi-hue Glow Background */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-gradient-bustd opacity-15 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-20 w-64 h-64 rounded-full bg-pink-500/10 blur-3xl pointer-events-none" />
+        {/* Animated Paper Shader Mesh Gradient (Simple, subtle, slow infinite motion) */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Fluid Blob 1 - Top Right: Magenta & Orange Drift */}
+          <motion.div
+            animate={{
+              x: [0, 35, -20, 0],
+              y: [0, -25, 20, 0],
+              scale: [1, 1.15, 0.95, 1],
+              rotate: [0, 35, -15, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-gradient-to-br from-pink-500/25 via-purple-500/20 to-orange-400/20 blur-3xl opacity-75 dark:opacity-45"
+          />
+
+          {/* Fluid Blob 2 - Bottom Left: Sky Blue & Violet Ambient Surge */}
+          <motion.div
+            animate={{
+              x: [0, -30, 25, 0],
+              y: [0, 25, -20, 0],
+              scale: [1, 1.18, 0.92, 1],
+              rotate: [0, -25, 30, 0],
+            }}
+            transition={{
+              duration: 24,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute -bottom-28 -left-12 w-[420px] h-[340px] rounded-full bg-gradient-to-tr from-sky-400/25 via-indigo-500/20 to-pink-500/15 blur-3xl opacity-70 dark:opacity-40"
+          />
+
+          {/* Fluid Blob 3 - Center Pulse: Gentle Breathing Core */}
+          <motion.div
+            animate={{
+              scale: [0.92, 1.12, 0.92],
+              opacity: [0.15, 0.32, 0.15],
+            }}
+            transition={{
+              duration: 16,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute top-1/4 left-1/3 w-80 h-80 rounded-full bg-gradient-to-r from-violet-500/15 via-pink-400/15 to-amber-400/10 blur-3xl"
+          />
+        </div>
 
         <div className="relative z-10 max-w-2xl space-y-3.5">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-primary leading-tight">
