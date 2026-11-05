@@ -85,17 +85,17 @@ export default function InspectionHistory() {
       {/* Header Context Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
             Inspection Archive &amp; Audit Records
           </h2>
-          <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Historical packaging compliance audits, spatial evidence logs, and official certificates.
           </p>
         </div>
 
         <button
           onClick={() => navigate('/inspections/new')}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold self-start sm:self-auto shadow-sm transition-opacity"
+          className="btn-shimmer inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold self-start sm:self-auto shadow-sm transition-opacity"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>New Inspection</span>
@@ -107,13 +107,13 @@ export default function InspectionHistory() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
           {/* Search Input */}
           <div className="relative w-full md:w-80">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-olive-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search by SKU, Product, or ID..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none focus:border-pink-500"
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:outline-none focus:border-pink-500"
             />
           </div>
 
@@ -130,8 +130,8 @@ export default function InspectionHistory() {
                 onClick={() => setFilterOutcome(f.id)}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-all shrink-0 ${
                   filterOutcome === f.id
-                    ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
-                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
                 }`}
               >
                 {f.label}
@@ -140,7 +140,7 @@ export default function InspectionHistory() {
 
             <button
               onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-              className="p-1.5 rounded-lg text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand border border-black/5 dark:border-white/5 shrink-0"
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/5 shrink-0"
               title={`Sorting ${sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}`}
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
@@ -152,17 +152,17 @@ export default function InspectionHistory() {
       {/* Inspections List */}
       <DoubleLayerCard innerClassName="p-0 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-olive-400 space-y-2">
+          <div className="p-12 text-center text-xs text-slate-400 space-y-2">
             <div className="w-6 h-6 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
             <p>Loading inspection records...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <FileText className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
-            <p className="text-xs text-olive-500">No inspection records match your query.</p>
+            <FileText className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600" />
+            <p className="text-xs text-slate-500">No inspection records match your query.</p>
           </div>
         ) : (
-          <div className="divide-y divide-black/5 dark:divide-white/5">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {filtered.map(item => {
               const issues = item.summary?.potentialIssues || 0;
               const reviews = item.summary?.reviewRequired || 0;
@@ -172,23 +172,23 @@ export default function InspectionHistory() {
                 <div
                   key={item.id}
                   onClick={() => navigate(`/inspections/${item.id}`)}
-                  className="p-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] cursor-pointer transition-colors group"
+                  className="p-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 dark:hover:bg-white/[0.02] cursor-pointer transition-colors group"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                      <span className="font-mono text-xs font-bold text-slate-900 dark:text-white group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                         {item.inspectionNumber}
                       </span>
-                      <span className="text-olive-400 text-xs">•</span>
-                      <span className="text-xs font-medium text-palette-dark dark:text-palette-sand">
+                      <span className="text-slate-300 dark:text-slate-600 text-xs">•</span>
+                      <span className="text-xs font-medium text-slate-900 dark:text-white">
                         {item.productSnapshot?.name}
                       </span>
-                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400">
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400">
                         {item.productSnapshot?.sku}
                       </span>
                     </div>
 
-                    <div className="text-[11px] text-olive-500 dark:text-olive-400 flex items-center gap-3 font-mono">
+                    <div className="text-[11px] text-slate-400 flex items-center gap-3 font-mono">
                       <span>{new Date(item.createdAt).toLocaleDateString()}</span>
                       <span>•</span>
                       <span>{item.assets?.length || 0} artwork proof(s)</span>
@@ -222,13 +222,13 @@ export default function InspectionHistory() {
                     <button
                       onClick={e => handleDownloadPdf(e, item)}
                       disabled={downloadingId === item.id}
-                      className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                       title="Download PDF Certificate"
                     >
                       <Download className="w-3.5 h-3.5" />
                     </button>
 
-                    <ChevronRight className="w-4 h-4 text-olive-400 group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
               );

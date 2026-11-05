@@ -77,17 +77,17 @@ export default function RuleLibrary() {
       {/* Header Context Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
             Deterministic Compliance Rule Library
           </h2>
-          <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
-            Machine-checkable statutory declarations and SKU master constraints under Legal Metrology Rules 2011.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Machine-checkable statutory declarations and SKU master constraints.
           </p>
         </div>
 
         {/* Legal Disclaimer Pill */}
-        <div className="p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/5 dark:border-white/5 text-olive-600 dark:text-olive-300 text-xs flex items-center gap-2 max-w-md">
-          <Info className="w-4 h-4 shrink-0 text-olive-500" />
+        <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/5 text-slate-600 dark:text-slate-300 text-xs flex items-center gap-2 max-w-md">
+          <Info className="w-4 h-4 shrink-0 text-slate-500" />
           <span className="text-[11px] leading-tight">
             Illustrative demo rules for capstone evaluation. Only enabled rules evaluate during an inspection run.
           </span>
@@ -98,13 +98,13 @@ export default function RuleLibrary() {
       <DoubleLayerCard innerClassName="p-3">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
           <div className="relative w-full md:w-80">
-            <Search className="w-3.5 h-3.5 text-olive-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Search rules by ID, citation, or description..."
-              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none focus:border-pink-500"
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-100/70 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:outline-none focus:border-pink-500"
             />
           </div>
 
@@ -115,8 +115,8 @@ export default function RuleLibrary() {
                 onClick={() => setSelectedPillar(p.id)}
                 className={`px-3 py-1 rounded-full text-xs font-medium transition-all shrink-0 ${
                   selectedPillar === p.id
-                    ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
-                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
                 }`}
               >
                 {p.label}
@@ -129,45 +129,45 @@ export default function RuleLibrary() {
       {/* Rules Table / Cards */}
       <DoubleLayerCard innerClassName="p-0 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-olive-400 space-y-2">
+          <div className="p-12 text-center text-xs text-slate-400 space-y-2">
             <div className="w-6 h-6 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
             <p>Loading deterministic rule library...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-xs text-olive-500">
+          <div className="p-12 text-center text-xs text-slate-500">
             No rules match your filter criteria.
           </div>
         ) : (
-          <div className="divide-y divide-black/5 dark:divide-white/5">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {filtered.map(rule => {
               const isEnabled = rule.status === 'enabled';
               return (
                 <div
                   key={rule.ruleId}
-                  className="p-4 sm:px-5 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                  className="p-4 sm:px-5 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors"
                 >
                   <div className="space-y-1.5 flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono font-bold text-palette-dark dark:text-palette-sand">
+                      <span className="font-mono font-bold text-slate-900 dark:text-white">
                         {rule.ruleId}
                       </span>
-                      <span className="text-olive-400">•</span>
-                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
+                      <span className="text-slate-300 dark:text-slate-600">•</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
                         {rule.name}
                       </span>
-                      <span className="px-2 py-0.2 rounded-full text-[10px] font-mono uppercase bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400">
+                      <span className="px-2 py-0.2 rounded-full text-[10px] font-mono uppercase bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400">
                         {rule.pillar.replace(/_/g, ' ')}
                       </span>
-                      <span className="text-olive-400 font-mono text-[10px]">
+                      <span className="text-slate-400 font-mono text-[10px]">
                         v{rule.version}
                       </span>
                     </div>
 
-                    <p className="text-olive-600 dark:text-olive-300 text-[11px] leading-relaxed max-w-3xl">
+                    <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed max-w-3xl">
                       {rule.description}
                     </p>
 
-                    <div className="flex items-center gap-4 text-[10px] font-mono text-olive-400">
+                    <div className="flex items-center gap-4 text-[10px] font-mono text-slate-400">
                       <span>Legal Citation: {rule.legalReference}</span>
                       <span>•</span>
                       <span className="capitalize">Target: {rule.applicability}</span>
@@ -177,14 +177,14 @@ export default function RuleLibrary() {
                   <div className="flex items-center gap-4 shrink-0 self-start md:self-auto">
                     <button
                       onClick={() => setSelectedRuleDetail(rule)}
-                      className="text-xs text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand underline font-mono"
+                      className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white underline font-mono"
                     >
                       Inspect Logic
                     </button>
 
                     <button
                       onClick={() => handleToggleStatus(rule)}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-black/5 dark:border-white/5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-slate-200/80 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                     >
                       {isEnabled ? (
                         <>
@@ -195,8 +195,8 @@ export default function RuleLibrary() {
                         </>
                       ) : (
                         <>
-                          <ToggleLeft className="w-5 h-5 text-olive-400" />
-                          <span className="font-mono text-[10px] uppercase text-olive-400">
+                          <ToggleLeft className="w-5 h-5 text-slate-400" />
+                          <span className="font-mono text-[10px] uppercase text-slate-400">
                             DISABLED
                           </span>
                         </>
@@ -219,31 +219,31 @@ export default function RuleLibrary() {
       >
         {selectedRuleDetail && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] space-y-2">
-              <span className="text-[10px] font-mono uppercase text-olive-400 block">Description &amp; Intent</span>
-              <p className="text-palette-dark dark:text-palette-sand leading-relaxed">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.04] space-y-2">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block">Description &amp; Intent</span>
+              <p className="text-slate-900 dark:text-white leading-relaxed">
                 {selectedRuleDetail.description}
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04]">
-                <span className="text-[10px] font-mono uppercase text-olive-400 block">Pillar Category</span>
-                <span className="font-semibold text-palette-dark dark:text-palette-sand capitalize">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.04]">
+                <span className="text-[10px] font-mono uppercase text-slate-400 block">Pillar Category</span>
+                <span className="font-semibold text-slate-900 dark:text-white capitalize">
                   {selectedRuleDetail.pillar.replace(/_/g, ' ')}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04]">
-                <span className="text-[10px] font-mono uppercase text-olive-400 block">Validation Engine Type</span>
-                <span className="font-mono text-palette-dark dark:text-palette-sand">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.04]">
+                <span className="text-[10px] font-mono uppercase text-slate-400 block">Validation Engine Type</span>
+                <span className="font-mono text-slate-900 dark:text-white">
                   {selectedRuleDetail.validationType}
                 </span>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] space-y-1">
-              <span className="text-[10px] font-mono uppercase text-olive-400 block">Statutory Reference</span>
-              <p className="font-mono text-[11px] text-palette-dark dark:text-palette-sand">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.04] space-y-1">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block">Statutory Reference</span>
+              <p className="font-mono text-[11px] text-slate-900 dark:text-white">
                 {selectedRuleDetail.legalReference}
               </p>
             </div>
@@ -251,7 +251,7 @@ export default function RuleLibrary() {
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setSelectedRuleDetail(null)}
-                className="px-4 py-2 rounded-xl bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark text-xs font-semibold"
+                className="btn-shimmer px-4 py-2 rounded-xl bg-slate-900 dark:bg-white dark:text-slate-900 text-white text-xs font-semibold"
               >
                 Close Rule Specs
               </button>

@@ -238,25 +238,30 @@ export default function InspectionDetail() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/history')}
-              className="text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="text-slate-400 hover:text-slate-900 dark:hover:text-white p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
               title="Return to History"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand">
+                <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
                   {inspection.inspectionNumber}
                 </span>
-                <span className="text-olive-400 text-xs">•</span>
-                <span className="text-xs font-semibold text-palette-dark dark:text-palette-sand truncate max-w-xs sm:max-w-md">
+                <span className="text-slate-300 dark:text-slate-600 text-xs">•</span>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
                   {product.name}
                 </span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 font-semibold">
                   {product.sku}
                 </span>
+                {inspection.packFormat && (
+                  <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-pink-500/10 text-pink-600 dark:text-pink-400 font-medium">
+                    {inspection.packFormat}
+                  </span>
+                )}
               </div>
-              <div className="text-[11px] text-olive-500 dark:text-olive-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-400 font-mono mt-0.5">
                 Inspector: {inspection.inspector?.name || 'QA Reviewer'} • {new Date(inspection.createdAt).toLocaleString()}
               </div>
             </div>
@@ -266,7 +271,7 @@ export default function InspectionDetail() {
           <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
             <button
               onClick={() => setFinalizeModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark text-xs font-semibold shadow-sm transition-all hover:opacity-95"
+              className="btn-shimmer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all hover:opacity-95"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Sign-Off Decision</span>
@@ -280,7 +285,7 @@ export default function InspectionDetail() {
             <button
               onClick={handleDownloadPdf}
               disabled={downloadingPdf}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-bustd text-white text-xs font-semibold shadow-glow-bustd transition-all hover:opacity-95 disabled:opacity-50"
+              className="btn-shimmer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-bustd text-white text-xs font-semibold shadow-glow-bustd transition-all hover:opacity-95 disabled:opacity-50"
             >
               <Download className="w-3.5 h-3.5" />
               <span>{downloadingPdf ? 'Exporting...' : 'Export PDF'}</span>
@@ -509,16 +514,23 @@ export default function InspectionDetail() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 ${
+                  className={`relative flex-1 py-1.5 px-2 rounded-xl font-medium transition-colors flex items-center justify-center gap-1.5 ${
                     activeTab === tab.id
-                      ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
-                      : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
+                      ? 'text-slate-900 dark:text-white font-semibold'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  <span>{tab.label}</span>
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="activeSubTabMorph"
+                      className="absolute inset-0 bg-white dark:bg-slate-800 rounded-xl shadow-soft-sm border border-slate-200/80 dark:border-white/10"
+                      transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{tab.label}</span>
                   {tab.badge !== undefined && (
-                    <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono ${
-                      activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-olive-400'
+                    <span className={`relative z-10 px-1.5 py-0.2 rounded text-[10px] font-mono ${
+                      activeTab === tab.id ? 'bg-pink-500/15 text-pink-600 dark:text-pink-400 font-bold' : 'bg-slate-100 dark:bg-white/10 text-slate-400'
                     }`}>
                       {tab.badge}
                     </span>

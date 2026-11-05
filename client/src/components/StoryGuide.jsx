@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Database, 
+  Box, 
   UploadCloud, 
   Scan, 
   CheckCircle, 
-  ChevronRight, 
   Sparkles,
   ArrowRight
 } from 'lucide-react';
-import { BRAND } from '../theme/brand';
 
 export default function StoryGuide({ onStartScan }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -25,6 +24,14 @@ export default function StoryGuide({ onStartScan }) {
     },
     {
       num: '02',
+      title: 'Pack Format Template',
+      role: '3D Pack Geometry',
+      icon: Box,
+      desc: 'Pre-selects structural format (Tuck-End Carton, Pillow Pouch, Bottle Wrap) so AI knows label directions and panel mapping.',
+      detail: 'Prevents spatial confusion by defining PDP front display, back informational panels, and flap boundaries before OCR.'
+    },
+    {
+      num: '03',
       title: 'Artwork Panel Ingestion',
       role: 'Physical Evidence',
       icon: UploadCloud,
@@ -32,15 +39,15 @@ export default function StoryGuide({ onStartScan }) {
       detail: 'Actual artwork images are rendered directly on the inspection canvas with millimeter-accurate spatial bounding polygons.'
     },
     {
-      num: '03',
+      num: '04',
       title: 'Metrology Intelligence',
       role: 'Deterministic Engine',
       icon: Scan,
-      desc: 'Evaluates statutory Legal Metrology rules, checks font legibility, and flags mismatches as Red Flags.',
+      desc: 'Evaluates compliance rules, checks font legibility, and flags mismatches as Red Flags.',
       detail: 'Missing text due to glare is flagged as "Review Required" — absence is never assumed from missing evidence.'
     },
     {
-      num: '04',
+      num: '05',
       title: 'Auditor Decision Support',
       role: 'Traceable Sign-Off',
       icon: CheckCircle,
@@ -52,18 +59,18 @@ export default function StoryGuide({ onStartScan }) {
   return (
     <div className="double-layer-outer">
       <div className="double-layer-inner p-5 sm:p-6 space-y-5">
-        {/* Header with Radiant Sparkle */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-black/5 dark:border-white/5">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-white/5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-bustd flex items-center justify-center text-white shadow-sm shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-gradient-bustd flex items-center justify-center text-white shadow-sm shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold tracking-tight text-palette-dark dark:text-palette-sand">
+              <h3 className="text-sm font-semibold tracking-tight text-slate-900 dark:text-white">
                 The BUSTD Inspection Story
               </h3>
-              <p className="text-xs text-olive-500 dark:text-olive-400">
-                How AI and packaging auditors collaborate in 4 transparent stages
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                How AI and packaging auditors collaborate in 5 transparent stages
               </p>
             </div>
           </div>
@@ -76,8 +83,8 @@ export default function StoryGuide({ onStartScan }) {
                 onClick={() => setActiveStep(idx)}
                 className={`px-2.5 py-1 rounded-full text-[11px] font-mono transition-all ${
                   activeStep === idx
-                    ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-bold shadow-sm'
-                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'
                 }`}
               >
                 {s.num}
@@ -86,8 +93,8 @@ export default function StoryGuide({ onStartScan }) {
           </div>
         </div>
 
-        {/* 4 Step Visual Flow Strip */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* 5 Step Visual Flow Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
           {steps.map((s, idx) => {
             const Icon = s.icon;
             const isSelected = activeStep === idx;
@@ -96,32 +103,32 @@ export default function StoryGuide({ onStartScan }) {
                 key={s.num}
                 onClick={() => setActiveStep(idx)}
                 whileHover={{ y: -1 }}
-                className={`p-3.5 rounded-xl cursor-pointer transition-all relative text-left ${
+                className={`p-3 rounded-xl cursor-pointer transition-all relative text-left border ${
                   isSelected
-                    ? 'bg-palette-dark text-palette-sand dark:bg-[#2A2922] dark:text-palette-sand shadow-sm ring-1 ring-black/10 dark:ring-white/10'
-                    : 'bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/[0.04] dark:hover:bg-white/[0.04]'
+                    ? 'bg-slate-900 text-white dark:bg-slate-800 dark:text-white shadow-sm border-slate-900 dark:border-white/20'
+                    : 'bg-slate-50/70 dark:bg-white/[0.02] border-slate-200/70 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15'
                 }`}
               >
                 {/* Step badge */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`text-[10px] font-mono font-bold tracking-wider uppercase ${isSelected ? 'text-pink-300' : 'text-olive-500 dark:text-olive-400'}`}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className={`text-[10px] font-mono font-bold tracking-wider uppercase ${isSelected ? 'text-pink-400' : 'text-slate-400'}`}>
                     STAGE {s.num}
                   </span>
-                  <Icon className={`w-4 h-4 ${isSelected ? 'text-sky-300' : 'text-olive-400'}`} />
+                  <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-sky-300' : 'text-slate-400'}`} />
                 </div>
 
-                <div className={`text-xs font-semibold leading-snug ${isSelected ? 'text-white' : 'text-palette-dark dark:text-palette-sand'}`}>
+                <div className={`text-xs font-semibold leading-snug line-clamp-1 ${isSelected ? 'text-white' : 'text-slate-800 dark:text-slate-200'}`}>
                   {s.title}
                 </div>
 
-                <div className={`text-[11px] mt-0.5 truncate ${isSelected ? 'text-palette-sand/70' : 'text-olive-500 dark:text-olive-400'}`}>
+                <div className={`text-[10px] mt-0.5 truncate ${isSelected ? 'text-slate-300' : 'text-slate-500 dark:text-slate-400'}`}>
                   {s.role}
                 </div>
 
                 {isSelected && (
                   <motion.div
                     layoutId="storyActiveIndicator"
-                    className="absolute -bottom-1 left-4 right-4 h-0.5 bg-gradient-bustd rounded-full"
+                    className="absolute -bottom-1 left-3 right-3 h-0.5 bg-gradient-bustd rounded-full"
                   />
                 )}
               </motion.div>
@@ -137,16 +144,16 @@ export default function StoryGuide({ onStartScan }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+            className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
           >
             <div className="space-y-1">
-              <span className="font-semibold text-palette-dark dark:text-palette-sand">
+              <span className="font-semibold text-slate-900 dark:text-white">
                 {steps[activeStep].title}:
               </span>{' '}
-              <span className="text-olive-600 dark:text-olive-300">
+              <span className="text-slate-600 dark:text-slate-300">
                 {steps[activeStep].desc}
               </span>
-              <p className="text-[11px] text-olive-500 dark:text-olive-400 italic">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">
                 {steps[activeStep].detail}
               </p>
             </div>
@@ -155,7 +162,7 @@ export default function StoryGuide({ onStartScan }) {
               <button
                 type="button"
                 onClick={onStartScan}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-gradient-bustd shrink-0 shadow-sm hover:opacity-95 transition-opacity"
+                className="btn-shimmer inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-gradient-bustd shrink-0 shadow-sm hover:opacity-95 transition-opacity"
               >
                 <span>Try Demo Scan</span>
                 <ArrowRight className="w-3.5 h-3.5" />

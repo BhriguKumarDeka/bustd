@@ -1,11 +1,10 @@
 // BUSTD Brand Identity & Visual Design Tokens
-// Inspired by modern editorial design, double-layer interfaces, and the radiant multi-hue noise gradient.
+// Modern editorial design, cool slate/obsidian palette, and radiant multi-hue noise gradient.
 
 export const BRAND = {
   name: 'BUSTD',
   tagline: 'Spot the red flags.',
   version: 'v1.2.0',
-  standard: 'Legal Metrology (Packaged Commodities) Rules 2011 & SKU Master Integrity',
   
   // Vibrant multi-hue gradient transition from reference snapshot (Image 3)
   // Sky Blue -> Radiant Indigo -> Magenta/Pink -> Tangerine Orange
@@ -17,15 +16,16 @@ export const BRAND = {
     glow: '0 0 24px -2px rgba(236, 72, 153, 0.45), 0 0 10px -1px rgba(56, 189, 248, 0.35)',
   },
 
-  // Color tokens from the specification
+  // Color tokens: Clean cool slate & obsidian
   palette: {
-    dark: '#3A382F',     // Deep warm olive-charcoal
-    olive: '#615E50',    // Muted warm olive/sage
-    cream: '#E0DDBD',    // Warm alabaster cream
-    sand: '#F7F5EC',     // Warm canvas light
+    dark: '#0F172A',         // Slate 900
+    slateMuted: '#475569',   // Slate 600
+    slateLight: '#F1F5F9',   // Slate 100
+    canvasLight: '#F8FAFC',  // Slate 50
+    canvasDark: '#090B0E',   // Deep obsidian
     pureWhite: '#FFFFFF',
-    darkSurface: '#1C1B17',
-    darkRaised: '#24231E',
+    darkSurface: '#14171F',
+    darkRaised: '#1B1E28',
   },
 
   // Tri-State evaluation tokens
@@ -33,33 +33,33 @@ export const BRAND = {
     potential_issue: {
       label: 'Potential Issue',
       shortLabel: 'Issue',
-      color: '#DC2626',
+      color: '#EF4444',
       bgLight: 'bg-red-500/10',
-      textLight: 'text-red-700 dark:text-red-400',
+      textLight: 'text-red-600 dark:text-red-400',
       borderLight: 'border-red-500/25',
       dot: 'bg-red-500',
     },
     review_required: {
       label: 'Review Required',
       shortLabel: 'Review',
-      color: '#D97706',
+      color: '#F59E0B',
       bgLight: 'bg-amber-500/10',
-      textLight: 'text-amber-800 dark:text-amber-400',
+      textLight: 'text-amber-700 dark:text-amber-400',
       borderLight: 'border-amber-500/25',
       dot: 'bg-amber-500',
     },
     no_issue_detected: {
       label: 'No Issue Detected',
       shortLabel: 'Passed',
-      color: '#16A34A',
+      color: '#10B981',
       bgLight: 'bg-emerald-500/10',
-      textLight: 'text-emerald-700 dark:text-emerald-400',
+      textLight: 'text-emerald-600 dark:text-emerald-400',
       borderLight: 'border-emerald-500/25',
       dot: 'bg-emerald-500',
     }
   },
 
-  // Inspection Journey Stages for Storytelling
+  // Inspection Journey Stages
   stages: [
     {
       step: '01',
@@ -69,18 +69,24 @@ export const BRAND = {
     },
     {
       step: '02',
+      title: 'Pack Format Template',
+      subtitle: 'Dieline geometry & panels',
+      desc: 'Selects the exact packaging structure (e.g. Tuck-End Carton, Pillow Pouch, Bottle Wrap) so AI knows label directions and panel mapping.',
+    },
+    {
+      step: '03',
       title: 'Artwork Ingestion',
       subtitle: 'Multi-panel packaging proofs',
       desc: 'Ingests high-resolution dielines across PDP front, back, and side panels in PNG, JPG, or PDF.',
     },
     {
-      step: '03',
+      step: '04',
       title: 'Spatial Metrology AI',
       subtitle: 'Text extraction & OCR confidence',
       desc: 'Normalizes character bounding polygons and scores OCR readability. Low confidence is flagged as Review Required, never assumed absent.',
     },
     {
-      step: '04',
+      step: '05',
       title: 'Human Sign-Off',
       subtitle: 'Traceable compliance audit',
       desc: 'Senior packaging auditors review spatial evidence, confirm or dismiss red flags with reasons, and generate signed PDF certificates.',

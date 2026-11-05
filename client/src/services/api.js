@@ -90,6 +90,13 @@ export const api = {
     });
   },
 
+  async loadPreset(inspectionId, preset = 'pen') {
+    return request(`/inspections/${inspectionId}/preset`, {
+      method: 'POST',
+      body: JSON.stringify({ preset })
+    });
+  },
+
   async uploadAssets(inspectionId, files, panel = 'front') {
     const formData = new FormData();
     formData.append('panel', panel);

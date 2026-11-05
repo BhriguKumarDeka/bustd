@@ -4,34 +4,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   BUSTD COLOR SYSTEM: Crisp Slate / Deep Obsidian / Cool Gray / Blue-Pink
+   (Completely replaced all warm/olive tones with sharp modern neutrals)
+   ========================================================================== */
+
 :root {
-  --bg-canvas: #F7F5EC;
-  --bg-nav: #EEEADF;
+  --bg-canvas: #F8FAFC;
+  --bg-nav: #FFFFFF;
   --bg-surface: #FFFFFF;
-  --bg-raised: #FAF8F2;
-  --bg-interactive: #E6E1D2;
+  --bg-raised: #F1F5F9;
+  --bg-interactive: #E2E8F0;
   --bg-popover: #FFFFFF;
-  --border-subtle: rgba(97, 94, 80, 0.12);
-  --border-medium: rgba(97, 94, 80, 0.25);
-  --text-primary: #3A382F;
-  --text-secondary: #615E50;
-  --text-muted: #878370;
-  --palette-cream: #E0DDBD;
+  --border-subtle: rgba(148, 163, 184, 0.22);
+  --border-medium: rgba(148, 163, 184, 0.38);
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --accent-pink: #EC4899;
+  --accent-sky: #38BDF8;
 }
 
 .dark {
-  --bg-canvas: #161512;
-  --bg-nav: #1C1B17;
-  --bg-surface: #24231E;
-  --bg-raised: #2D2B24;
-  --bg-interactive: #3A382F;
-  --bg-popover: #333129;
-  --border-subtle: rgba(224, 221, 189, 0.08);
-  --border-medium: rgba(224, 221, 189, 0.16);
-  --text-primary: #F7F5EC;
-  --text-secondary: #C7C3A8;
-  --text-muted: #918D77;
-  --palette-cream: #E0DDBD;
+  --bg-canvas: #090B0E;
+  --bg-nav: #0E1015;
+  --bg-surface: #14171F;
+  --bg-raised: #1B1E28;
+  --bg-interactive: #242936;
+  --bg-popover: #181B24;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --accent-pink: #EC4899;
+  --accent-sky: #38BDF8;
 }
 
 body {
@@ -52,22 +59,22 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(97, 94, 80, 0.2);
+  background: rgba(148, 163, 184, 0.25);
   border-radius: 9999px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: rgba(224, 221, 189, 0.2);
+  background: rgba(255, 255, 255, 0.15);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(97, 94, 80, 0.35);
+  background: rgba(148, 163, 184, 0.4);
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(224, 221, 189, 0.35);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* ==========================================================================
-   VIBRANT ACCENT GRADIENT & NOISE SYSTEM (From Reference Snapshot)
-   Sky Blue -> Indigo/Violet -> Magenta -> Tangerine Orange
+   VIBRANT ACCENT GRADIENT & NOISE SYSTEM
+   Sky Blue (#38BDF8) -> Indigo (#818CF8) -> Magenta (#EC4899) -> Orange (#F97316)
    ========================================================================== */
 
 .bg-gradient-bustd {
@@ -100,7 +107,69 @@ body {
   border-radius: inherit;
 }
 
-/* Active navigation tab glowing indicator (Replaces lime with radiant gradient) */
+/* ==========================================================================
+   BUTTON SHIMMER & PROGRESS SHIMMER ANIMATIONS
+   ========================================================================== */
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.32) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+  transform: translateX(100%);
+}
+
+/* Progress bar animated shimmer flare */
+@keyframes progress-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.progress-bar-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: progress-shimmer 2s infinite linear;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ACTIVE NAVIGATION PILL (Fixed High Contrast & Legibility in Dark Mode)
+   ========================================================================== */
+
 .glowing-indicator {
   position: absolute;
   left: -8px;
@@ -110,42 +179,45 @@ body {
   height: 22px;
   border-radius: 0 4px 4px 0;
   background: linear-gradient(180deg, #38BDF8 0%, #EC4899 50%, #F97316 100%);
-  box-shadow: 0 0 12px 2px rgba(236, 72, 153, 0.65), 0 0 4px 1px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 14px 2px rgba(236, 72, 153, 0.7), 0 0 5px 1px rgba(56, 189, 248, 0.45);
 }
 
-/* Tactile Active Nav Pill */
 .tactile-active-nav {
   position: relative;
-  background: linear-gradient(135deg, rgba(58, 56, 47, 0.85) 0%, rgba(37, 36, 30, 0.95) 100%);
-  border: 1px solid rgba(224, 221, 189, 0.14);
-  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  color: #0F172A !important;
+  background: #FFFFFF;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08), inset 0 1px 0 0 #FFFFFF;
 }
-:not(.dark) .tactile-active-nav {
-  background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F2 100%);
-  border: 1px solid rgba(97, 94, 80, 0.16);
-  box-shadow: 0 3px 10px -2px rgba(58, 56, 47, 0.08), inset 0 1px 0 0 #FFFFFF;
+
+.dark .tactile-active-nav {
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Double Layer Shell (Reference 1 & 2) */
 .double-layer-outer {
-  background: rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.025);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 20px;
   padding: 8px;
 }
 .dark .double-layer-outer {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .double-layer-inner {
   background: #FFFFFF;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgba(58, 56, 47, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
 }
 .dark .double-layer-inner {
-  background: #1F1E1A;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+  background: #14171F;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.45);
 }
 
 /* Reference 1 Attached File Tag Pill */
@@ -156,23 +228,23 @@ body {
   padding: 6px 12px;
   border-radius: 9999px;
   background: #FFFFFF;
-  border: 1px solid rgba(97, 94, 80, 0.15);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
   font-size: 12px;
   font-weight: 500;
-  transition: all 150ms ease;
+  transition: all 180ms ease;
 }
 .dark .file-pill {
-  background: #25241E;
-  border: 1px solid rgba(224, 221, 189, 0.12);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  background: #1B1E28;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 .file-pill:hover {
-  border-color: rgba(97, 94, 80, 0.3);
+  border-color: rgba(236, 72, 153, 0.4);
   transform: translateY(-1px);
 }
 .dark .file-pill:hover {
-  border-color: rgba(224, 221, 189, 0.25);
+  border-color: rgba(236, 72, 153, 0.5);
 }
 
 /* Count Badge */
@@ -187,18 +259,19 @@ body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   font-weight: 700;
-  background-color: #F7F5EC;
-  color: #3A382F;
+  background-color: #0F172A;
+  color: #F8FAFC;
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
-:not(.dark) .badge-count {
-  background-color: #3A382F;
-  color: #F7F5EC;
+.dark .badge-count {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Smooth surface transition */
 .transition-surface {
-  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Print Stylesheet */

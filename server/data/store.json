@@ -100,10 +100,11 @@
         "createdAt": "2026-10-27T09:30:00.000Z",
         "updatedAt": "2026-10-27T09:30:00.000Z"
       },
+      "packFormat": "Tuck-End Carton",
       "status": "finalized",
       "assets": [
         {
-          "assetId": "asset_btzp6j",
+          "assetId": "asset_sft3im",
           "panel": "front",
           "originalFilename": "reynolds_045_pdp_front.svg",
           "storedPath": "/uploads/pen_pdp_front.svg",
@@ -121,7 +122,7 @@
           }
         },
         {
-          "assetId": "asset_0ihp2w",
+          "assetId": "asset_qe22q0",
           "panel": "back",
           "originalFilename": "reynolds_045_info_back.svg",
           "storedPath": "/uploads/pen_info_back.svg",
@@ -144,9 +145,9 @@
         "role": "Reviewer",
         "email": "qa.lead@bustd.internal"
       },
-      "id": "ins_3bwrixx",
-      "_id": "ins_3bwrixx",
-      "inspectionNumber": "INS-2026-1005",
+      "id": "ins_v9sgxri",
+      "_id": "ins_v9sgxri",
+      "inspectionNumber": "INS-2026-1011",
       "finalDecision": "returned_for_revision",
       "finalDecisionNotes": "Pre-production packaging dieline returned to agency for price and net count correction.",
       "findings": [
@@ -161,7 +162,7 @@
           "expectedValue": "Mandatory \"Inclusive of all taxes\" syntax with currency symbol",
           "detectedValue": "MRP Rs. 60.00 (INCL. OF ALL TAXES)",
           "explanation": "Statutory retail price declaration adheres to Legal Metrology Rule 6(1)(e) formatting criteria.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 24,
@@ -172,7 +173,7 @@
           "reviewDisposition": "dismissed",
           "dismissReason": "Acceptable promo sticker variant per legal notice",
           "reviewerNotes": "",
-          "reviewedAt": "2026-11-05T19:01:00.145Z",
+          "reviewedAt": "2026-11-05T19:46:11.263Z",
           "reviewedBy": "Senior Packaging QA Inspector"
         },
         {
@@ -186,7 +187,7 @@
           "expectedValue": "₹120.00 (SKU Master: CAM-EXM-KIT)",
           "detectedValue": "MRP Rs. 60.00 (INCL. OF ALL TAXES)",
           "explanation": "Printed packaging artwork displays ₹60.00, which conflicts with the authoritative ERP SKU master price of ₹120.00. This would cause an immediate commercial mismatch or pre-press defect.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 24,
@@ -197,7 +198,7 @@
           "reviewDisposition": "confirmed",
           "dismissReason": "",
           "reviewerNotes": "Verified mismatch with engineering master",
-          "reviewedAt": "2026-11-05T19:01:00.136Z",
+          "reviewedAt": "2026-11-05T19:46:11.257Z",
           "reviewedBy": "Senior Packaging QA Inspector"
         },
         {
@@ -211,7 +212,7 @@
           "expectedValue": "Mandatory standard count or SI unit per Legal Metrology Schedule",
           "detectedValue": "NET QUANTITY: 12 N (PENS)",
           "explanation": "Net quantity unit adheres to permissible statutory packaging conventions.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 38,
@@ -232,7 +233,7 @@
           "expectedValue": "1 Kit (4 Items) (SKU Master: CAM-EXM-KIT)",
           "detectedValue": "NET QUANTITY: 12 N (PENS)",
           "explanation": "Artwork specifies NET QUANTITY: 12 N (PENS) (12 units), but master record declares 1 Kit (4 Items) (4 units). Packaging would misrepresent actual pack contents.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 38,
@@ -253,7 +254,7 @@
           "expectedValue": "Registered corporate address including 6-digit postal PIN code",
           "detectedValue": "MFD. BY: REYNOLDS PENS INDIA PVT. LTD., PLOT NO. 12, INDUSTRIAL AREA, SECTOR 5, CHENNAI - 600001, TAMIL NADU, INDIA.",
           "explanation": "Mandatory manufacturer coordinates comply with Rule 6(1)(a) and include verified postal code.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 52,
@@ -274,7 +275,7 @@
           "expectedValue": "Legible Consumer Care Phone and Email Address (OCR Confidence ≥ 0.80)",
           "detectedValue": "FOR CONSUMER COMPLAINTS / FEEDBACK: CONTACT CUSTOMER CARE MGR PH: 1800-209-???? (UNREADABLE SMUDGE) EMAIL: [ILLEGIBLE]",
           "explanation": "OCR confidence for consumer-care region is 42% (< threshold 80%). The text appears smudged, blurry, or low contrast. In accordance with BUSTD safety rules, degraded evidence routes to human review rather than assuming absence.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 81,
@@ -295,7 +296,7 @@
           "expectedValue": "Country of Origin: India",
           "detectedValue": "COUNTRY OF ORIGIN: INDIA",
           "explanation": "Mandatory country of origin is conspicuously declared.",
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 70,
@@ -316,7 +317,7 @@
           "expectedValue": "Clear space margin ≥ 8mm with zero graphic encroachment",
           "detectedValue": "Isolated bounding box compliant with brand specifications",
           "explanation": "Primary trademark logo complies with minimum isolation bounding perimeter.",
-          "evidenceAssetId": "asset_btzp6j",
+          "evidenceAssetId": "asset_sft3im",
           "evidenceBox": {
             "x": 28,
             "y": 15,
@@ -337,7 +338,7 @@
           "expectedValue": "WCAG / Statutory legibility contrast ratio ≥ 4.5:1",
           "detectedValue": "Luminance contrast ratio 7.2:1 (Otsu thresholding)",
           "explanation": "Foreground declaration typography provides sufficient visual contrast against package background substrate.",
-          "evidenceAssetId": "asset_btzp6j",
+          "evidenceAssetId": "asset_sft3im",
           "evidenceBox": {
             "x": 5,
             "y": 5,
@@ -353,7 +354,7 @@
           "rawText": "Camlin Kokuyo",
           "confidence": 0.99,
           "isDegraded": false,
-          "evidenceAssetId": "asset_btzp6j",
+          "evidenceAssetId": "asset_sft3im",
           "evidenceBox": {
             "x": 28,
             "y": 15,
@@ -368,7 +369,7 @@
           "unit": "N",
           "confidence": 0.94,
           "isDegraded": false,
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 38,
@@ -382,7 +383,7 @@
           "numericValue": 60,
           "confidence": 0.96,
           "isDegraded": false,
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 24,
@@ -395,7 +396,7 @@
           "rawText": "MFD. BY: REYNOLDS PENS INDIA PVT. LTD., PLOT NO. 12, INDUSTRIAL AREA, SECTOR 5, CHENNAI - 600001, TAMIL NADU, INDIA.",
           "confidence": 0.92,
           "isDegraded": false,
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 52,
@@ -408,7 +409,7 @@
           "rawText": "COUNTRY OF ORIGIN: INDIA",
           "confidence": 0.95,
           "isDegraded": false,
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 70,
@@ -421,7 +422,7 @@
           "rawText": "Ph: 1800-209-1234, Email: customercare@reynoldspens.in",
           "confidence": 0.42,
           "isDegraded": true,
-          "evidenceAssetId": "asset_0ihp2w",
+          "evidenceAssetId": "asset_qe22q0",
           "evidenceBox": {
             "x": 10,
             "y": 81,
@@ -433,7 +434,7 @@
             "originalText": "FOR CONSUMER COMPLAINTS / FEEDBACK: CONTACT CUSTOMER CARE MGR PH: 1800-209-???? (UNREADABLE SMUDGE) EMAIL: [ILLEGIBLE]",
             "correctedValue": "Ph: 1800-209-1234, Email: customercare@reynoldspens.in",
             "correctedBy": "Senior Packaging QA Inspector",
-            "correctedAt": "2026-11-05T19:01:00.149Z"
+            "correctedAt": "2026-11-05T19:46:11.266Z"
           }
         }
       },
@@ -449,9 +450,413 @@
           "pending": 7
         }
       },
-      "createdAt": "2026-11-05T19:00:59.402Z",
-      "updatedAt": "2026-11-05T19:01:00.153Z",
-      "finalDecisionAt": "2026-11-05T19:01:00.153Z"
+      "createdAt": "2026-11-05T19:46:10.535Z",
+      "updatedAt": "2026-11-05T19:46:11.270Z",
+      "finalDecisionAt": "2026-11-05T19:46:11.270Z"
+    },
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "created",
+      "assets": [],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_ohjfsbg",
+      "_id": "ins_ohjfsbg",
+      "inspectionNumber": "INS-2026-1010",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "",
+      "findings": [],
+      "extractedFields": {},
+      "summary": {
+        "totalChecks": 0,
+        "potentialIssues": 0,
+        "passedChecks": 0,
+        "reviewRequired": 0,
+        "dispositionSummary": {
+          "confirmed": 0,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 0
+        }
+      },
+      "createdAt": "2026-11-05T19:33:02.341Z",
+      "updatedAt": "2026-11-05T19:33:02.341Z"
+    },
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "uploaded",
+      "assets": [
+        {
+          "assetId": "asset_9q3u2y",
+          "panel": "front",
+          "originalFilename": "reynolds_045_pdp_front.svg",
+          "storedPath": "/uploads/pen_pdp_front.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 4210,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 94,
+            "glare": 8,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        },
+        {
+          "assetId": "asset_li2cym",
+          "panel": "back",
+          "originalFilename": "reynolds_045_info_back.svg",
+          "storedPath": "/uploads/pen_info_back.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 7850,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 89,
+            "glare": 14,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        }
+      ],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_xxhp4gd",
+      "_id": "ins_xxhp4gd",
+      "inspectionNumber": "INS-2026-1009",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "",
+      "findings": [],
+      "extractedFields": {},
+      "summary": {
+        "totalChecks": 0,
+        "potentialIssues": 0,
+        "passedChecks": 0,
+        "reviewRequired": 0,
+        "dispositionSummary": {
+          "confirmed": 0,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 0
+        }
+      },
+      "createdAt": "2026-11-05T19:31:06.634Z",
+      "updatedAt": "2026-11-05T19:31:06.634Z"
+    },
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "created",
+      "assets": [],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_ga3k0ft",
+      "_id": "ins_ga3k0ft",
+      "inspectionNumber": "INS-2026-1008",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "",
+      "findings": [],
+      "extractedFields": {},
+      "summary": {
+        "totalChecks": 0,
+        "potentialIssues": 0,
+        "passedChecks": 0,
+        "reviewRequired": 0,
+        "dispositionSummary": {
+          "confirmed": 0,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 0
+        }
+      },
+      "createdAt": "2026-11-05T19:31:04.688Z",
+      "updatedAt": "2026-11-05T19:31:04.688Z"
+    },
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "created",
+      "assets": [],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_mkpzzua",
+      "_id": "ins_mkpzzua",
+      "inspectionNumber": "INS-2026-1007",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "",
+      "findings": [],
+      "extractedFields": {},
+      "summary": {
+        "totalChecks": 0,
+        "potentialIssues": 0,
+        "passedChecks": 0,
+        "reviewRequired": 0,
+        "dispositionSummary": {
+          "confirmed": 0,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 0
+        }
+      },
+      "createdAt": "2026-11-05T19:30:54.948Z",
+      "updatedAt": "2026-11-05T19:30:54.948Z"
+    },
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "uploaded",
+      "assets": [
+        {
+          "assetId": "asset_z6moe0",
+          "panel": "front",
+          "originalFilename": "reynolds_045_pdp_front.svg",
+          "storedPath": "/uploads/pen_pdp_front.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 4210,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 94,
+            "glare": 8,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        },
+        {
+          "assetId": "asset_zl7zy3",
+          "panel": "back",
+          "originalFilename": "reynolds_045_info_back.svg",
+          "storedPath": "/uploads/pen_info_back.svg",
+          "mimeType": "image/svg+xml",
+          "sizeBytes": 7850,
+          "dimensions": {
+            "width": 600,
+            "height": 900
+          },
+          "qualityPrecheck": {
+            "sharpness": 89,
+            "glare": 14,
+            "resolutionOk": true,
+            "status": "passed"
+          }
+        }
+      ],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_7vgxlex",
+      "_id": "ins_7vgxlex",
+      "inspectionNumber": "INS-2026-1006",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "",
+      "findings": [],
+      "extractedFields": {},
+      "summary": {
+        "totalChecks": 0,
+        "potentialIssues": 0,
+        "passedChecks": 0,
+        "reviewRequired": 0,
+        "dispositionSummary": {
+          "confirmed": 0,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 0
+        }
+      },
+      "createdAt": "2026-11-05T19:20:48.496Z",
+      "updatedAt": "2026-11-05T19:20:48.496Z"
+    },
+    {
+      "productId": "prod_camlin_exam_kit",
+      "productSnapshot": {
+        "id": "prod_camlin_exam_kit",
+        "name": "Camlin Kokuyo Exam Stationery Kit (Pen, Pencil, Ruler, Eraser)",
+        "sku": "CAM-EXM-KIT",
+        "brand": "Camlin Kokuyo",
+        "category": "Stationery Multipack Kits",
+        "mrp": 120,
+        "currency": "INR",
+        "netQuantity": "1 Kit (4 Items)",
+        "netQuantityNumeric": 4,
+        "netQuantityUnit": "Kit",
+        "manufacturer": "Kokuyo Camlin Limited, 48/2, Sanjan Road, Maroli, Valsad, Gujarat - 396135, India.",
+        "packerOrImporter": "Kokuyo Camlin Ltd.",
+        "countryOfOrigin": "India",
+        "consumerCare": "Consumer Care Cell, Toll Free: 1800-270-2277, Email: support@kokuyocamlin.com",
+        "monthYearOfManufacture": "08/2026",
+        "brandGuidelines": {
+          "logoMinHeightMm": 16,
+          "clearSpaceMm": 12,
+          "primaryHex": "#1E3A8A"
+        },
+        "createdAt": "2026-10-27T09:30:00.000Z",
+        "updatedAt": "2026-10-27T09:30:00.000Z"
+      },
+      "status": "created",
+      "assets": [],
+      "inspector": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "id": "ins_ujjfojw",
+      "_id": "ins_ujjfojw",
+      "inspectionNumber": "INS-2026-1005",
+      "finalDecision": "pending",
+      "finalDecisionNotes": "",
+      "findings": [],
+      "extractedFields": {},
+      "summary": {
+        "totalChecks": 0,
+        "potentialIssues": 0,
+        "passedChecks": 0,
+        "reviewRequired": 0,
+        "dispositionSummary": {
+          "confirmed": 0,
+          "dismissed": 0,
+          "deferred": 0,
+          "pending": 0
+        }
+      },
+      "createdAt": "2026-11-05T19:20:32.493Z",
+      "updatedAt": "2026-11-05T19:20:32.493Z"
     },
     {
       "productId": "prod_camlin_exam_kit",
@@ -1888,7 +2293,7 @@
       "status": "enabled",
       "validationType": "regex_format",
       "testCasesSummary": "Verifies presence of \"MRP\", \"Rs.\" or \"₹\", and explicit \"incl. of all taxes\" notice.",
-      "updatedAt": "2026-11-05T19:00:59.393Z"
+      "updatedAt": "2026-11-05T19:46:10.530Z"
     },
     {
       "id": "rule_2",
@@ -2005,8 +2410,8 @@
   ],
   "auditEvents": [
     {
-      "id": "aud_2f5qzn2",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_aeluyaf",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Senior Packaging QA Inspector",
         "role": "Reviewer",
@@ -2015,13 +2420,13 @@
       "action": "REPORT_DOWNLOADED_PDF",
       "metadata": {
         "format": "pdf",
-        "inspectionNumber": "INS-2026-1005"
+        "inspectionNumber": "INS-2026-1011"
       },
-      "timestamp": "2026-11-05T19:01:00.159Z"
+      "timestamp": "2026-11-05T19:46:11.274Z"
     },
     {
-      "id": "aud_urss7rc",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_ov7bcv2",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Senior Packaging QA Inspector",
         "role": "Reviewer",
@@ -2032,11 +2437,11 @@
         "decision": "returned_for_revision",
         "notes": "Pre-production packaging dieline returned to agency for price and net count correction."
       },
-      "timestamp": "2026-11-05T19:01:00.155Z"
+      "timestamp": "2026-11-05T19:46:11.271Z"
     },
     {
-      "id": "aud_5aumdan",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_44gm9hy",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Senior Packaging QA Inspector",
         "role": "Reviewer",
@@ -2048,11 +2453,11 @@
         "original": "FOR CONSUMER COMPLAINTS / FEEDBACK: CONTACT CUSTOMER CARE MGR PH: 1800-209-???? (UNREADABLE SMUDGE) EMAIL: [ILLEGIBLE]",
         "corrected": "Ph: 1800-209-1234, Email: customercare@reynoldspens.in"
       },
-      "timestamp": "2026-11-05T19:01:00.149Z"
+      "timestamp": "2026-11-05T19:46:11.267Z"
     },
     {
-      "id": "aud_fhkjl9x",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_qimuuru",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Senior Packaging QA Inspector",
         "role": "Reviewer",
@@ -2066,11 +2471,11 @@
         "reason": "Acceptable promo sticker variant per legal notice",
         "notes": ""
       },
-      "timestamp": "2026-11-05T19:01:00.146Z"
+      "timestamp": "2026-11-05T19:46:11.264Z"
     },
     {
-      "id": "aud_psxbic3",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_wc7c2lv",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Senior Packaging QA Inspector",
         "role": "Reviewer",
@@ -2084,11 +2489,11 @@
         "reason": "",
         "notes": "Verified mismatch with engineering master"
       },
-      "timestamp": "2026-11-05T19:01:00.138Z"
+      "timestamp": "2026-11-05T19:46:11.258Z"
     },
     {
-      "id": "aud_11yy3lg",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_ervzemv",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Deterministic Rule Engine",
         "role": "System"
@@ -2099,11 +2504,11 @@
         "issues": 2,
         "reviewRequired": 1
       },
-      "timestamp": "2026-11-05T19:01:00.129Z"
+      "timestamp": "2026-11-05T19:46:11.254Z"
     },
     {
-      "id": "aud_x7tejx2",
-      "inspectionId": "ins_3bwrixx",
+      "id": "aud_2j4forv",
+      "inspectionId": "ins_v9sgxri",
       "actor": {
         "name": "Senior Packaging QA Inspector",
         "role": "Reviewer",
@@ -2111,13 +2516,14 @@
       },
       "action": "INSPECTION_CREATED",
       "metadata": {
-        "inspectionNumber": "INS-2026-1005",
-        "productSku": "CAM-EXM-KIT"
+        "inspectionNumber": "INS-2026-1011",
+        "productSku": "CAM-EXM-KIT",
+        "packFormat": "Tuck-End Carton"
       },
-      "timestamp": "2026-11-05T19:00:59.403Z"
+      "timestamp": "2026-11-05T19:46:10.536Z"
     },
     {
-      "id": "aud_36zubro",
+      "id": "aud_jio12sp",
       "inspectionId": null,
       "actor": {
         "name": "Regulatory Rule Admin",
@@ -2129,10 +2535,10 @@
         "oldStatus": "disabled",
         "newStatus": "enabled"
       },
-      "timestamp": "2026-11-05T19:00:59.394Z"
+      "timestamp": "2026-11-05T19:46:10.531Z"
     },
     {
-      "id": "aud_8scigzu",
+      "id": "aud_otp6e3k",
       "inspectionId": null,
       "actor": {
         "name": "Regulatory Rule Admin",
@@ -2144,7 +2550,97 @@
         "oldStatus": "enabled",
         "newStatus": "disabled"
       },
-      "timestamp": "2026-11-05T19:00:59.389Z"
+      "timestamp": "2026-11-05T19:46:10.527Z"
+    },
+    {
+      "id": "aud_thj6b81",
+      "inspectionId": "ins_ohjfsbg",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1010",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-11-05T19:33:02.343Z"
+    },
+    {
+      "id": "aud_axxs9ce",
+      "inspectionId": "ins_xxhp4gd",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1009",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-11-05T19:31:06.636Z"
+    },
+    {
+      "id": "aud_of2116k",
+      "inspectionId": "ins_ga3k0ft",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1008",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-11-05T19:31:04.691Z"
+    },
+    {
+      "id": "aud_o119ybg",
+      "inspectionId": "ins_mkpzzua",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1007",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-11-05T19:30:54.950Z"
+    },
+    {
+      "id": "aud_ic5609c",
+      "inspectionId": "ins_7vgxlex",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1006",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-11-05T19:20:48.497Z"
+    },
+    {
+      "id": "aud_q2qi5tq",
+      "inspectionId": "ins_ujjfojw",
+      "actor": {
+        "name": "Senior Packaging QA Inspector",
+        "role": "Reviewer",
+        "email": "qa.lead@bustd.internal"
+      },
+      "action": "INSPECTION_CREATED",
+      "metadata": {
+        "inspectionNumber": "INS-2026-1005",
+        "productSku": "CAM-EXM-KIT"
+      },
+      "timestamp": "2026-11-05T19:20:32.496Z"
     },
     {
       "id": "aud_jqc87o4",

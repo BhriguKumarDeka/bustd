@@ -114,6 +114,7 @@ router.post('/', async (req, res) => {
     const inspection = await db.createInspection({
       productId: product.id,
       productSnapshot: product,
+      packFormat: req.body.packFormat || 'Tuck-End Carton',
       status: initialAssets.length > 0 ? 'uploaded' : 'created',
       assets: initialAssets,
       inspector: {
@@ -127,10 +128,62 @@ router.post('/', async (req, res) => {
       inspectionId: inspection.id,
       actor: inspection.inspector,
       action: 'INSPECTION_CREATED',
-      metadata: { inspectionNumber: inspection.inspectionNumber, productSku: product.sku }
+      metadata: { inspectionNumber: inspection.inspectionNumber, productSku: product.sku, packFormat: inspection.packFormat }
     });
 
     res.status(201).json({ success: true, data: inspection });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/inspections/:id/preset (Attach seeded pen dieline assets to active inspection)
+router.post('/:id/preset', async (req, res) => {
+  try {
+    const inspection = await db.getInspectionById(req.params.id);
+    if (!inspection) {
+      return res.status(404).json({ success: false, error: 'Inspection not found' });
+    }
+
+    const sampleAssets = [
+      {
+        assetId: 'asset_' + Math.random().toString(36).substring(2, 9),
+        panel: 'front',
+        panelType: 'front',
+        originalFilename: 'reynolds_045_pdp_front.svg',
+        storedPath: '/uploads/pen_pdp_front.svg',
+        mimeType: 'image/svg+xml',
+        sizeBytes: 3202,
+        dimensions: { width: 600, height: 900 },
+        qualityPrecheck: { sharpness: 94, glare: 8, resolutionOk: true, status: 'passed' }
+      },
+      {
+        assetId: 'asset_' + Math.random().toString(36).substring(2, 9),
+        panel: 'back',
+        panelType: 'back',
+        originalFilename: 'reynolds_045_info_back.svg',
+        storedPath: '/uploads/pen_info_back.svg',
+        mimeType: 'image/svg+xml',
+        sizeBytes: 6944,
+        dimensions: { width: 600, height: 900 },
+        qualityPrecheck: { sharpness: 89, glare: 14, resolutionOk: true, status: 'passed' }
+      }
+    ];
+
+    const updated = await db.updateInspection(inspection.id, {
+      assets: sampleAssets,
+      status: 'uploaded',
+      packFormat: req.body.packFormat || inspection.packFormat || 'Tuck-End Carton'
+    });
+
+    await db.logAuditEvent({
+      inspectionId: inspection.id,
+      actor: inspection.inspector,
+      action: 'PRESET_ASSETS_LOADED',
+      metadata: { preset: 'pen_dielines', count: sampleAssets.length }
+    });
+
+    res.json({ success: true, data: updated });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
