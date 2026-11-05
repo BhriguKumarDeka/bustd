@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Check, 
   Upload, 
@@ -12,11 +13,15 @@ import {
   Plus, 
   Layers, 
   Scan, 
-  Sparkles
+  Sparkles,
+  Info,
+  X
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
 import Modal from '../components/Modal';
+import DoubleLayerCard from '../components/DoubleLayerCard';
+import FilePill from '../components/FilePill';
 
 export default function NewInspection() {
   const navigate = useNavigate();
@@ -207,14 +212,14 @@ export default function NewInspection() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
-      {/* Wizard Step Indicator */}
-      <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
+      {/* Wizard Stepper with Vibrant Gradient Accent (Replacing Lime) */}
+      <DoubleLayerCard innerClassName="py-3 px-4 sm:px-6">
         <div className="flex items-center justify-between max-w-3xl mx-auto">
           {[
-            { num: 1, title: 'Select Product' },
-            { num: 2, title: 'Upload Artwork' },
-            { num: 3, title: 'Configure Scan' },
-            { num: 4, title: 'Run Analysis' }
+            { num: 1, title: 'Select Spec' },
+            { num: 2, title: 'Upload Proofs' },
+            { num: 3, title: 'Check Rules' },
+            { num: 4, title: 'Run Scan' }
           ].map((s, idx) => {
             const isActive = step === s.num;
             const isCompleted = step > s.num;
@@ -222,11 +227,11 @@ export default function NewInspection() {
               <React.Fragment key={s.num}>
                 <div className="flex items-center gap-2.5">
                   <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-semibold transition-surface ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-semibold transition-all ${
                       isCompleted
-                        ? 'bg-[#84CC16] text-palette-dark shadow-[0_0_8px_rgba(132,204,22,0.4)]'
+                        ? 'bg-gradient-bustd text-white shadow-sm'
                         : isActive
-                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark shadow-soft-sm font-bold'
+                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-bold shadow-sm'
                         : 'bg-black/5 dark:bg-white/5 text-olive-400'
                     }`}
                   >
@@ -237,7 +242,7 @@ export default function NewInspection() {
                       isActive
                         ? 'text-palette-dark dark:text-palette-sand font-semibold'
                         : isCompleted
-                        ? 'text-olive-600 dark:text-olive-300'
+                        ? 'text-olive-700 dark:text-olive-300'
                         : 'text-olive-400'
                     }`}
                   >
@@ -247,7 +252,7 @@ export default function NewInspection() {
                 {idx < 3 && (
                   <div
                     className={`flex-1 h-[2px] mx-3 transition-colors ${
-                      isCompleted ? 'bg-[#84CC16]/60' : 'bg-black/5 dark:bg-white/5'
+                      isCompleted ? 'bg-gradient-bustd' : 'bg-black/5 dark:bg-white/5'
                     }`}
                   />
                 )}
@@ -255,29 +260,34 @@ export default function NewInspection() {
             );
           })}
         </div>
-      </div>
+      </DoubleLayerCard>
 
       {/* STEP 1: SELECT PRODUCT */}
       {step === 1 && (
-        <section className="space-y-6">
-          <div className="flex items-start justify-between">
+        <motion.section 
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-                Step 1: Choose Authoritative Product Master Record
+              <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+                1. Select Product Specification Baseline
               </h2>
-              <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
-                BUSTD validates printed declarations against this authoritative ERP master baseline.
+              <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+                Declarations on packaging artwork will be audited against this ERP master record.
               </p>
             </div>
             <button
               onClick={() => setIsNewProductModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-control text-xs font-medium bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-palette-dark dark:text-palette-sand transition-surface"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-palette-dark dark:text-palette-sand transition-colors self-start sm:self-auto"
             >
               <Plus className="w-3.5 h-3.5" />
-              New Product
+              New Product Spec
             </button>
           </div>
 
+          {/* Product Cards List */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {products.map((p) => {
               const isSelected = selectedProductId === p.id;
@@ -285,37 +295,38 @@ export default function NewInspection() {
                 <div
                   key={p.id}
                   onClick={() => setSelectedProductId(p.id)}
-                  className={`p-4 rounded-panel cursor-pointer border transition-surface text-xs space-y-2.5 ${
+                  className={`p-4 rounded-xl cursor-pointer border transition-all text-xs space-y-2.5 ${
                     isSelected
-                      ? 'bg-white dark:bg-[#25241E] border-palette-dark dark:border-palette-cream shadow-soft-md ring-1 ring-black/5 dark:ring-white/10'
-                      : 'bg-white/60 dark:bg-[#1E1D18] border-black/5 dark:border-white/5 hover:border-palette-cream/40'
+                      ? 'bg-white dark:bg-[#25241E] border-pink-500/40 shadow-sm ring-1 ring-pink-500/20'
+                      : 'bg-black/[0.02] dark:bg-white/[0.02] border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[11px] font-semibold text-palette-dark dark:text-palette-sand">
                       {p.sku}
                     </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-palette-cream/30 text-palette-dark dark:text-palette-cream">
+                    <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-black/5 dark:bg-white/5 text-palette-dark dark:text-palette-sand font-medium">
                       {p.brand}
                     </span>
                   </div>
 
-                  <h3 className="font-medium text-palette-dark dark:text-palette-sand line-clamp-2 leading-snug">
-                    {p.name}
-                  </h3>
+                  <div>
+                    <h3 className="font-medium text-palette-dark dark:text-palette-sand line-clamp-1">
+                      {p.name}
+                    </h3>
+                    <p className="text-[11px] text-olive-500 dark:text-olive-400 mt-0.5 line-clamp-1">
+                      {p.category}
+                    </p>
+                  </div>
 
-                  <div className="pt-2 border-t border-black/5 dark:border-white/5 grid grid-cols-2 gap-2 text-[11px] font-mono">
+                  <div className="pt-2 border-t border-black/5 dark:border-white/5 grid grid-cols-2 gap-2 text-[11px]">
                     <div>
-                      <span className="text-olive-400 block text-[10px]">Authoritative MRP</span>
-                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                        ₹{Number(p.mrp).toFixed(2)}
-                      </span>
+                      <span className="text-olive-400 block text-[10px]">Declared MRP</span>
+                      <span className="font-mono font-semibold text-palette-dark dark:text-palette-sand">₹{p.mrp}</span>
                     </div>
                     <div>
                       <span className="text-olive-400 block text-[10px]">Net Quantity</span>
-                      <span className="font-semibold text-palette-dark dark:text-palette-sand truncate block">
-                        {p.netQuantity}
-                      </span>
+                      <span className="font-mono font-semibold text-palette-dark dark:text-palette-sand">{p.netQuantity}</span>
                     </div>
                   </div>
                 </div>
@@ -323,148 +334,163 @@ export default function NewInspection() {
             })}
           </div>
 
-          {/* Selected Product Master Snapshot */}
+          {/* Selected Product Master Details in Double Layer Shell */}
           {selectedProduct && (
-            <div className="p-5 rounded-panel bg-raised-light dark:bg-raised-dark border border-black/5 dark:border-white/5 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
-                  Target Product Master Snapshot
-                </span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px]">
-                  Verified SKU Master Baseline
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+            <DoubleLayerCard
+              header={
+                <div className="text-[11px] font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
+                  Master Baseline Specifications
+                </div>
+              }
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                 <div>
-                  <span className="text-olive-400 text-[10px] block">Brand & Category</span>
-                  <span className="text-palette-dark dark:text-palette-sand">
-                    {selectedProduct.brand} • {selectedProduct.category}
-                  </span>
+                  <span className="text-[10px] text-olive-400 block uppercase font-mono">Manufacturer</span>
+                  <p className="font-medium text-palette-dark dark:text-palette-sand mt-0.5 leading-snug">
+                    {selectedProduct.manufacturer}
+                  </p>
                 </div>
                 <div>
-                  <span className="text-olive-400 text-[10px] block">Origin</span>
-                  <span className="text-palette-dark dark:text-palette-sand">
+                  <span className="text-[10px] text-olive-400 block uppercase font-mono">Country of Origin</span>
+                  <p className="font-medium text-palette-dark dark:text-palette-sand mt-0.5 leading-snug">
                     {selectedProduct.countryOfOrigin}
-                  </span>
+                  </p>
                 </div>
                 <div className="col-span-2">
-                  <span className="text-olive-400 text-[10px] block">Manufacturer</span>
-                  <span className="text-palette-dark dark:text-palette-sand line-clamp-1 font-sans">
-                    {selectedProduct.manufacturer}
-                  </span>
+                  <span className="text-[10px] text-olive-400 block uppercase font-mono">Consumer Care Declaration</span>
+                  <p className="font-medium text-palette-dark dark:text-palette-sand mt-0.5 leading-snug">
+                    {selectedProduct.consumerCare}
+                  </p>
                 </div>
               </div>
-            </div>
+            </DoubleLayerCard>
           )}
 
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-end pt-2">
             <button
               onClick={handleProceedFromProduct}
               disabled={loading || !selectedProduct}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm transition-surface disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-medium shadow-sm transition-opacity"
             >
-              Next: Upload Packaging Artwork
+              <span>{loading ? 'Initializing Session...' : 'Next: Upload Artwork Proofs'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        </section>
+        </motion.section>
       )}
 
-      {/* STEP 2: UPLOAD PACKAGING ARTWORK */}
+      {/* STEP 2: UPLOAD PACKAGING ARTWORK (Inspired by Reference 1: attached file pills) */}
       {step === 2 && (
-        <section className="space-y-6">
-          <div className="flex items-start justify-between">
+        <motion.section 
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-                Step 2: Upload Packaging Artwork Panels
+              <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+                2. Ingest Packaging Artwork Panels
               </h2>
-              <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
-                Upload front display panels (PDP), back informational panels, or multi-panel dielines. Accepts PNG, JPG, JPEG, and PDF.
+              <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+                Upload front display panels (PDP), back informational panels, or multi-panel dielines (PNG, JPG, PDF).
               </p>
             </div>
 
             <button
               onClick={handleLoadSampleAssets}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-control text-xs font-medium bg-palette-cream/30 text-palette-dark dark:text-palette-cream border border-palette-cream/40 hover:bg-palette-cream/40 transition-surface"
-              title="Loads high-resolution Reynolds 045 ball pen packaging dieline files for quick testing"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/5 dark:border-white/5 transition-colors self-start sm:self-auto"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#84CC16]" />
-              Load Seeded Pen Dielines
+              <Sparkles className="w-3.5 h-3.5 text-pink-500" />
+              <span>Load Seeded Pen Dielines</span>
             </button>
           </div>
 
-          {/* Panel Selector & Dropzone */}
-          <div className="p-6 rounded-workspace bg-white dark:bg-[#1E1D18] border border-dashed border-olive-500/30 text-center space-y-4 shadow-soft-sm">
-            <div className="max-w-md mx-auto space-y-2">
-              <div className="w-12 h-12 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center mx-auto text-olive-500">
+          {/* Double-Layered Upload & File Tag Shell (Reference 1 & 2 Inspiration) */}
+          <DoubleLayerCard
+            header={
+              /* Floating Attached Files Bar from Reference 1 */
+              uploadedFiles.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 pb-1">
+                  <AnimatePresence>
+                    {uploadedFiles.map((asset) => (
+                      <FilePill
+                        key={asset.assetId}
+                        name={asset.originalFilename}
+                        type={asset.mimeType?.includes('pdf') ? 'pdf' : 'image'}
+                        size={`${asset.panelType.toUpperCase()} panel`}
+                        onRemove={() => handleRemoveAsset(asset.assetId)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )
+            }
+          >
+            {/* Inner Upload Drop Target */}
+            <div className="text-center space-y-4 py-6">
+              <div className="w-12 h-12 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] flex items-center justify-center mx-auto text-olive-500">
                 <Upload className="w-5 h-5" />
               </div>
-              <h3 className="text-sm font-medium text-palette-dark dark:text-palette-sand">
-                Drag and drop packaging proofs or select files
-              </h3>
-              <p className="text-xs text-olive-400">
-                Supported formats: PNG, JPG, JPEG, SVG, PDF (Max 25MB per file)
-              </p>
-            </div>
 
-            {/* Target Panel Dropdown */}
-            <div className="inline-flex items-center gap-2 p-1 rounded-control bg-black/5 dark:bg-white/5 text-xs">
-              <span className="text-olive-500 px-2 font-mono text-[11px]">Assign Panel:</span>
-              {['back', 'front', 'side'].map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPanelType(p)}
-                  className={`px-3 py-1 rounded text-xs capitalize transition-surface ${
-                    panelType === p
-                      ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold'
-                      : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
-                  }`}
-                >
-                  {p === 'back' ? 'Back (Declarations)' : p === 'front' ? 'Front (PDP)' : 'Side / Gusset'}
-                </button>
-              ))}
-            </div>
-
-            <div>
-              <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark text-xs font-medium cursor-pointer shadow-soft-sm hover:scale-[1.01] transition-transform">
-                <span>Select Files from Disk</span>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/png,image/jpeg,image/jpg,image/svg+xml,application/pdf"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-              </label>
-            </div>
-          </div>
-
-          {/* Uploaded Assets List */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
-                Uploaded Evidence Files ({uploadedFiles.length})
-              </span>
-              <span className="text-olive-500 text-[11px]">
-                Actual uploaded images are used directly as inspection evidence.
-              </span>
-            </div>
-
-            {uploadedFiles.length === 0 ? (
-              <div className="p-8 text-center rounded-panel bg-white/40 dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 text-xs text-olive-400">
-                No packaging panels uploaded yet. Drop files above or click "Load Seeded Pen Dielines".
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-palette-dark dark:text-palette-sand">
+                  Drag and drop packaging artwork proofs or select files
+                </h3>
+                <p className="text-xs text-olive-400">
+                  Accepts PNG, JPG, JPEG, and PDF (Max 25MB). Actual artwork is used as inspection evidence.
+                </p>
               </div>
-            ) : (
+
+              {/* Panel Assignment Pills */}
+              <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] text-xs">
+                <span className="text-olive-500 px-2 font-mono text-[11px]">Assign Panel:</span>
+                {['back', 'front', 'side'].map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPanelType(p)}
+                    className={`px-3 py-1 rounded-lg text-xs capitalize transition-all ${
+                      panelType === p
+                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
+                        : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
+                    }`}
+                  >
+                    {p === 'back' ? 'Back (Declarations)' : p === 'front' ? 'Front (PDP)' : 'Side'}
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark text-xs font-medium cursor-pointer shadow-sm hover:opacity-95 transition-opacity">
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Choose Files from Computer</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/png,image/jpeg,image/jpg,image/svg+xml,application/pdf"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            </div>
+          </DoubleLayerCard>
+
+          {/* Uploaded Panel Proof Cards (Reference 1 Option 2 Style) */}
+          {uploadedFiles.length > 0 && (
+            <div className="space-y-3">
+              <div className="text-xs font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
+                Attached Artwork Panels ({uploadedFiles.length})
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {uploadedFiles.map((asset) => (
                   <div
                     key={asset.assetId}
-                    className="p-3.5 rounded-panel bg-white dark:bg-[#25241E] border border-black/5 dark:border-white/5 space-y-3 shadow-soft-sm"
+                    className="p-3 rounded-xl bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-2.5 shadow-soft-sm group relative"
                   >
-                    <div className="aspect-[4/3] rounded bg-black/5 dark:bg-black/30 overflow-hidden relative border border-black/5 dark:border-white/5 flex items-center justify-center">
+                    <div className="aspect-[4/3] rounded-lg bg-black/5 dark:bg-black/30 overflow-hidden relative border border-black/5 dark:border-white/5 flex items-center justify-center">
                       <img
                         src={asset.storedPath}
                         alt={asset.originalFilename}
@@ -473,41 +499,33 @@ export default function NewInspection() {
                           e.target.style.display = 'none';
                         }}
                       />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-black/75 text-white backdrop-blur-sm">
-                        {asset.panel} panel
-                      </span>
+                      <button
+                        onClick={() => handleRemoveAsset(asset.assetId)}
+                        className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Remove panel"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
 
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-palette-dark dark:text-palette-sand truncate">
-                          {asset.originalFilename}
-                        </span>
-                        <button
-                          onClick={() => handleRemoveAsset(asset.assetId)}
-                          className="text-olive-400 hover:text-red-500 p-1 transition-colors"
-                          title="Remove asset"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-[11px] font-mono text-olive-500 dark:text-olive-400">
-                        <span>Sharpness: {asset.qualityPrecheck?.sharpness || 90}%</span>
-                        <span>•</span>
-                        <span className="text-emerald-600 dark:text-emerald-400">Passed Precheck</span>
-                      </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-palette-dark dark:text-palette-sand truncate max-w-[140px]">
+                        {asset.originalFilename}
+                      </span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-black/5 dark:bg-white/5 text-olive-500">
+                        {asset.panelType}
+                      </span>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          <div className="flex items-center justify-between pt-4">
+          <div className="flex items-center justify-between pt-2">
             <button
               onClick={() => setStep(1)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-black/5 dark:bg-white/5 text-xs text-olive-600 dark:text-olive-300"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back
@@ -516,63 +534,60 @@ export default function NewInspection() {
             <button
               onClick={() => setStep(3)}
               disabled={uploadedFiles.length === 0}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-medium shadow-sm transition-opacity disabled:opacity-50"
             >
-              Next: Configure Scan
+              <span>Next: Review Active Rules</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* STEP 3: CONFIGURE SCAN RULES */}
       {step === 3 && (
-        <section className="space-y-6">
+        <motion.section 
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
           <div>
-            <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-              Step 3: Review Configured Compliance Rules
+            <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+              3. Review Configured Statutory Compliance Rules
             </h2>
-            <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
-              Active rules from the three pillars will execute deterministically against extracted tokens.
+            <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+              These deterministic Legal Metrology rules will execute against detected packaging tokens.
             </p>
           </div>
 
-          <div className="space-y-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
-              Active Rules ({rules.filter(r => r.status === 'enabled').length} of {rules.length} enabled)
-            </div>
-
-            <div className="divide-y divide-black/5 dark:divide-white/5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 overflow-hidden shadow-soft-sm">
+          <DoubleLayerCard innerClassName="p-0 overflow-hidden">
+            <div className="divide-y divide-black/5 dark:divide-white/5">
               {rules.map((rule) => {
                 const isEnabled = rule.status === 'enabled';
                 return (
                   <div key={rule.ruleId} className="p-4 flex items-center justify-between gap-4 text-xs">
                     <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-semibold text-palette-dark dark:text-palette-sand">
+                        <span className="font-mono font-bold text-palette-dark dark:text-palette-sand">
                           {rule.ruleId}
                         </span>
-                        <span className="text-olive-300 dark:text-olive-600">•</span>
-                        <span className="font-medium text-palette-dark dark:text-palette-sand">
+                        <span className="text-olive-400">•</span>
+                        <span className="font-semibold text-palette-dark dark:text-palette-sand">
                           {rule.name}
                         </span>
-                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-black/5 dark:bg-white/5 text-olive-400">
+                        <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-black/5 dark:bg-white/5 text-olive-500">
                           {rule.pillar.replace(/_/g, ' ')}
                         </span>
                       </div>
                       <p className="text-olive-500 dark:text-olive-400 text-[11px] leading-snug">
                         {rule.description}
                       </p>
-                      <p className="text-[10px] font-mono text-olive-400">
-                        Ref: {rule.legalReference}
-                      </p>
                     </div>
 
                     <div className="shrink-0 flex items-center gap-2">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase ${
                           isEnabled
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                             : 'bg-black/5 dark:bg-white/5 text-olive-400'
                         }`}
                       >
@@ -583,12 +598,12 @@ export default function NewInspection() {
                 );
               })}
             </div>
-          </div>
+          </DoubleLayerCard>
 
-          <div className="flex items-center justify-between pt-4">
+          <div className="flex items-center justify-between pt-2">
             <button
               onClick={() => setStep(2)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-input bg-black/5 dark:bg-white/5 text-xs text-olive-600 dark:text-olive-300"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back
@@ -596,195 +611,200 @@ export default function NewInspection() {
 
             <button
               onClick={() => setStep(4)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-medium shadow-sm transition-opacity"
             >
-              Next: Run Inspection
+              <span>Next: Execute Inspection</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
-        </section>
+        </motion.section>
       )}
 
       {/* STEP 4: RUN ANALYSIS */}
       {step === 4 && (
-        <section className="space-y-6">
-          <div className="text-center max-w-xl mx-auto space-y-3 py-6">
-            <h2 className="text-2xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-              Ready to Execute Inspection
+        <motion.section 
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <div className="text-center max-w-xl mx-auto space-y-2 py-4">
+            <h2 className="text-xl sm:text-2xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+              Ready to Execute Inspection Scan
             </h2>
             <p className="text-xs text-olive-500 dark:text-olive-400 leading-relaxed">
-              Target SKU: <span className="font-mono font-semibold text-palette-dark dark:text-palette-sand">{selectedProduct?.sku}</span> ({selectedProduct?.name})
+              Target SKU: <span className="font-mono font-bold text-palette-dark dark:text-palette-sand">{selectedProduct?.sku}</span> ({selectedProduct?.name})
               <br />
-              Evidence Assets: <span className="font-mono font-semibold text-palette-dark dark:text-palette-sand">{uploadedFiles.length} panels</span> attached.
+              Evidence Proofs: <span className="font-mono font-bold text-palette-dark dark:text-palette-sand">{uploadedFiles.length} panels</span> attached.
             </p>
           </div>
 
           {analyzing ? (
-            <div className="p-8 rounded-workspace bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 max-w-lg mx-auto text-center space-y-6 shadow-soft-lg">
-              <div className="w-12 h-12 rounded-full border-2 border-[#84CC16] border-t-transparent animate-spin mx-auto" />
+            /* Analysis Progress Shell with Multi-Hue Gradient Bar */
+            <DoubleLayerCard className="max-w-md mx-auto" innerClassName="text-center space-y-6 py-8">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-bustd flex items-center justify-center text-white mx-auto shadow-glow-bustd animate-pulse">
+                <Scan className="w-6 h-6" />
+              </div>
 
-              <div className="space-y-2">
-                <span className="font-mono text-xs text-[#84CC16] uppercase tracking-wider font-semibold">
+              <div className="space-y-1.5">
+                <span className="font-mono text-xs text-gradient-bustd uppercase tracking-wider font-bold">
                   Stage {analysisStage + 1} of 5
                 </span>
-                <p className="text-sm font-medium text-palette-dark dark:text-palette-sand">
+                <p className="text-xs sm:text-sm font-semibold text-palette-dark dark:text-palette-sand">
                   {stages[analysisStage]}
                 </p>
               </div>
 
-              {/* Progress Bar with neon-lime fill */}
-              <div className="w-full bg-black/5 dark:bg-white/5 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-[#84CC16] h-full transition-all duration-500 shadow-[0_0_8px_#84CC16]"
-                  style={{ width: `${((analysisStage + 1) / 5) * 100}%` }}
+              {/* Fluid Gradient Progress Bar */}
+              <div className="w-full bg-black/5 dark:bg-white/5 h-2 rounded-full overflow-hidden">
+                <motion.div
+                  className="bg-gradient-bustd h-full rounded-full"
+                  initial={{ width: '0%' }}
+                  animate={{ width: `${((analysisStage + 1) / 5) * 100}%` }}
+                  transition={{ duration: 0.4 }}
                 />
               </div>
 
               <p className="text-[11px] text-olive-400 font-mono">
                 Preserving original OCR tokens &amp; computing spatial coordinates...
               </p>
-            </div>
+            </DoubleLayerCard>
           ) : (
-            <div className="p-6 rounded-workspace bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 max-w-xl mx-auto space-y-5 text-center shadow-soft-sm">
-              <div className="w-12 h-12 rounded-full bg-palette-cream/30 text-palette-dark dark:text-palette-cream flex items-center justify-center mx-auto">
+            <DoubleLayerCard className="max-w-lg mx-auto" innerClassName="text-center space-y-5 py-6">
+              <div className="w-12 h-12 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] text-palette-dark dark:text-palette-sand flex items-center justify-center mx-auto">
                 <Scan className="w-6 h-6" />
               </div>
 
-              <div className="space-y-1">
-                <h3 className="text-base font-semibold text-palette-dark dark:text-palette-sand">
-                  Start Automated Compliance Inspection
+              <div className="space-y-1 max-w-sm mx-auto">
+                <h3 className="text-sm font-semibold text-palette-dark dark:text-palette-sand">
+                  All Inputs Validated
                 </h3>
                 <p className="text-xs text-olive-500 dark:text-olive-400">
-                  Calls the OCR adapter, extracts declarations, and evaluates against {rules.filter(r => r.status === 'enabled').length} enabled rules.
+                  Click below to trigger OCR token extraction, field mapping, and deterministic rule evaluation.
                 </p>
               </div>
 
-              <button
-                onClick={handleRunAnalysis}
-                className="w-full py-3 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark font-semibold text-xs tracking-wide shadow-soft-md hover:scale-[1.01] transition-transform"
-              >
-                Run Inspection Now
-              </button>
+              <div className="pt-2">
+                <button
+                  onClick={handleRunAnalysis}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold shadow-glow-bustd transition-all active:scale-95"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Run Inspection Scan</span>
+                </button>
+              </div>
+            </DoubleLayerCard>
+          )}
 
+          {!analyzing && (
+            <div className="flex justify-start">
               <button
                 onClick={() => setStep(3)}
-                className="text-xs text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
               >
-                Return to configuration
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Back
               </button>
             </div>
           )}
-        </section>
+        </motion.section>
       )}
 
-      {/* Inline Modal: Create New Product */}
+      {/* CREATE NEW PRODUCT MODAL */}
       <Modal
         isOpen={isNewProductModalOpen}
         onClose={() => setIsNewProductModalOpen(false)}
-        title="Add Authoritative Product Master"
-        subtitle="Record the expected SKU attributes to audit against"
-        maxWidth="max-w-xl"
+        title="Register Master Product Baseline"
       >
         <form onSubmit={handleCreateProductSubmit} className="space-y-4 text-xs">
+          <div>
+            <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Product Name *</label>
+            <input
+              type="text"
+              required
+              value={newProductForm.name}
+              onChange={(e) => setNewProductForm({ ...newProductForm, name: e.target.value })}
+              placeholder="e.g. Reynolds 045 Fine Carbure Ball Pen (Blue)"
+              className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-olive-500 mb-1">Product Name *</label>
-              <input
-                type="text"
-                required
-                value={newProductForm.name}
-                onChange={e => setNewProductForm({ ...newProductForm, name: e.target.value })}
-                placeholder="Reynolds 045 Ball Pen 10-pack"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-olive-500 mb-1">SKU Code *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">SKU Identifier *</label>
               <input
                 type="text"
                 required
                 value={newProductForm.sku}
-                onChange={e => setNewProductForm({ ...newProductForm, sku: e.target.value.toUpperCase() })}
-                placeholder="REY-045-BLU-10"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono focus:outline-none"
+                onChange={(e) => setNewProductForm({ ...newProductForm, sku: e.target.value })}
+                placeholder="e.g. REY-045-BLU-10"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500 font-mono"
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-olive-500 mb-1">Brand *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Brand Name *</label>
               <input
                 type="text"
                 required
                 value={newProductForm.brand}
-                onChange={e => setNewProductForm({ ...newProductForm, brand: e.target.value })}
-                placeholder="Reynolds"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
+                onChange={(e) => setNewProductForm({ ...newProductForm, brand: e.target.value })}
+                placeholder="e.g. Reynolds"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-olive-500 mb-1">Master MRP (₹) *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Declared MRP (INR) *</label>
               <input
                 type="number"
                 step="0.01"
                 required
                 value={newProductForm.mrp}
-                onChange={e => setNewProductForm({ ...newProductForm, mrp: e.target.value })}
+                onChange={(e) => setNewProductForm({ ...newProductForm, mrp: e.target.value })}
                 placeholder="50.00"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500 font-mono"
               />
             </div>
+
             <div>
-              <label className="block text-olive-500 mb-1">Net Quantity *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Declared Net Quantity *</label>
               <input
                 type="text"
                 required
                 value={newProductForm.netQuantity}
-                onChange={e => setNewProductForm({ ...newProductForm, netQuantity: e.target.value })}
-                placeholder="10 N"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
+                onChange={(e) => setNewProductForm({ ...newProductForm, netQuantity: e.target.value })}
+                placeholder="10 N (Pens)"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500 font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-olive-500 mb-1">Manufacturer Address *</label>
+            <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Manufacturer &amp; Registered Address *</label>
             <textarea
               rows={2}
               required
               value={newProductForm.manufacturer}
-              onChange={e => setNewProductForm({ ...newProductForm, manufacturer: e.target.value })}
-              placeholder="Full name, address and 6-digit postal PIN code"
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
+              onChange={(e) => setNewProductForm({ ...newProductForm, manufacturer: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500 text-xs"
             />
           </div>
 
-          <div>
-            <label className="block text-olive-500 mb-1">Consumer Care Details *</label>
-            <input
-              type="text"
-              required
-              value={newProductForm.consumerCare}
-              onChange={e => setNewProductForm({ ...newProductForm, consumerCare: e.target.value })}
-              placeholder="Helpline phone, email, and contact address"
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
-            />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-3 border-t border-black/5 dark:border-white/5">
+          <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={() => setIsNewProductModalOpen(false)}
-              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
+              className="px-4 py-2 rounded-xl text-xs text-olive-600 dark:text-olive-300 hover:text-palette-dark"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-medium"
+              className="px-4 py-2 rounded-xl bg-gradient-bustd text-white font-medium text-xs shadow-sm"
             >
-              Save Product Record
+              Save Product Master
             </button>
           </div>
         </form>

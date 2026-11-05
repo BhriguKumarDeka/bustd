@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   Search, 
   ArrowUpDown, 
@@ -8,10 +9,12 @@ import {
   ChevronRight,
   CheckCircle2,
   AlertCircle,
-  AlertTriangle
+  AlertTriangle,
+  Plus
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
+import DoubleLayerCard from '../components/DoubleLayerCard';
 
 export default function InspectionHistory() {
   const navigate = useNavigate();
@@ -74,187 +77,165 @@ export default function InspectionHistory() {
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-20">
-      {/* Page Header */}
+    <motion.div 
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6 max-w-7xl mx-auto pb-20"
+    >
+      {/* Header Context Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-            Inspection History &amp; Audit Logs
+          <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+            Inspection Archive &amp; Audit Records
           </h2>
-          <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
-            Browse previous screening assessments, inspect original visual evidence, and export official reports.
+          <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+            Historical packaging compliance audits, spatial evidence logs, and official certificates.
           </p>
         </div>
 
         <button
           onClick={() => navigate('/inspections/new')}
-          className="px-4 py-2 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium self-start sm:self-auto shadow-soft-sm transition-surface"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold self-start sm:self-auto shadow-sm transition-opacity"
         >
-          New Inspection
+          <Plus className="w-3.5 h-3.5" />
+          <span>New Inspection</span>
         </button>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="p-3.5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs shadow-soft-sm">
-        {/* Search Input */}
-        <div className="relative w-full md:w-80">
-          <Search className="w-3.5 h-3.5 text-olive-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search by Inspection #, SKU, or Product..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none"
-          />
-        </div>
+      {/* Filter & Search Bar with Double Layer */}
+      <DoubleLayerCard innerClassName="p-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+          {/* Search Input */}
+          <div className="relative w-full md:w-80">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-olive-400" />
+            <input
+              type="text"
+              placeholder="Search by SKU, Product, or ID..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none focus:border-pink-500"
+            />
+          </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto">
-          {[
-            { id: 'all', label: 'All Records' },
-            { id: 'issues', label: 'With Red Flags' },
-            { id: 'review', label: 'Review Required' },
-            { id: 'clean', label: 'Clean Passes' }
-          ].map(f => (
+          {/* Filter Pills */}
+          <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+            {[
+              { id: 'all', label: 'All' },
+              { id: 'issues', label: 'Issues Flagged' },
+              { id: 'review', label: 'Review Required' },
+              { id: 'clean', label: 'Clean' }
+            ].map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFilterOutcome(f.id)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all shrink-0 ${
+                  filterOutcome === f.id
+                    ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
+                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+
             <button
-              key={f.id}
-              onClick={() => setFilterOutcome(f.id)}
-              className={`px-3 py-1.5 rounded-control text-xs font-medium transition-surface shrink-0 ${
-                filterOutcome === f.id
-                  ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm'
-                  : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
-              }`}
+              onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+              className="p-1.5 rounded-lg text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand border border-black/5 dark:border-white/5 shrink-0"
+              title={`Sorting ${sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}`}
             >
-              {f.label}
+              <ArrowUpDown className="w-3.5 h-3.5" />
             </button>
-          ))}
-
-          {/* Sort toggle */}
-          <button
-            onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-            className="p-1.5 rounded-control border border-black/5 dark:border-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand ml-2 transition-colors"
-            title={`Sort order: ${sortOrder.toUpperCase()}`}
-          >
-            <ArrowUpDown className="w-3.5 h-3.5" />
-          </button>
+          </div>
         </div>
-      </div>
+      </DoubleLayerCard>
 
-      {/* History Table */}
-      <div className="rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 overflow-hidden shadow-soft-sm">
+      {/* Inspections List */}
+      <DoubleLayerCard innerClassName="p-0 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-olive-400">Loading audit records...</div>
+          <div className="p-12 text-center text-xs text-olive-400 space-y-2">
+            <div className="w-6 h-6 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
+            <p>Loading inspection records...</p>
+          </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center space-y-2 text-xs text-olive-400">
+          <div className="p-12 text-center space-y-3">
             <FileText className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
-            <p>No matching inspection records found.</p>
+            <p className="text-xs text-olive-500">No inspection records match your query.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-black/[0.02] dark:bg-white/[0.02] border-b border-black/5 dark:border-white/5 text-[11px] font-mono uppercase tracking-wider text-olive-500 dark:text-olive-400">
-                <tr>
-                  <th className="py-3 px-4">Inspection Ref</th>
-                  <th className="py-3 px-4">Target Product Master</th>
-                  <th className="py-3 px-4">Date &amp; Time</th>
-                  <th className="py-3 px-4">Findings Breakdown</th>
-                  <th className="py-3 px-4">Screening Outcome</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-black/5 dark:divide-white/5">
-                {filtered.map(insp => {
-                  const issues = insp.summary?.potentialIssues || 0;
-                  const reviews = insp.summary?.reviewRequired || 0;
-                  const passed = insp.summary?.passedChecks || 0;
+          <div className="divide-y divide-black/5 dark:divide-white/5">
+            {filtered.map(item => {
+              const issues = item.summary?.potentialIssues || 0;
+              const reviews = item.summary?.reviewRequired || 0;
+              const passed = item.summary?.passedChecks || 0;
 
-                  return (
-                    <tr
-                      key={insp.id}
-                      onClick={() => navigate(`/inspections/${insp.id}`)}
-                      className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(`/inspections/${item.id}`)}
+                  className="p-4 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] cursor-pointer transition-colors group"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                        {item.inspectionNumber}
+                      </span>
+                      <span className="text-olive-400 text-xs">•</span>
+                      <span className="text-xs font-medium text-palette-dark dark:text-palette-sand">
+                        {item.productSnapshot?.name}
+                      </span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400">
+                        {item.productSnapshot?.sku}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-olive-500 dark:text-olive-400 flex items-center gap-3 font-mono">
+                      <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                      <span>•</span>
+                      <span>{item.assets?.length || 0} artwork proof(s)</span>
+                      <span>•</span>
+                      <span>Inspector: {item.inspector?.name}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 self-start sm:self-auto">
+                    {/* Status Pill */}
+                    <div className="flex items-center gap-1.5">
+                      {issues > 0 ? (
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-red-500/10 text-red-600 dark:text-red-400 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          {issues} {issues === 1 ? 'issue' : 'issues'}
+                        </span>
+                      ) : reviews > 0 ? (
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          {reviews} review
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Passed ({passed})
+                        </span>
+                      )}
+                    </div>
+
+                    {/* PDF Download Button */}
+                    <button
+                      onClick={e => handleDownloadPdf(e, item)}
+                      disabled={downloadingId === item.id}
+                      className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                      title="Download PDF Certificate"
                     >
-                      <td className="py-3.5 px-4 font-mono font-semibold text-palette-dark dark:text-palette-sand">
-                        {insp.inspectionNumber}
-                      </td>
+                      <Download className="w-3.5 h-3.5" />
+                    </button>
 
-                      <td className="py-3.5 px-4">
-                        <div className="font-medium text-palette-dark dark:text-palette-sand">
-                          {insp.productSnapshot?.name}
-                        </div>
-                        <div className="font-mono text-[10px] text-olive-500 dark:text-olive-400">
-                          SKU: {insp.productSnapshot?.sku} • {insp.productSnapshot?.brand}
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4 font-mono text-[11px] text-olive-500 dark:text-olive-400 whitespace-nowrap">
-                        {new Date(insp.createdAt).toLocaleDateString()} {new Date(insp.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </td>
-
-                      <td className="py-3.5 px-4 font-mono text-[11px]">
-                        <div className="flex items-center gap-1.5">
-                          {issues > 0 && (
-                            <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
-                              {issues} {issues === 1 ? 'Issue' : 'Issues'}
-                            </span>
-                          )}
-                          {reviews > 0 && (
-                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
-                              {reviews} Review
-                            </span>
-                          )}
-                          <span className="px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/5 text-olive-500">
-                            {passed} Passed
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        {insp.finalDecision && insp.finalDecision !== 'pending' ? (
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold ${
-                            insp.finalDecision === 'approved'
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                              : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
-                          }`}>
-                            {insp.finalDecision.replace(/_/g, ' ')}
-                          </span>
-                        ) : issues > 0 ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-red-500/10 text-red-600 dark:text-red-400">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                            Red Flags Active
-                          </span>
-                        ) : reviews > 0 ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                            Review Required
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                            Clean Pass
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={(e) => handleDownloadPdf(e, insp)}
-                            disabled={downloadingId === insp.id}
-                            className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
-                            title="Download PDF Screening Report"
-                          >
-                            <Download className="w-3.5 h-3.5" />
-                          </button>
-                          <ChevronRight className="w-4 h-4 text-olive-400 group-hover:translate-x-0.5 transition-transform" />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    <ChevronRight className="w-4 h-4 text-olive-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
-      </div>
-    </div>
+      </DoubleLayerCard>
+    </motion.div>
   );
 }

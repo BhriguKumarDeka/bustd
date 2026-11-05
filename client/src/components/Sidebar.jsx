@@ -6,27 +6,23 @@ import {
   History, 
   Package, 
   BookOpenCheck,
-  Database,
   ChevronsLeft,
   ChevronsRight,
   ChevronRight,
   Plus
 } from 'lucide-react';
-import { useSystem } from '../context/SystemContext';
+import BustdLogo from './BustdLogo';
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }) {
-  const { systemStatus } = useSystem();
   const [hoveredItem, setHoveredItem] = useState(null);
 
   const navItems = [
     { to: '/', label: 'Overview', icon: LayoutDashboard, section: 'main' },
     { to: '/inspections/new', label: 'New Inspection', icon: ScanSearch, highlight: true, section: 'main' },
-    { to: '/history', label: 'Inspection History', icon: History, count: 2, section: 'main' },
+    { to: '/history', label: 'Inspection Archive', icon: History, count: 2, section: 'main' },
     { to: '/products', label: 'Product Catalog', icon: Package, section: 'data' },
     { to: '/rules', label: 'Rule Library', icon: BookOpenCheck, section: 'data' },
   ];
-
-  const isMongo = systemStatus?.storage?.isMongoConnected;
 
   return (
     <aside 
@@ -35,40 +31,42 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       }`}
     >
       <div>
-        {/* Top Header: Mac Traffic Light Dots & Brand / Collapse Toggle */}
-        <div className="p-4 pb-3 flex items-center justify-between border-b border-black/5 dark:border-white/5">
+        {/* Top Header: Responsive Interactive BUSTD Logo & Collapse Toggle */}
+        <div className={`p-4 pb-3 flex items-center justify-between border-b border-black/5 dark:border-white/5 ${isCollapsed ? 'justify-center' : ''}`}>
+          <BustdLogo collapsed={isCollapsed} showTagline={!isCollapsed} />
 
-          {/* Toggle Expand / Collapse */}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-control text-olive-500 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-            title={isCollapsed ? "Expand Sidebar (<<)" : "Collapse Sidebar (>>)"}
-          >
-            {isCollapsed ? (
-              <ChevronsRight className="w-4 h-4" />
-            ) : (
+          {!isCollapsed && (
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-1.5 rounded-lg text-olive-500 dark:text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              title="Collapse Sidebar"
+            >
               <ChevronsLeft className="w-4 h-4" />
-            )}
-          </button>
+            </button>
+          )}
         </div>
 
-        {/* Brand Header */}
-        <div className={`px-4 pt-3 pb-2 ${isCollapsed ? 'text-center' : ''}`}>
-          <NavLink to="/" className="flex items-center gap-2.5 group">
-            <div className="w-20 h-10 rounded-full bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark flex items-center justify-center font-mono font-black text-sm shadow-soft-sm group-hover:scale-[1.03] transition-transform shrink-0">
-              BUSTD
-            </div>
-          </NavLink>
-        </div>
+        {/* Collapsed expand button */}
+        {isCollapsed && (
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => setIsCollapsed(false)}
+              className="p-1.5 rounded-lg text-olive-500 dark:text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              title="Expand Sidebar"
+            >
+              <ChevronsRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* Navigation Sections */}
         <nav className="px-3 pt-3 space-y-4">
-          {/* Section: Main Menu */}
+          {/* Section: Main Workspace */}
           <div className="space-y-1">
             {!isCollapsed && (
               <div className="flex items-center justify-between px-3 py-1 text-[10px] font-mono font-semibold tracking-wider uppercase text-olive-500 dark:text-olive-400">
-                <span>Main Menu</span>
-                <NavLink to="/inspections/new" title="Quick scan">
+                <span>Inspection Suite</span>
+                <NavLink to="/inspections/new" title="New scan">
                   <Plus className="w-3 h-3 hover:text-palette-dark dark:hover:text-palette-sand transition-colors" />
                 </NavLink>
               </div>
@@ -84,7 +82,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
                     onMouseEnter={() => setHoveredItem(item.to)}
                     onMouseLeave={() => setHoveredItem(null)}
                     className={({ isActive }) => `
-                      group flex items-center gap-3 px-3 py-2 rounded-control text-xs font-medium transition-surface relative
+                      group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-surface relative
                       ${isActive 
                         ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold' 
                         : 'text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
@@ -94,7 +92,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
                   >
                     {({ isActive }) => (
                       <>
-                        {/* Glowing Green Tab Indicator from SmartShort snapshot */}
+                        {/* Radiant Gradient Tab Indicator (Replaces lime) */}
                         {isActive && <span className="glowing-indicator" />}
 
                         <Icon className={`w-4 h-4 shrink-0 transition-transform ${isActive ? 'scale-105' : 'group-hover:scale-105'}`} />
@@ -116,13 +114,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
                     )}
                   </NavLink>
 
-                  {/* Floating Tooltip in Collapsed Mode (from eevo.team snapshot) */}
+                  {/* Floating Tooltip in Collapsed Mode */}
                   {isCollapsed && hoveredItem === item.to && (
-                    <div className="absolute left-full ml-3.5 top-1/2 -translate-y-1/2 z-50 pointer-events-none animate-in fade-in duration-150">
-                      <div className="bg-white text-palette-dark px-3 py-1.5 rounded-control shadow-soft-lg text-xs font-medium whitespace-nowrap border border-black/10 flex items-center gap-1.5">
+                    <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none animate-in fade-in duration-150">
+                      <div className="bg-white dark:bg-[#25241E] text-palette-dark dark:text-palette-sand px-3 py-1.5 rounded-lg shadow-soft-lg text-xs font-medium whitespace-nowrap border border-black/10 dark:border-white/10 flex items-center gap-2">
                         <span>{item.label}</span>
                         {item.count && (
-                          <span className="px-1.5 py-0.2 rounded-full bg-palette-dark text-palette-sand text-[10px] font-mono">
+                          <span className="badge-count text-[10px]">
                             {item.count}
                           </span>
                         )}
@@ -134,7 +132,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
             })}
           </div>
 
-          {/* Section: Data & Rules */}
+          {/* Section: Master Data & Rules */}
           <div className="space-y-1">
             {!isCollapsed && (
               <div className="px-3 py-1 text-[10px] font-mono font-semibold tracking-wider uppercase text-olive-500 dark:text-olive-400">
@@ -151,7 +149,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
                     onMouseEnter={() => setHoveredItem(item.to)}
                     onMouseLeave={() => setHoveredItem(null)}
                     className={({ isActive }) => `
-                      group flex items-center gap-3 px-3 py-2 rounded-control text-xs font-medium transition-surface relative
+                      group flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-surface relative
                       ${isActive 
                         ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold' 
                         : 'text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
@@ -172,8 +170,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
                   </NavLink>
 
                   {isCollapsed && hoveredItem === item.to && (
-                    <div className="absolute left-full ml-3.5 top-1/2 -translate-y-1/2 z-50 pointer-events-none animate-in fade-in duration-150">
-                      <div className="bg-white text-palette-dark px-3 py-1.5 rounded-control shadow-soft-lg text-xs font-medium whitespace-nowrap border border-black/10">
+                    <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 pointer-events-none animate-in fade-in duration-150">
+                      <div className="bg-white dark:bg-[#25241E] text-palette-dark dark:text-palette-sand px-3 py-1.5 rounded-lg shadow-soft-lg text-xs font-medium whitespace-nowrap border border-black/10 dark:border-white/10">
                         {item.label}
                       </div>
                     </div>
@@ -185,34 +183,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
         </nav>
       </div>
 
-      {/* Bottom Area: Storage Indicator & Demo Profile */}
-      <div className="p-3 border-t border-black/5 dark:border-white/5 space-y-2">
-        {/* Storage Engine Status */}
-        {!isCollapsed ? (
-          <div className="p-2.5 rounded-control bg-raised-light dark:bg-raised-dark border border-black/5 dark:border-white/5 text-[11px] space-y-1">
-            <div className="flex items-center justify-between text-olive-500 dark:text-olive-400">
-              <span className="flex items-center gap-1 font-mono uppercase tracking-wider text-[10px]">
-                <Database className="w-3 h-3" />
-                Store Mode
-              </span>
-              <span className={`w-2 h-2 rounded-full ${isMongo ? 'bg-emerald-500' : 'bg-[#E0DDBD]'}`} />
-            </div>
-            <div className="font-semibold text-palette-dark dark:text-palette-sand truncate">
-              {isMongo ? 'MongoDB Cluster' : 'Local File Store'}
-            </div>
-            <p className="text-[10px] text-olive-500 dark:text-olive-400 leading-tight">
-              {isMongo ? 'Mongoose active' : 'server/data/store.json'}
-            </p>
-          </div>
-        ) : (
-          <div className="flex justify-center p-2" title={isMongo ? 'MongoDB Connected' : 'Local File Store'}>
-            <span className={`w-2.5 h-2.5 rounded-full ${isMongo ? 'bg-emerald-500' : 'bg-[#E0DDBD]'}`} />
-          </div>
-        )}
-
-        {/* Demo User Pill */}
-        <div className={`flex items-center gap-2 p-1.5 rounded-control ${isCollapsed ? 'justify-center' : ''}`}>
-          <div className="w-7 h-7 rounded-full bg-palette-cream dark:bg-palette-dark text-palette-dark dark:text-palette-cream flex items-center justify-center font-mono font-bold text-[11px] shrink-0 border border-black/5 dark:border-white/10 shadow-sm">
+      {/* Bottom Area: Clean Demo User Profile (Clutter storage box removed per user requirement 5) */}
+      <div className="p-3 border-t border-black/5 dark:border-white/5">
+        <div className={`flex items-center gap-2.5 p-1.5 rounded-xl ${isCollapsed ? 'justify-center' : ''}`}>
+          <div className="w-8 h-8 rounded-full bg-gradient-bustd text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
             QA
           </div>
           {!isCollapsed && (
@@ -220,8 +194,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
               <div className="text-xs font-semibold text-palette-dark dark:text-palette-sand truncate leading-tight">
                 Senior QA Lead
               </div>
-              <div className="text-[10px] text-olive-500 dark:text-olive-400 truncate">
-                Capstone Demo Session
+              <div className="text-[10px] text-olive-500 dark:text-olive-400 truncate mt-0.5">
+                Metrology Inspector
               </div>
             </div>
           )}

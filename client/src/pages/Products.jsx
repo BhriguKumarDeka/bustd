@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Plus, 
   Search, 
@@ -11,6 +12,7 @@ import {
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
 import Modal from '../components/Modal';
+import DoubleLayerCard from '../components/DoubleLayerCard';
 
 export default function Products() {
   const { addToast } = useSystem();
@@ -124,275 +126,259 @@ export default function Products() {
     return true;
   });
 
-  const categories = ['all', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-20">
-      {/* Header */}
+    <motion.div 
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6 max-w-7xl mx-auto pb-20"
+    >
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-            Product Master &amp; SKU Catalog
+          <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+            SKU Master Specifications
           </h2>
-          <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
-            Authoritative product records used as the source of truth for pre-press packaging consistency checks.
+          <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+            Authoritative product declaration records used as verification baselines.
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-input bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm transition-surface"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-bustd hover:opacity-95 text-white text-xs font-semibold self-start sm:self-auto shadow-sm transition-opacity"
         >
           <Plus className="w-3.5 h-3.5" />
-          Add Product Master
+          <span>Register Master SKU</span>
         </button>
       </div>
 
-      {/* Search & Filter */}
-      <div className="p-3.5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-soft-sm">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-3.5 h-3.5 text-olive-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search by SKU, Brand, or Name..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none"
-          />
-        </div>
+      {/* Search & Category Filter with Double Layer */}
+      <DoubleLayerCard innerClassName="p-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+          <div className="relative w-full md:w-80">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-olive-400" />
+            <input
+              type="text"
+              placeholder="Search by SKU, Brand, or Product..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none focus:border-pink-500"
+            />
+          </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-control text-xs font-medium capitalize transition-surface shrink-0 ${
-                selectedCategory === cat
-                  ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm'
-                  : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
-              }`}
-            >
-              {cat === 'all' ? 'All Categories' : cat}
-            </button>
-          ))}
+          <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-all shrink-0 ${
+                  selectedCategory === cat
+                    ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
+                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      </DoubleLayerCard>
 
-      {/* Products Grid */}
+      {/* Products Grid (Clean 1D cards with subtle double-layered details) */}
       {loading ? (
-        <div className="p-12 text-center text-xs text-olive-400">Loading product master records...</div>
-      ) : filtered.length === 0 ? (
         <div className="p-12 text-center text-xs text-olive-400 space-y-2">
-          <Package className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
-          <p>No products match your search filter.</p>
+          <div className="w-6 h-6 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
+          <p>Loading master SKU catalog...</p>
         </div>
+      ) : filtered.length === 0 ? (
+        <DoubleLayerCard innerClassName="p-12 text-center space-y-3">
+          <Package className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
+          <p className="text-xs text-olive-500">No master products found.</p>
+        </DoubleLayerCard>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map(product => (
+          {filtered.map(p => (
             <div
-              key={product.id}
-              className="p-5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm hover:border-palette-cream/40 transition-surface"
+              key={p.id}
+              className="p-5 rounded-2xl bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm hover:shadow-soft-md transition-shadow group flex flex-col justify-between"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="space-y-1">
                     <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand">
-                      {product.sku}
+                      {p.sku}
                     </span>
-                    <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-palette-cream/30 text-palette-dark dark:text-palette-cream">
-                      {product.brand}
-                    </span>
+                    <h3 className="text-sm font-semibold text-palette-dark dark:text-palette-sand leading-snug">
+                      {p.name}
+                    </h3>
                   </div>
-                  <h3 className="font-medium text-xs text-palette-dark dark:text-palette-sand line-clamp-2 leading-snug">
-                    {product.name}
-                  </h3>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400 font-medium shrink-0">
+                    {p.brand}
+                  </span>
                 </div>
 
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
+                  <div>
+                    <span className="text-[10px] text-olive-400 block uppercase">Declared MRP</span>
+                    <span className="font-bold text-palette-dark dark:text-palette-sand">₹{Number(p.mrp).toFixed(2)}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-olive-400 block uppercase">Net Quantity</span>
+                    <span className="font-bold text-palette-dark dark:text-palette-sand">{p.netQuantity}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1 text-xs">
+                  <div>
+                    <span className="text-[10px] text-olive-400 block uppercase font-mono">Manufacturer</span>
+                    <p className="text-[11px] text-olive-600 dark:text-olive-300 leading-snug line-clamp-2">
+                      {p.manufacturer}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-olive-400 block uppercase font-mono">Country of Origin</span>
+                    <p className="text-[11px] text-palette-dark dark:text-palette-sand font-medium">
+                      {p.countryOfOrigin}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs">
+                <span className="text-[11px] text-olive-400 font-mono">
+                  Origin: {p.countryOfOrigin}
+                </span>
                 <button
-                  onClick={() => openEditModal(product)}
-                  className="p-1 rounded text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
-                  title="Edit Master Record"
+                  onClick={() => openEditModal(p)}
+                  className="inline-flex items-center gap-1 text-xs font-medium text-olive-600 dark:text-olive-300 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
+                  <span>Edit Spec</span>
                 </button>
-              </div>
-
-              {/* Master Data Metrics */}
-              <div className="grid grid-cols-2 gap-2 p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 font-mono text-xs">
-                <div>
-                  <span className="text-[10px] text-olive-400 block">Master MRP</span>
-                  <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                    ₹{Number(product.mrp).toFixed(2)}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-olive-400 block">Declared Net Qty</span>
-                  <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                    {product.netQuantity}
-                  </span>
-                </div>
-              </div>
-
-              {/* Manufacturer & Origin */}
-              <div className="space-y-1.5 text-[11px] text-olive-500">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-mono text-olive-400">Origin:</span>
-                  <span className="text-palette-dark dark:text-palette-sand font-medium">
-                    {product.countryOfOrigin}
-                  </span>
-                </div>
-                <div className="flex items-start gap-1.5">
-                  <span className="font-mono text-olive-400 shrink-0">Mfr:</span>
-                  <span className="text-olive-600 dark:text-olive-300 line-clamp-2 font-sans">
-                    {product.manufacturer}
-                  </span>
-                </div>
-                <div className="flex items-start gap-1.5">
-                  <span className="font-mono text-olive-400 shrink-0">Care:</span>
-                  <span className="text-olive-600 dark:text-olive-300 line-clamp-1 font-sans">
-                    {product.consumerCare}
-                  </span>
-                </div>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Create / Edit Modal */}
+      {/* CREATE / EDIT PRODUCT MODAL */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingProduct ? `Edit Product Master: ${editingProduct.sku}` : 'Add Authoritative Product Master'}
-        subtitle="Used as the authoritative baseline for packaging compliance verification"
-        maxWidth="max-w-xl"
+        title={editingProduct ? `Edit Master Spec: ${editingProduct.sku}` : 'Register Master Product Baseline'}
       >
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          <div>
+            <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Product Name *</label>
+            <input
+              type="text"
+              required
+              value={formData.name}
+              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-olive-500 mb-1">Product Name *</label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Reynolds 045 Carbure Ball Pen"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
-              />
-            </div>
-            <div>
-              <label className="block text-olive-500 mb-1">SKU Code *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">SKU Identifier *</label>
               <input
                 type="text"
                 required
                 value={formData.sku}
-                onChange={e => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
-                placeholder="REY-045-BLU-10"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
+                onChange={e => setFormData({ ...formData, sku: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono focus:outline-none focus:border-pink-500"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-olive-500 mb-1">Brand *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Brand *</label>
               <input
                 type="text"
                 required
                 value={formData.brand}
                 onChange={e => setFormData({ ...formData, brand: e.target.value })}
-                placeholder="Reynolds"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-olive-500 mb-1">Master MRP (₹) *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Declared MRP (INR) *</label>
               <input
                 type="number"
                 step="0.01"
                 required
                 value={formData.mrp}
                 onChange={e => setFormData({ ...formData, mrp: e.target.value })}
-                placeholder="50.00"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono focus:outline-none focus:border-pink-500"
               />
             </div>
             <div>
-              <label className="block text-olive-500 mb-1">Net Quantity *</label>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Net Quantity *</label>
               <input
                 type="text"
                 required
                 value={formData.netQuantity}
                 onChange={e => setFormData({ ...formData, netQuantity: e.target.value })}
-                placeholder="10 N"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-olive-500 mb-1">Category</label>
-              <input
-                type="text"
-                value={formData.category}
-                onChange={e => setFormData({ ...formData, category: e.target.value })}
-                placeholder="Writing Instruments"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
-              />
-            </div>
-            <div>
-              <label className="block text-olive-500 mb-1">Country of Origin *</label>
-              <input
-                type="text"
-                required
-                value={formData.countryOfOrigin}
-                onChange={e => setFormData({ ...formData, countryOfOrigin: e.target.value })}
-                placeholder="India"
-                className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono focus:outline-none focus:border-pink-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-olive-500 mb-1">Manufacturer Address (with 6-digit PIN code) *</label>
+            <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Manufacturer Details &amp; PIN *</label>
             <textarea
               rows={2}
               required
               value={formData.manufacturer}
               onChange={e => setFormData({ ...formData, manufacturer: e.target.value })}
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
+              className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
             />
           </div>
 
-          <div>
-            <label className="block text-olive-500 mb-1">Consumer Care Details *</label>
-            <input
-              type="text"
-              required
-              value={formData.consumerCare}
-              onChange={e => setFormData({ ...formData, consumerCare: e.target.value })}
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Country of Origin *</label>
+              <input
+                type="text"
+                required
+                value={formData.countryOfOrigin}
+                onChange={e => setFormData({ ...formData, countryOfOrigin: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
+              />
+            </div>
+            <div>
+              <label className="block text-olive-500 dark:text-olive-400 mb-1 font-mono text-[11px]">Consumer Care Info *</label>
+              <input
+                type="text"
+                required
+                value={formData.consumerCare}
+                onChange={e => setFormData({ ...formData, consumerCare: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
+              />
+            </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-black/5 dark:border-white/5">
+          <div className="flex justify-end gap-2 pt-2 border-t border-black/5 dark:border-white/5">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
+              className="px-4 py-2 rounded-xl text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm"
+              className="px-4 py-2 rounded-xl bg-gradient-bustd text-white font-semibold shadow-sm"
             >
-              {editingProduct ? 'Save Changes' : 'Create Product Master'}
+              Save Master Spec
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </motion.div>
   );
 }

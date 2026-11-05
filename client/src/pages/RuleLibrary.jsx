@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   BookOpenCheck, 
   ToggleLeft, 
@@ -10,6 +11,7 @@ import {
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
 import Modal from '../components/Modal';
+import DoubleLayerCard from '../components/DoubleLayerCard';
 
 export default function RuleLibrary() {
   const { addToast } = useSystem();
@@ -60,210 +62,203 @@ export default function RuleLibrary() {
 
   const pillars = [
     { id: 'all', label: 'All Pillars' },
-    { id: 'legal_metrology', label: 'Statutory Legal Metrology' },
-    { id: 'product_master', label: 'Product Master Consistency' },
-    { id: 'brand_identity', label: 'Brand Identity & Geometry' },
-    { id: 'visual_legibility', label: 'Visual Legibility & Contrast' }
+    { id: 'legal_metrology', label: 'Statutory Metrology' },
+    { id: 'product_master', label: 'Master Consistency' },
+    { id: 'brand_identity', label: 'Brand Identity' },
+    { id: 'visual_legibility', label: 'Visual Legibility' }
   ];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-20">
-      {/* Header */}
+    <motion.div 
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6 max-w-7xl mx-auto pb-20"
+    >
+      {/* Header Context Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
-            Deterministic Rule Library
+          <h2 className="text-lg sm:text-xl font-semibold text-palette-dark dark:text-palette-sand tracking-tight">
+            Deterministic Compliance Rule Library
           </h2>
-          <p className="text-xs text-olive-500 dark:text-olive-400 mt-1">
-            Machine-checkable statutory declarations and SKU master constraints. Only enabled rules evaluate during an inspection run.
+          <p className="text-xs text-olive-500 dark:text-olive-400 mt-0.5">
+            Machine-checkable statutory declarations and SKU master constraints under Legal Metrology Rules 2011.
           </p>
         </div>
 
         {/* Legal Disclaimer Pill */}
-        <div className="p-2.5 rounded-panel bg-palette-cream/20 dark:bg-[#25241E] border border-palette-cream/30 text-palette-dark dark:text-palette-cream text-xs flex items-center gap-2 max-w-md">
-          <Info className="w-4 h-4 shrink-0 text-palette-olive dark:text-palette-cream" />
+        <div className="p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/5 dark:border-white/5 text-olive-600 dark:text-olive-300 text-xs flex items-center gap-2 max-w-md">
+          <Info className="w-4 h-4 shrink-0 text-olive-500" />
           <span className="text-[11px] leading-tight">
-            Illustrative demo rules for capstone evaluation. Not certified legal advice or official government enforcement regulations.
+            Illustrative demo rules for capstone evaluation. Only enabled rules evaluate during an inspection run.
           </span>
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="p-3.5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs shadow-soft-sm">
-        <div className="relative w-full md:w-80">
-          <Search className="w-3.5 h-3.5 text-olive-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search rules by ID, legal citation, or field..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none"
-          />
-        </div>
+      {/* Filter & Search Bar with Double Layer */}
+      <DoubleLayerCard innerClassName="p-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+          <div className="relative w-full md:w-80">
+            <Search className="w-3.5 h-3.5 text-olive-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder="Search rules by ID, citation, or description..."
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand placeholder-olive-400 text-xs focus:outline-none focus:border-pink-500"
+            />
+          </div>
 
-        {/* Pillar filter pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
-          {pillars.map(p => (
-            <button
-              key={p.id}
-              onClick={() => setSelectedPillar(p.id)}
-              className={`px-3 py-1.5 rounded-control text-xs font-medium transition-surface shrink-0 ${
-                selectedPillar === p.id
-                  ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm'
-                  : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+            {pillars.map(p => (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPillar(p.id)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-all shrink-0 ${
+                  selectedPillar === p.id
+                    ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
+                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      </DoubleLayerCard>
 
       {/* Rules Table / Cards */}
-      <div className="divide-y divide-black/5 dark:divide-white/5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 overflow-hidden shadow-soft-sm">
+      <DoubleLayerCard innerClassName="p-0 overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-xs text-olive-400">Loading rule registry...</div>
-        ) : filtered.length === 0 ? (
           <div className="p-12 text-center text-xs text-olive-400 space-y-2">
-            <BookOpenCheck className="w-8 h-8 mx-auto text-olive-300 dark:text-olive-600" />
-            <p>No matching rules found in active catalog.</p>
+            <div className="w-6 h-6 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
+            <p>Loading deterministic rule library...</p>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-12 text-center text-xs text-olive-500">
+            No rules match your filter criteria.
           </div>
         ) : (
-          filtered.map(rule => {
-            const isEnabled = rule.status === 'enabled';
+          <div className="divide-y divide-black/5 dark:divide-white/5">
+            {filtered.map(rule => {
+              const isEnabled = rule.status === 'enabled';
+              return (
+                <div
+                  key={rule.ruleId}
+                  className="p-4 sm:px-5 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                >
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-mono font-bold text-palette-dark dark:text-palette-sand">
+                        {rule.ruleId}
+                      </span>
+                      <span className="text-olive-400">•</span>
+                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
+                        {rule.name}
+                      </span>
+                      <span className="px-2 py-0.2 rounded-full text-[10px] font-mono uppercase bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400">
+                        {rule.pillar.replace(/_/g, ' ')}
+                      </span>
+                      <span className="text-olive-400 font-mono text-[10px]">
+                        v{rule.version}
+                      </span>
+                    </div>
 
-            return (
-              <div
-                key={rule.ruleId}
-                onClick={() => setSelectedRuleDetail(rule)}
-                className="p-4 sm:p-5 hover:bg-black/[0.015] dark:hover:bg-white/[0.015] transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              >
-                <div className="space-y-1.5 min-w-0 max-w-3xl">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand">
-                      {rule.ruleId}
-                    </span>
-                    <span className="text-olive-300 dark:text-olive-600">•</span>
-                    <span className="font-semibold text-xs text-palette-dark dark:text-palette-sand">
-                      {rule.name}
-                    </span>
-                    <span className="px-1.5 py-0.2 rounded text-[10px] font-mono uppercase bg-black/5 dark:bg-white/5 text-olive-400">
-                      v{rule.version}
-                    </span>
-                    <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono uppercase ${
-                      rule.severity === 'critical' ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-black/5 dark:bg-white/5 text-olive-400'
-                    }`}>
-                      {rule.severity}
-                    </span>
+                    <p className="text-olive-600 dark:text-olive-300 text-[11px] leading-relaxed max-w-3xl">
+                      {rule.description}
+                    </p>
+
+                    <div className="flex items-center gap-4 text-[10px] font-mono text-olive-400">
+                      <span>Legal Citation: {rule.legalReference}</span>
+                      <span>•</span>
+                      <span className="capitalize">Target: {rule.applicability}</span>
+                    </div>
                   </div>
 
-                  <p className="text-xs text-olive-600 dark:text-olive-300 leading-relaxed font-sans">
-                    {rule.description}
-                  </p>
+                  <div className="flex items-center gap-4 shrink-0 self-start md:self-auto">
+                    <button
+                      onClick={() => setSelectedRuleDetail(rule)}
+                      className="text-xs text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand underline font-mono"
+                    >
+                      Inspect Logic
+                    </button>
 
-                  <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-olive-400 pt-0.5">
-                    <span>Pillar: {rule.pillar.replace(/_/g, ' ')}</span>
-                    <span>•</span>
-                    <span>Citation: {rule.legalReference}</span>
+                    <button
+                      onClick={() => handleToggleStatus(rule)}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-black/5 dark:border-white/5 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    >
+                      {isEnabled ? (
+                        <>
+                          <ToggleRight className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                          <span className="font-mono text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">
+                            ENABLED
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <ToggleLeft className="w-5 h-5 text-olive-400" />
+                          <span className="font-mono text-[10px] uppercase text-olive-400">
+                            DISABLED
+                          </span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
-
-                {/* Status Toggle & Details Trigger */}
-                <div className="flex items-center gap-3 shrink-0 self-end sm:self-center" onClick={e => e.stopPropagation()}>
-                  <button
-                    onClick={() => handleToggleStatus(rule)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-control text-xs font-mono font-medium transition-surface ${
-                      isEnabled
-                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
-                        : 'bg-black/5 dark:bg-white/5 text-olive-400 border border-black/5 dark:border-white/5'
-                    }`}
-                  >
-                    {isEnabled ? <ToggleRight className="w-4 h-4 text-emerald-600" /> : <ToggleLeft className="w-4 h-4 text-olive-400" />}
-                    <span>{isEnabled ? 'Enabled' : 'Disabled'}</span>
-                  </button>
-                </div>
-              </div>
-            );
-          })
+              );
+            })}
+          </div>
         )}
-      </div>
+      </DoubleLayerCard>
 
-      {/* Rule Detail Modal */}
+      {/* RULE DETAILS MODAL */}
       <Modal
         isOpen={!!selectedRuleDetail}
         onClose={() => setSelectedRuleDetail(null)}
-        title={selectedRuleDetail ? `${selectedRuleDetail.ruleId} — ${selectedRuleDetail.name}` : ''}
-        subtitle={selectedRuleDetail?.legalReference}
-        maxWidth="max-w-xl"
+        title={selectedRuleDetail ? `${selectedRuleDetail.ruleId}: ${selectedRuleDetail.name}` : ''}
+        subtitle="Specification and validation mechanics"
       >
         {selectedRuleDetail && (
           <div className="space-y-4 text-xs">
-            <div className="p-3.5 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2 font-mono text-[11px]">
-              <div className="flex items-center justify-between">
-                <span className="text-olive-400">Rule Pillar:</span>
-                <span className="text-palette-dark dark:text-palette-sand capitalize">
-                  {selectedRuleDetail.pillar.replace(/_/g, ' ')}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-olive-400">Validation Algorithm:</span>
-                <span className="text-palette-dark dark:text-palette-sand">
-                  {selectedRuleDetail.validationType}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-olive-400">Severity Level:</span>
-                <span className={`uppercase font-bold ${
-                  selectedRuleDetail.severity === 'critical' ? 'text-red-500' : 'text-olive-400'
-                }`}>
-                  {selectedRuleDetail.severity}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-olive-400">Version:</span>
-                <span className="text-palette-dark dark:text-palette-sand">
-                  v{selectedRuleDetail.version}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <span className="font-semibold text-palette-dark dark:text-palette-sand block">
-                Rule Definition &amp; Logic
-              </span>
-              <p className="text-olive-600 dark:text-olive-300 leading-relaxed font-sans">
+            <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] space-y-2">
+              <span className="text-[10px] font-mono uppercase text-olive-400 block">Description &amp; Intent</span>
+              <p className="text-palette-dark dark:text-palette-sand leading-relaxed">
                 {selectedRuleDetail.description}
               </p>
             </div>
 
-            {selectedRuleDetail.testCasesSummary && (
-              <div className="space-y-1">
-                <span className="font-semibold text-palette-dark dark:text-palette-sand block">
-                  Ground-Truth Boundary Test Cases
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04]">
+                <span className="text-[10px] font-mono uppercase text-olive-400 block">Pillar Category</span>
+                <span className="font-semibold text-palette-dark dark:text-palette-sand capitalize">
+                  {selectedRuleDetail.pillar.replace(/_/g, ' ')}
                 </span>
-                <div className="p-2.5 rounded bg-black/5 dark:bg-white/5 font-mono text-[11px] text-palette-dark dark:text-palette-sand">
-                  {selectedRuleDetail.testCasesSummary}
-                </div>
               </div>
-            )}
+              <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04]">
+                <span className="text-[10px] font-mono uppercase text-olive-400 block">Validation Engine Type</span>
+                <span className="font-mono text-palette-dark dark:text-palette-sand">
+                  {selectedRuleDetail.validationType}
+                </span>
+              </div>
+            </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/5">
-              <span className="text-[11px] text-olive-400">
-                Current Execution Status: <strong className="uppercase text-palette-dark dark:text-palette-sand">{selectedRuleDetail.status}</strong>
-              </span>
+            <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] space-y-1">
+              <span className="text-[10px] font-mono uppercase text-olive-400 block">Statutory Reference</span>
+              <p className="font-mono text-[11px] text-palette-dark dark:text-palette-sand">
+                {selectedRuleDetail.legalReference}
+              </p>
+            </div>
+
+            <div className="flex justify-end pt-2">
               <button
-                onClick={() => {
-                  handleToggleStatus(selectedRuleDetail);
-                  setSelectedRuleDetail(null);
-                }}
-                className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-medium"
+                onClick={() => setSelectedRuleDetail(null)}
+                className="px-4 py-2 rounded-xl bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark text-xs font-semibold"
               >
-                {selectedRuleDetail.status === 'enabled' ? 'Disable Rule' : 'Enable Rule'}
+                Close Rule Specs
               </button>
             </div>
           </div>
         )}
       </Modal>
-    </div>
+    </motion.div>
   );
 }

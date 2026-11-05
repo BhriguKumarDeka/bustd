@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, 
   Download, 
@@ -24,6 +25,7 @@ import {
 import { api } from '../services/api';
 import { useSystem } from '../context/SystemContext';
 import Modal from '../components/Modal';
+import DoubleLayerCard from '../components/DoubleLayerCard';
 
 export default function InspectionDetail() {
   const { id } = useParams();
@@ -100,7 +102,7 @@ export default function InspectionDetail() {
   if (loading) {
     return (
       <div className="p-16 text-center text-xs text-olive-400 space-y-3">
-        <div className="w-8 h-8 rounded-full border-2 border-palette-dark dark:border-palette-cream border-t-transparent animate-spin mx-auto" />
+        <div className="w-8 h-8 rounded-full border-2 border-pink-500 border-t-transparent animate-spin mx-auto" />
         <p>Loading inspection workspace and spatial evidence layers...</p>
       </div>
     );
@@ -113,7 +115,7 @@ export default function InspectionDetail() {
         <p>Inspection record #{id} could not be resolved.</p>
         <button
           onClick={() => navigate('/history')}
-          className="px-4 py-2 rounded-control bg-palette-dark text-palette-sand font-medium"
+          className="px-4 py-2 rounded-xl bg-palette-dark text-palette-sand font-medium"
         >
           Return to History
         </button>
@@ -225,67 +227,70 @@ export default function InspectionDetail() {
   };
 
   return (
-    <div className="space-y-6 pb-24 max-w-[1600px] mx-auto">
-      
-      {/* Top Header Bar: Reference, SKU, Inspector & Quick Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 shadow-soft-sm">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
+    <motion.div 
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6 pb-24 max-w-[1600px] mx-auto"
+    >
+      {/* Top Header: Inspection SKU Context & Actions (No duplicate title) */}
+      <DoubleLayerCard innerClassName="p-3 sm:p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/history')}
-              className="text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand p-1 rounded-control hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="text-olive-400 hover:text-palette-dark dark:hover:text-palette-sand p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               title="Return to History"
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <span className="font-mono text-xs font-semibold text-palette-dark dark:text-palette-sand">
-              {inspection.inspectionNumber}
-            </span>
-            <span className="text-olive-300 dark:text-olive-600">•</span>
-            <span className="text-xs font-medium text-palette-dark dark:text-palette-sand truncate max-w-md">
-              {product.name}
-            </span>
-            <span className="text-olive-300 dark:text-olive-600">•</span>
-            <span className="font-mono text-[11px] text-olive-500 dark:text-olive-400">
-              SKU: {product.sku}
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-bold text-palette-dark dark:text-palette-sand">
+                  {inspection.inspectionNumber}
+                </span>
+                <span className="text-olive-400 text-xs">•</span>
+                <span className="text-xs font-semibold text-palette-dark dark:text-palette-sand truncate max-w-xs sm:max-w-md">
+                  {product.name}
+                </span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-black/5 dark:bg-white/5 text-olive-600 dark:text-olive-400">
+                  {product.sku}
+                </span>
+              </div>
+              <div className="text-[11px] text-olive-500 dark:text-olive-400 font-mono mt-0.5">
+                Inspector: {inspection.inspector?.name || 'QA Reviewer'} • {new Date(inspection.createdAt).toLocaleString()}
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] text-olive-500 dark:text-olive-400 font-mono pl-7">
-            <span>Inspector: {inspection.inspector?.name || 'Lead Reviewer'}</span>
-            <span>•</span>
-            <span>{new Date(inspection.createdAt).toLocaleString()}</span>
+          {/* Action Controls */}
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+            <button
+              onClick={() => setFinalizeModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark text-xs font-semibold shadow-sm transition-all hover:opacity-95"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Sign-Off Decision</span>
+              {inspection.finalDecision && inspection.finalDecision !== 'pending' && (
+                <span className="ml-1 px-1.5 py-0.2 rounded text-[9px] uppercase font-mono bg-emerald-500/20 text-emerald-800 dark:text-emerald-950 font-bold">
+                  {inspection.finalDecision.replace(/_/g, ' ')}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-bustd text-white text-xs font-semibold shadow-glow-bustd transition-all hover:opacity-95 disabled:opacity-50"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{downloadingPdf ? 'Exporting...' : 'Export PDF'}</span>
+            </button>
           </div>
         </div>
-
-        {/* Action Controls */}
-        <div className="flex items-center gap-2.5 shrink-0 pl-7 sm:pl-0">
-          <button
-            onClick={() => setFinalizeModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-control bg-palette-dark hover:bg-black dark:bg-palette-sand dark:hover:bg-white text-palette-sand dark:text-palette-dark text-xs font-medium shadow-soft-sm transition-surface"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Finalize Decision</span>
-            {inspection.finalDecision && inspection.finalDecision !== 'pending' && (
-              <span className="ml-1 px-1.5 py-0.2 rounded text-[10px] uppercase font-mono bg-emerald-500/20 text-emerald-800 dark:text-emerald-950 font-bold">
-                {inspection.finalDecision.replace(/_/g, ' ')}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={handleDownloadPdf}
-            disabled={downloadingPdf}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-control bg-raised-light dark:bg-raised-dark hover:bg-black/10 dark:hover:bg-white/10 text-palette-dark dark:text-palette-sand text-xs font-medium border border-black/5 dark:border-white/5 transition-surface disabled:opacity-50"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>{downloadingPdf ? 'Exporting...' : 'Download PDF'}</span>
-          </button>
-        </div>
-      </div>
+      </DoubleLayerCard>
 
       {/* Real-time Screening Status Banner */}
-      <div className={`p-4 rounded-panel border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
+      <div className={`p-4 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${
         inspection.finalDecision === 'approved'
           ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-900 dark:text-emerald-200'
           : inspection.finalDecision === 'returned_for_revision'
@@ -332,17 +337,17 @@ export default function InspectionDetail() {
         </div>
 
         {/* Small live summary badges */}
-        <div className="flex items-center gap-2.5 shrink-0 text-xs font-mono">
-          <span className="px-2 py-1 rounded bg-black/5 dark:bg-white/10 text-palette-dark dark:text-palette-sand">
+        <div className="flex items-center gap-2 shrink-0 text-xs font-mono">
+          <span className="px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-palette-dark dark:text-palette-sand">
             Checks: {summary.totalChecks || findings.length}
           </span>
-          <span className="px-2 py-1 rounded bg-red-500/15 text-red-600 dark:text-red-400 font-bold">
+          <span className="px-2 py-0.5 rounded-full bg-red-500/15 text-red-600 dark:text-red-400 font-bold">
             Issues: {summary.potentialIssues || 0}
           </span>
-          <span className="px-2 py-1 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">
+          <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">
             Review: {summary.reviewRequired || 0}
           </span>
-          <span className="px-2 py-1 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
+          <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
             Passed: {summary.passedChecks || 0}
           </span>
         </div>
@@ -353,62 +358,64 @@ export default function InspectionDetail() {
         
         {/* LEFT COLUMN: INTERACTIVE EVIDENCE VIEWER & PACKAGING ARTWORK CANVAS (7 Cols) */}
         <div className="lg:col-span-7 space-y-3">
-          <div className="p-3.5 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 flex items-center justify-between gap-3 text-xs shadow-soft-sm">
-            {/* Panel Switcher Tabs */}
-            <div className="flex items-center gap-1.5 overflow-x-auto">
-              {assets.map((asset, idx) => (
-                <button
-                  key={asset.assetId}
-                  onClick={() => {
-                    setActiveAssetIndex(idx);
-                    setZoomLevel(1);
-                  }}
-                  className={`px-3 py-1.5 rounded-control capitalize font-medium text-xs transition-surface flex items-center gap-1.5 shrink-0 ${
-                    activeAssetIndex === idx
-                      ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold'
-                      : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>{asset.panel} Panel</span>
-                  <span className="text-[10px] font-mono opacity-60">
-                    ({asset.originalFilename.split('.').pop()})
-                  </span>
-                </button>
-              ))}
-            </div>
+          <DoubleLayerCard innerClassName="p-2.5">
+            <div className="flex items-center justify-between gap-3 text-xs">
+              {/* Panel Switcher Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto">
+                {assets.map((asset, idx) => (
+                  <button
+                    key={asset.assetId}
+                    onClick={() => {
+                      setActiveAssetIndex(idx);
+                      setZoomLevel(1);
+                    }}
+                    className={`px-3 py-1.5 rounded-xl capitalize font-medium text-xs transition-all flex items-center gap-1.5 shrink-0 ${
+                      activeAssetIndex === idx
+                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
+                        : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>{asset.panel} Panel</span>
+                    <span className="text-[10px] font-mono opacity-60">
+                      ({asset.originalFilename.split('.').pop()})
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-            {/* Canvas Zoom Controls */}
-            <div className="flex items-center gap-1 shrink-0 border-l border-black/5 dark:border-white/5 pl-2">
-              <button
-                onClick={() => setZoomLevel(prev => Math.max(0.7, prev - 0.2))}
-                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
-                title="Zoom Out"
-              >
-                <ZoomOut className="w-3.5 h-3.5" />
-              </button>
-              <span className="font-mono text-[11px] text-olive-500 dark:text-olive-400 w-10 text-center">
-                {Math.round(zoomLevel * 100)}%
-              </span>
-              <button
-                onClick={() => setZoomLevel(prev => Math.min(2.5, prev + 0.2))}
-                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
-                title="Zoom In"
-              >
-                <ZoomIn className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => setZoomLevel(1)}
-                className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
-                title="Reset Zoom"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
+              {/* Canvas Zoom Controls */}
+              <div className="flex items-center gap-1 shrink-0 border-l border-black/5 dark:border-white/5 pl-2">
+                <button
+                  onClick={() => setZoomLevel(prev => Math.max(0.7, prev - 0.2))}
+                  className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+                <span className="font-mono text-[11px] text-olive-500 dark:text-olive-400 w-10 text-center">
+                  {Math.round(zoomLevel * 100)}%
+                </span>
+                <button
+                  onClick={() => setZoomLevel(prev => Math.min(2.5, prev + 0.2))}
+                  className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setZoomLevel(1)}
+                  className="p-1.5 rounded hover:bg-black/5 dark:hover:bg-white/5 text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
-          </div>
+          </DoubleLayerCard>
 
           {/* Interactive Artwork Canvas Viewport */}
-          <div className="relative rounded-workspace bg-[#14130F] border border-black/10 dark:border-white/10 overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
+          <div className="relative rounded-2xl bg-[#14130F] border border-black/10 dark:border-white/10 overflow-hidden min-h-[580px] flex items-center justify-center shadow-soft-lg group">
             {currentAsset ? (
               <div
                 className="relative transition-transform duration-200 origin-center select-none"
@@ -452,7 +459,7 @@ export default function InspectionDetail() {
                         }}
                         className={`border-2 rounded cursor-pointer transition-all duration-150 ${strokeColor} ${
                           isSelected
-                            ? 'ring-4 ring-[#84CC16]/60 ring-offset-1 z-20 scale-[1.01]'
+                            ? 'ring-4 ring-pink-500/70 ring-offset-1 z-20 scale-[1.01]'
                             : 'hover:border-white hover:bg-white/10 z-10'
                         }`}
                         title={`${finding.title} (${finding.ruleId})`}
@@ -474,10 +481,10 @@ export default function InspectionDetail() {
               <div className="text-olive-400 text-xs">No packaging assets attached.</div>
             )}
 
-            {/* Bottom canvas watermark & instructions */}
-            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-palette-cream bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-control pointer-events-none border border-white/10">
+            {/* Bottom canvas watermark & instructions with vibrant accent (Replacing Lime) */}
+            <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-palette-cream bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-xl pointer-events-none border border-white/10">
               <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#84CC16] shadow-[0_0_6px_#84CC16]" />
+                <span className="w-2 h-2 rounded-full bg-gradient-bustd shadow-[0_0_6px_rgba(236,72,153,0.8)]" />
                 Click bounding boxes to inspect findings
               </span>
               <span>
@@ -491,35 +498,37 @@ export default function InspectionDetail() {
         <div className="lg:col-span-5 space-y-4">
           
           {/* Sub-navigation Tabs */}
-          <div className="flex items-center gap-1 p-1 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 text-xs shadow-soft-sm">
-            {[
-              { id: 'findings', label: 'Findings', badge: findings.length },
-              { id: 'comparison', label: 'Master Check', badge: 'Diff' },
-              { id: 'fields', label: 'Tokens' },
-              { id: 'audit', label: 'Audit Trail', badge: auditEvents.length }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 py-1.5 px-2 rounded-control font-medium transition-surface flex items-center justify-center gap-1.5 ${
-                  activeTab === tab.id
-                    ? 'tactile-active-nav text-palette-dark dark:text-palette-sand font-semibold'
-                    : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
-                }`}
-              >
-                <span>{tab.label}</span>
-                {tab.badge !== undefined && (
-                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono ${
-                    activeTab === tab.id ? 'bg-palette-cream/40 text-palette-dark' : 'bg-black/5 dark:bg-white/10 text-olive-400'
-                  }`}>
-                    {tab.badge}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
+          <DoubleLayerCard innerClassName="p-1">
+            <div className="flex items-center gap-1 text-xs">
+              {[
+                { id: 'findings', label: 'Findings', badge: findings.length },
+                { id: 'comparison', label: 'Master Check', badge: 'Diff' },
+                { id: 'fields', label: 'Tokens' },
+                { id: 'audit', label: 'Audit Trail', badge: auditEvents.length }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all flex items-center justify-center gap-1.5 ${
+                    activeTab === tab.id
+                      ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
+                      : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  {tab.badge !== undefined && (
+                    <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono ${
+                      activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-black/5 dark:bg-white/10 text-olive-400'
+                    }`}>
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </DoubleLayerCard>
 
-          {/* TAB 1: FINDINGS & REVIEWER ACTIONS (WITH PROGRESSIVE DISCLOSURE) */}
+          {/* TAB 1: FINDINGS & REVIEWER ACTIONS */}
           {activeTab === 'findings' && (
             <div className="space-y-3">
               {/* Finding Status Filter Pills */}
@@ -533,9 +542,9 @@ export default function InspectionDetail() {
                   <button
                     key={f.id}
                     onClick={() => setStatusFilter(f.id)}
-                    className={`px-3 py-1 rounded-control text-[11px] font-medium transition-surface shrink-0 ${
+                    className={`px-3 py-1 rounded-full text-[11px] font-medium transition-all shrink-0 ${
                       statusFilter === f.id
-                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm'
+                        ? 'bg-palette-dark text-palette-sand dark:bg-palette-sand dark:text-palette-dark font-semibold shadow-sm'
                         : 'text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand hover:bg-black/5 dark:hover:bg-white/5'
                     }`}
                   >
@@ -560,10 +569,10 @@ export default function InspectionDetail() {
                         const assetIdx = assets.findIndex(a => a.assetId === finding.evidenceAssetId);
                         if (assetIdx !== -1) setActiveAssetIndex(assetIdx);
                       }}
-                      className={`p-4 rounded-panel border transition-surface cursor-pointer space-y-3 ${
+                      className={`p-4 rounded-xl border transition-all cursor-pointer space-y-3 ${
                         isSelected
-                          ? 'bg-white dark:bg-[#25241E] border-palette-dark dark:border-palette-cream shadow-soft-md ring-1 ring-black/5 dark:ring-white/10'
-                          : 'bg-white/70 dark:bg-[#1E1D18] border-black/5 dark:border-white/5 hover:border-palette-cream/40'
+                          ? 'bg-white dark:bg-[#25241E] border-pink-500/50 shadow-soft-md ring-1 ring-pink-500/20'
+                          : 'bg-black/[0.02] dark:bg-white/[0.02] border-black/5 dark:border-white/5 hover:border-black/20 dark:hover:border-white/20'
                       }`}
                     >
                       {/* Header */}
@@ -571,7 +580,7 @@ export default function InspectionDetail() {
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
                                 isIssue
                                   ? 'bg-red-500/15 text-red-600 dark:text-red-400'
                                   : isReview
@@ -598,10 +607,10 @@ export default function InspectionDetail() {
                         </span>
                       </div>
 
-                      {/* Values Comparison Strip (High contrast, clutterless) */}
-                      <div className="p-3 rounded-control bg-raised-light dark:bg-[#2A2922] border border-black/5 dark:border-white/5 space-y-2 text-xs font-mono">
+                      {/* Values Comparison Strip */}
+                      <div className="p-3 rounded-xl bg-black/[0.03] dark:bg-white/[0.04] space-y-1.5 text-xs font-mono">
                         <div>
-                          <span className="text-[10px] text-olive-500 dark:text-olive-400 block uppercase">
+                          <span className="text-[10px] text-olive-400 block uppercase">
                             Expected Baseline:
                           </span>
                           <span className="text-palette-dark dark:text-palette-sand font-medium">
@@ -609,7 +618,7 @@ export default function InspectionDetail() {
                           </span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-olive-500 dark:text-olive-400 block uppercase">
+                          <span className="text-[10px] text-olive-400 block uppercase">
                             Detected on Artwork:
                           </span>
                           <span className={isIssue ? 'text-red-600 dark:text-red-400 font-bold' : 'text-palette-dark dark:text-palette-sand'}>
@@ -639,7 +648,7 @@ export default function InspectionDetail() {
 
                         {/* Collapsible Technical Details */}
                         {isExpanded && (
-                          <div className="mt-2 p-2.5 rounded bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 space-y-1.5 text-[11px] font-mono animate-in fade-in duration-150">
+                          <div className="mt-2 p-2.5 rounded-lg bg-black/5 dark:bg-black/30 border border-black/5 dark:border-white/5 space-y-1.5 text-[11px] font-mono animate-in fade-in duration-150">
                             <div className="flex justify-between">
                               <span className="text-olive-400">Pillar:</span>
                               <span className="text-palette-dark dark:text-palette-sand capitalize">{finding.pillar.replace(/_/g, ' ')}</span>
@@ -662,7 +671,7 @@ export default function InspectionDetail() {
                       <div className="pt-2 border-t border-black/5 dark:border-white/5 flex flex-col gap-2">
                         <div className="flex items-center justify-between text-[11px]">
                           <span className="font-mono text-olive-500 dark:text-olive-400">Reviewer Disposition:</span>
-                          <span className={`font-mono font-bold uppercase text-[10px] px-2 py-0.5 rounded ${
+                          <span className={`font-mono font-bold uppercase text-[10px] px-2 py-0.5 rounded-full ${
                             finding.reviewDisposition === 'confirmed'
                               ? 'bg-red-500/20 text-red-600 dark:text-red-400'
                               : finding.reviewDisposition === 'dismissed'
@@ -676,7 +685,7 @@ export default function InspectionDetail() {
                         </div>
 
                         {finding.dismissReason && (
-                          <div className="p-2 rounded bg-black/5 dark:bg-white/5 text-[11px] text-palette-dark dark:text-palette-sand italic">
+                          <div className="p-2 rounded-lg bg-black/5 dark:bg-white/5 text-[11px] text-palette-dark dark:text-palette-sand italic">
                             Dismissal Reason: "{finding.dismissReason}"
                           </div>
                         )}
@@ -689,7 +698,7 @@ export default function InspectionDetail() {
                               e.stopPropagation();
                               handleReviewAction(finding.findingId, 'confirmed');
                             }}
-                            className={`flex-1 py-1.5 rounded-control text-xs font-medium transition-surface flex items-center justify-center gap-1 ${
+                            className={`flex-1 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 ${
                               finding.reviewDisposition === 'confirmed'
                                 ? 'bg-red-600 text-white'
                                 : 'bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20'
@@ -705,7 +714,7 @@ export default function InspectionDetail() {
                               e.stopPropagation();
                               openDismissModal(finding);
                             }}
-                            className={`flex-1 py-1.5 rounded-control text-xs font-medium transition-surface flex items-center justify-center gap-1 ${
+                            className={`flex-1 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 ${
                               finding.reviewDisposition === 'dismissed'
                                 ? 'bg-emerald-600 text-white'
                                 : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20'
@@ -721,7 +730,7 @@ export default function InspectionDetail() {
                               e.stopPropagation();
                               handleReviewAction(finding.findingId, 'deferred');
                             }}
-                            className={`px-3 py-1.5 rounded-control text-xs font-medium transition-surface flex items-center justify-center gap-1 ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1 ${
                               finding.reviewDisposition === 'deferred'
                                 ? 'bg-amber-600 text-white'
                                 : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20'
@@ -742,188 +751,194 @@ export default function InspectionDetail() {
 
           {/* TAB 2: PRODUCT MASTER COMPARISON (CROSS-SOURCE CONSISTENCY) */}
           {activeTab === 'comparison' && (
-            <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
-              <div className="space-y-1">
-                <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
-                  SKU Master Baseline vs Printed Packaging Artwork
-                </h4>
-                <p className="text-[11px] text-olive-500">
-                  Cross-validating authoritative ERP records against OCR-extracted tokens.
-                </p>
+            <DoubleLayerCard>
+              <div className="space-y-4 text-xs">
+                <div className="space-y-0.5">
+                  <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
+                    Master Baseline vs Detected Artwork
+                  </h4>
+                  <p className="text-[11px] text-olive-500">
+                    Cross-validating authoritative ERP records against OCR-extracted tokens.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {/* MRP Comparison */}
+                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
+                        Maximum Retail Price (MRP)
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
+                        MISMATCH
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
+                      <div>
+                        <span className="text-olive-400 text-[10px] block">Expected (Master)</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                          ₹{Number(product.mrp).toFixed(2)}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-olive-400 text-[10px] block">Detected (Artwork)</span>
+                        <span className="font-semibold text-red-600 dark:text-red-400">
+                          {inspection.extractedFields?.mrp?.rawText || '₹60.00'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Net Quantity Comparison */}
+                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
+                        Net Quantity Declaration
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
+                        COUNT MISMATCH
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
+                      <div>
+                        <span className="text-olive-400 text-[10px] block">Expected (Master)</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                          {product.netQuantity} ({product.netQuantityNumeric} units)
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-olive-400 text-[10px] block">Detected (Artwork)</span>
+                        <span className="font-semibold text-red-600 dark:text-red-400">
+                          {inspection.extractedFields?.net_quantity?.rawText || '12 N (pens)'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Manufacturer Comparison */}
+                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
+                        Manufacturer Address &amp; PIN
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
+                        VERIFIED (600001)
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-olive-600 dark:text-olive-300 font-sans">
+                      {product.manufacturer}
+                    </div>
+                  </div>
+
+                  {/* Consumer Care Comparison */}
+                  <div className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-palette-dark dark:text-palette-sand">
+                        Consumer Care Helpline &amp; Email
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
+                        DEGRADED OCR (42%)
+                      </span>
+                    </div>
+                    <div className="text-[11px] font-mono text-olive-600 dark:text-olive-300">
+                      Detected: {inspection.extractedFields?.consumer_care?.rawText || 'Smudged resolution'}
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <div className="space-y-3 text-xs">
-                {/* MRP Comparison */}
-                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                      Maximum Retail Price (MRP)
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
-                      MISMATCH
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
-                    <div>
-                      <span className="text-olive-500 text-[10px] block">Expected (Master)</span>
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                        ₹{Number(product.mrp).toFixed(2)}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-olive-500 text-[10px] block">Detected (Artwork)</span>
-                      <span className="font-semibold text-red-600 dark:text-red-400">
-                        {inspection.extractedFields?.mrp?.rawText || '₹60.00'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Net Quantity Comparison */}
-                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                      Net Quantity Declaration
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-red-500/10 text-red-600 dark:text-red-400 font-bold">
-                      COUNT MISMATCH
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
-                    <div>
-                      <span className="text-olive-500 text-[10px] block">Expected (Master)</span>
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                        {product.netQuantity} ({product.netQuantityNumeric} units)
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-olive-500 text-[10px] block">Detected (Artwork)</span>
-                      <span className="font-semibold text-red-600 dark:text-red-400">
-                        {inspection.extractedFields?.net_quantity?.rawText || '12 N (pens)'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Manufacturer Comparison */}
-                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                      Manufacturer Address &amp; PIN
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">
-                      VERIFIED (600001)
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-olive-600 dark:text-olive-300 font-sans">
-                    {product.manufacturer}
-                  </div>
-                </div>
-
-                {/* Consumer Care Comparison */}
-                <div className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-palette-dark dark:text-palette-sand">
-                      Consumer Care Helpline &amp; Email
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
-                      DEGRADED OCR (42%)
-                    </span>
-                  </div>
-                  <div className="text-[11px] font-mono text-olive-600 dark:text-olive-300">
-                    Detected: {inspection.extractedFields?.consumer_care?.rawText || 'Smudged resolution'}
-                  </div>
-                </div>
-              </div>
-            </div>
+            </DoubleLayerCard>
           )}
 
           {/* TAB 3: EXTRACTED FIELDS & FIELD CORRECTION */}
           {activeTab === 'fields' && (
-            <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
-              <div className="space-y-1">
-                <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
-                  Extracted Declaration Tokens
-                </h4>
-                <p className="text-[11px] text-olive-500">
-                  Reviewers may correct extracted text or mark uncertain without altering original machine traces.
-                </p>
-              </div>
+            <DoubleLayerCard>
+              <div className="space-y-4 text-xs">
+                <div className="space-y-0.5">
+                  <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
+                    Extracted Declaration Tokens
+                  </h4>
+                  <p className="text-[11px] text-olive-500">
+                    Reviewers may correct extracted text or mark uncertain without altering original machine traces.
+                  </p>
+                </div>
 
-              <div className="space-y-3 max-h-[580px] overflow-y-auto">
-                {Object.entries(inspection.extractedFields || {}).map(([key, field]) => (
-                  <div
-                    key={key}
-                    className="p-3 rounded-control bg-raised-light dark:bg-[#282721] border border-black/5 dark:border-white/5 space-y-2 text-xs"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono uppercase font-semibold text-palette-dark dark:text-palette-sand">
-                        {key.replace(/_/g, ' ')}
-                      </span>
-                      <button
-                        onClick={() => openCorrectModal(key, field.rawText)}
-                        className="inline-flex items-center gap-1 text-[11px] text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
-                      >
-                        <Edit3 className="w-3 h-3" />
-                        Correct
-                      </button>
-                    </div>
-
-                    <div className="font-mono text-[11px] text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 p-2 rounded break-all">
-                      {field.rawText}
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] font-mono text-olive-500 dark:text-olive-400">
-                      <span>Confidence: {Math.round((field.confidence || 0) * 100)}%</span>
-                      <span className="capitalize">Status: {field.status}</span>
-                    </div>
-
-                    {field.reviewerCorrection && (
-                      <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono italic">
-                        Correction applied by {field.reviewerCorrection.correctedBy}
+                <div className="space-y-3 max-h-[580px] overflow-y-auto">
+                  {Object.entries(inspection.extractedFields || {}).map(([key, field]) => (
+                    <div
+                      key={key}
+                      className="p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 space-y-2 text-xs"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono uppercase font-semibold text-palette-dark dark:text-palette-sand">
+                          {key.replace(/_/g, ' ')}
+                        </span>
+                        <button
+                          onClick={() => openCorrectModal(key, field.rawText)}
+                          className="inline-flex items-center gap-1 text-[11px] text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand transition-colors"
+                        >
+                          <Edit3 className="w-3 h-3" />
+                          Correct
+                        </button>
                       </div>
-                    )}
-                  </div>
-                ))}
+
+                      <div className="font-mono text-[11px] text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 p-2 rounded-lg break-all">
+                        {field.rawText}
+                      </div>
+
+                      <div className="flex items-center justify-between text-[10px] font-mono text-olive-500 dark:text-olive-400">
+                        <span>Confidence: {Math.round((field.confidence || 0) * 100)}%</span>
+                        <span className="capitalize">Status: {field.status}</span>
+                      </div>
+
+                      {field.reviewerCorrection && (
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono italic">
+                          Correction applied by {field.reviewerCorrection.correctedBy}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </DoubleLayerCard>
           )}
 
           {/* TAB 4: AUDIT LOG TIMELINE */}
           {activeTab === 'audit' && (
-            <div className="p-4 rounded-panel bg-white dark:bg-[#1E1D18] border border-black/5 dark:border-white/5 space-y-4 shadow-soft-sm">
-              <div className="space-y-1">
-                <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
-                  Immutable Inspection Audit Trail
-                </h4>
-                <p className="text-[11px] text-olive-500">
-                  Append-only record of every automated run and human reviewer decision.
-                </p>
-              </div>
+            <DoubleLayerCard>
+              <div className="space-y-4 text-xs">
+                <div className="space-y-0.5">
+                  <h4 className="text-xs font-semibold text-palette-dark dark:text-palette-sand">
+                    Immutable Inspection Audit Trail
+                  </h4>
+                  <p className="text-[11px] text-olive-500">
+                    Append-only record of every automated run and human reviewer decision.
+                  </p>
+                </div>
 
-              <div className="space-y-3 max-h-[580px] overflow-y-auto">
-                {auditEvents.map((ev) => (
-                  <div key={ev.id} className="text-xs space-y-1 pb-3 border-b border-black/5 dark:border-white/5 last:border-none">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-mono font-medium text-palette-dark dark:text-palette-sand">
-                        {ev.action}
-                      </span>
-                      <span className="font-mono text-olive-400 text-[10px]">
-                        {new Date(ev.timestamp).toLocaleTimeString()}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-olive-500">
-                      Actor: {ev.actor?.name} ({ev.actor?.role})
-                    </p>
-                    {ev.metadata?.reason && (
-                      <p className="text-[11px] text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
-                        Reason: "{ev.metadata.reason}"
+                <div className="space-y-3 max-h-[580px] overflow-y-auto">
+                  {auditEvents.map((ev) => (
+                    <div key={ev.id} className="text-xs space-y-1 pb-3 border-b border-black/5 dark:border-white/5 last:border-none">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="font-mono font-medium text-palette-dark dark:text-palette-sand">
+                          {ev.action}
+                        </span>
+                        <span className="font-mono text-olive-400 text-[10px]">
+                          {new Date(ev.timestamp).toLocaleTimeString()}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-olive-500">
+                        Actor: {ev.actor?.name} ({ev.actor?.role})
                       </p>
-                    )}
-                  </div>
-                ))}
+                      {ev.metadata?.reason && (
+                        <p className="text-[11px] text-palette-dark dark:text-palette-sand bg-black/5 dark:bg-white/5 px-2 py-1 rounded">
+                          Reason: "{ev.metadata.reason}"
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </DoubleLayerCard>
           )}
         </div>
       </div>
@@ -936,7 +951,7 @@ export default function InspectionDetail() {
         subtitle="A specific reviewer justification is strictly required to dismiss an automated red flag."
       >
         <form onSubmit={submitDismissModal} className="space-y-4 text-xs">
-          <div className="p-3 rounded bg-red-500/10 border border-red-500/20 text-red-800 dark:text-red-300">
+          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-800 dark:text-red-300">
             <span className="font-bold block font-mono text-[11px] mb-0.5">
               {targetFindingToDismiss?.ruleId}: {targetFindingToDismiss?.title}
             </span>
@@ -955,7 +970,7 @@ export default function InspectionDetail() {
               value={dismissReason}
               onChange={e => setDismissReason(e.target.value)}
               placeholder="e.g. Approved promotional pricing sticker amendment, or verified regional exception per Legal Metrology Gazette notification..."
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-palette-dark dark:focus:border-palette-sand"
+              className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand focus:outline-none focus:border-pink-500"
             />
           </div>
 
@@ -963,13 +978,13 @@ export default function InspectionDetail() {
             <button
               type="button"
               onClick={() => setDismissModalOpen(false)}
-              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
+              className="px-4 py-2 rounded-xl text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-red-600 hover:bg-red-700 text-white font-medium shadow-soft-sm"
+              className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium shadow-sm"
             >
               Confirm Dismissal
             </button>
@@ -998,7 +1013,7 @@ export default function InspectionDetail() {
               ].map(opt => (
                 <label
                   key={opt.id}
-                  className={`flex items-center gap-3 p-3 rounded-control border cursor-pointer transition-surface ${
+                  className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     finalizeDecision === opt.id
                       ? 'bg-black/5 dark:bg-white/10 border-palette-dark dark:border-palette-sand font-semibold'
                       : 'border-black/5 dark:border-white/5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]'
@@ -1029,7 +1044,7 @@ export default function InspectionDetail() {
               value={finalizeNotes}
               onChange={e => setFinalizeNotes(e.target.value)}
               placeholder="e.g. Pre-production screening passed with minor caveat, or packaging returned to agency for price and net count correction..."
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
+              className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand"
             />
           </div>
 
@@ -1037,13 +1052,13 @@ export default function InspectionDetail() {
             <button
               type="button"
               onClick={() => setFinalizeModalOpen(false)}
-              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
+              className="px-4 py-2 rounded-xl text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold shadow-soft-sm"
+              className="px-4 py-2 rounded-xl bg-gradient-bustd text-white font-semibold shadow-sm"
             >
               Save Final Decision
             </button>
@@ -1068,7 +1083,7 @@ export default function InspectionDetail() {
               required
               value={correctedValue}
               onChange={e => setCorrectedValue(e.target.value)}
-              className="w-full px-3 py-2 rounded-input bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
+              className="w-full px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-palette-dark dark:text-palette-sand font-mono"
             />
           </div>
 
@@ -1076,19 +1091,19 @@ export default function InspectionDetail() {
             <button
               type="button"
               onClick={() => setCorrectFieldModalOpen(false)}
-              className="px-4 py-2 rounded-input text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
+              className="px-4 py-2 rounded-xl text-olive-500 hover:text-palette-dark dark:hover:text-palette-sand"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-input bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold"
+              className="px-4 py-2 rounded-xl bg-palette-dark dark:bg-palette-sand text-palette-sand dark:text-palette-dark font-semibold"
             >
               Save Field Correction
             </button>
           </div>
         </form>
       </Modal>
-    </div>
+    </motion.div>
   );
 }
